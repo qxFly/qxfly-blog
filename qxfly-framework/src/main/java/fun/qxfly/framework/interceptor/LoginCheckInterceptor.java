@@ -1,0 +1,93 @@
+package fun.qxfly.framework.interceptor;
+
+import com.alibaba.fastjson.JSONObject;
+import fun.qxfly.common.domain.po.Result;
+import fun.qxfly.common.utils.JwtUtils;
+import fun.qxfly.framework.service.InterceptorService;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+@CrossOrigin
+@Slf4j
+@Component
+public class LoginCheckInterceptor implements HandlerInterceptor {
+    final InterceptorService interceptorService;
+
+    public LoginCheckInterceptor(InterceptorService interceptorService) {
+        this.interceptorService = interceptorService;
+    }
+
+    //目标资源方法运行前运行，返回true:放行，返回false:不放行
+    @Override
+    public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object handler) throws Exception {
+        if (HttpMethod.OPTIONS.toString().equals(req.getMethod())) {
+            log.info("OPTIONS请求，放行");
+            return true;
+        }
+        // 错误信息
+        Result error = Result.error("Not Login");
+        String errorMsg = JSONObject.toJSONString(error);
+        //中文支持
+        resp.setContentType("text/html;charset=UTF-8");
+        //获取请求的url
+        String url = req.getRequestURI();
+        log.info("请求的url:{}", url);
+        //判断是否为 download,如果是放行
+//        if (interceptorService.pathBypass(url)) {
+//            log.info("该url无需验证：{}", url);
+//            return true;
+//        }
+
+        //获取证书token
+        String token = req.getHeader("token");
+        //判断证书是否存在，如果不存在，返回错误结果（未登录）
+        if (!StringUtils.hasLength(token)) {
+            log.info("请求头token为空，返回未登入信息");
+            resp.getWriter().write(errorMsg);
+            return false;
+        }
+        //解析token，解析失败，返回错误结果（未登录）
+        Claims claims;
+        try {
+            claims = JwtUtils.parseJWT(token);
+            /*查询用户是否退出，退出则返回错误结果*/
+            String username = interceptorService.getLogoutStatus(token);
+            if (username != null) {
+                resp.getWriter().write(errorMsg);
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("解析证书失败，未登录");
+            resp.getWriter().write(errorMsg);
+            return false;
+        }
+        /*检查是否为管理员*/
+        if (url.contains("manage")) {
+            String username = (String) claims.get("username");
+            if (!interceptorService.isAdmin(username)) return false;
+        }
+        //放行
+        log.info("证书合法，放行");
+        return true;
+    }
+
+
+    @Override //目标资源运行后运行
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
+    }
+
+    @Override //试图渲染完毕后运行
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
+    }
+}

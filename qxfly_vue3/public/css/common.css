@@ -1,0 +1,66 @@
+/* 公共css  */
+
+html,
+body {
+    width: 100%;
+    box-sizing: border-box;
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Lato, Roboto, "PingFang SC",
+        "Microsoft YaHei", sans-serif;
+    color: #242424;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+}
+div {
+    box-sizing: border-box;
+}
+a {
+    text-decoration: none;
+}
+a:link {
+    color: black;
+}
+a:visited {
+    color: black;
+}
+a:hover {
+    color: black;
+}
+a:active {
+    color: black;
+}
+
+ul {
+    list-style: none;
+}
+#app {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+/* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
+@font-face {
+    font-family: "iconfont"; /* Project id 4302169 */
+    src: url("//at.alicdn.com/t/c/font_4302169_l59w6qbqhz.woff2?t=1714186491950") format("woff2"),
+        url("//at.alicdn.com/t/c/font_4302169_l59w6qbqhz.woff?t=1714186491950") format("woff"),
+        url("//at.alicdn.com/t/c/font_4302169_l59w6qbqhz.ttf?t=1714186491950") format("truetype");
+}
+.el-dialog {
+    border-radius: 8px !important;
+}
+html {
+    overflow-y: scroll;
+}
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-thumb {
+    /* border-radius: 10px; */
+    background: #84c6ff;
+}
+::-webkit-scrollbar-track {
+}

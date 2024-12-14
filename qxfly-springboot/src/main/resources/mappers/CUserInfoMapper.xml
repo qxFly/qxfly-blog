@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace等于mapper接口类的全限定名,这样实现对应 -->
+<mapper namespace="fun.qxfly.common.mapper.CUserInfoMapper">
+    <!--获取文章、点赞、收藏、浏览数-->
+    <select id="getArticleCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM `article` a
+        where a.authorId = #{uid}
+          and a.verify = 3
+    </select>
+    <select id="getLikeCount" resultType="java.lang.Integer">
+        SELECT SUM(a.likes)
+        FROM `article` a
+        where a.authorId = #{uid}
+    </select>
+    <select id="getCollectionCount" resultType="java.lang.Integer">
+        SELECT count(uc.uid)
+        FROM user_collection uc
+        where uc.uid = #{uid}
+    </select>
+    <select id="getViewsCount" resultType="java.lang.Integer">
+        SELECT SUM(a.views)
+        FROM `article` a
+        where a.authorId = #{uid}
+    </select>
+</mapper>
