@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -26,34 +25,21 @@ public class LogoutController {
 
     /**
      * 退出校验
-     *
-     * @param t
-     * @return
      */
     @Operation(description = "退出", summary = "退出")
     @PostMapping("/logout")
-    public Result Logout(@RequestBody Token t, HttpServletRequest request) {
-        if (t == null) return Result.error("验证失败");
-
+    public Result Logout(HttpServletRequest request) {
         String reqToken = request.getHeader("token");
-        String token = t.getToken();
-        if (!StringUtils.hasLength(reqToken) || !reqToken.equals(token)) return Result.error("验证失败");
+        if (!StringUtils.hasLength(reqToken)) return Result.error("验证失败");
 
-        Claims claims;
-        try {
-            claims = JwtUtils.parseJWT(token);
-        } catch (Exception e) {
-            e.printStackTrace();
+        Claims claims = JwtUtils.parseJWT(reqToken);
+        if (claims == null) {
             log.info("退出操作，但是token失效");
-            logoutService.deleteToken(t);
+            logoutService.deleteToken(reqToken);
             return Result.error("验证失败");
         }
         String username = (String) claims.get("username");
-        if (username.equals(t.getUsername())) {
-            logoutService.logout(t);
-        } else {
-            return Result.error("验证失败!");
-        }
+        logoutService.logout(new Token(username, reqToken));
         return Result.success();
     }
 }

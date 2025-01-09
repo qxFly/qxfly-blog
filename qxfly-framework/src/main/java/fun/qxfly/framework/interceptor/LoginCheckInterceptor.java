@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -48,28 +47,20 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
         //获取证书token
         String token = req.getHeader("token");
-        //判断证书是否存在，如果不存在，返回错误结果（未登录）
-        if (!StringUtils.hasLength(token)) {
-            log.info("请求头token为空，返回未登入信息");
-            resp.getWriter().write(errorMsg);
-            return false;
-        }
         //解析token，解析失败，返回错误结果（未登录）
-        Claims claims;
-        try {
-            claims = JwtUtils.parseJWT(token);
-            /*查询用户是否退出，退出则返回错误结果*/
-            String username = interceptorService.getLogoutStatus(token);
-            if (username != null) {
-                resp.getWriter().write(errorMsg);
-                return false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        Claims claims = JwtUtils.parseJWT(token);
+        if (claims == null) {
             log.info("解析证书失败，未登录");
             resp.getWriter().write(errorMsg);
             return false;
         }
+        /*查询用户是否退出，退出则返回错误结果*/
+        String logoutUser = interceptorService.getLogoutStatus(token);
+        if (logoutUser != null) {
+            resp.getWriter().write(errorMsg);
+            return false;
+        }
+
         /*检查是否为管理员*/
         if (url.contains("manage")) {
             String username = (String) claims.get("username");

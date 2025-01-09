@@ -136,7 +136,7 @@
 
 <script setup>
 import { onMounted, ref, watch } from "vue";
-import { getArticles, checkA, batchDeleteArticle } from "@/api/Article/index";
+import { listArticles, checkA, batchDeleteArticle } from "@/api/Article/index";
 import router from "@/router";
 import mymd5 from "@/utils/md5";
 import { useRoute } from "vue-router";
@@ -157,7 +157,7 @@ let loginUid = ref(""); //登录用户id
 let loginUsername = ref(""); //登录用户名
 let showVerifyTip = ref(false); //是否显示审核提示
 function GetArticles() {
-    getArticles(
+    listArticles(
         currPage.value,
         pageSize.value,
         searchData.value,
@@ -169,9 +169,9 @@ function GetArticles() {
         if ((res.data.code = 1)) {
             isload.value = false;
             let a = res.data.data;
-            if (a.data.length != 0) {
-                posts.value = a.data;
-                totalPages.value = a.totalPage;
+            if (a.list.length != 0) {
+                posts.value = a.list;
+                totalPages.value = a.pages;
                 isBlank.value = false;
                 if (verifyValue.value == 2) showVerifyTip.value = true;
                 else {

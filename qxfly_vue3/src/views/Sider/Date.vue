@@ -17,13 +17,13 @@
                     <span style="font-size: 18px; color: #8fc5fc">{{ second }}</span> 秒
                 </div>
             </div>
-        </div></CardView
-    >
+        </div>
+    </CardView>
 </template>
 
 <script setup>
 import { onMounted, ref } from "vue";
-
+import CardView from "@/components/CardView.vue";
 let year = ref("0000");
 let month = ref("00");
 let day = ref("00");

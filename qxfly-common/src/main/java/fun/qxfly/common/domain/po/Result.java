@@ -21,11 +21,24 @@ public class Result {
     public static Result success(Object data) {
         return new Result(1, "success", data);
     }
+
     public static Result success(String msg, Object data) {
         return new Result(1, msg, data);
     }
+
     //失败响应
     public static Result error(String msg) {
         return new Result(0, msg, null);
     }
+    //失败响应，未登入
+    public static Result noLoginError() {
+        return new Result(0, "未登入", null);
+    }
+
+    //失败响应，未登入
+    public static Result operationError() {
+        return new Result(0, "操作失败", null);
+    }
+
+
 }

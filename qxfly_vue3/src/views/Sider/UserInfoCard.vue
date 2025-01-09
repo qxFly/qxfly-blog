@@ -32,8 +32,8 @@
                 个 &emsp;人 &emsp;空 &emsp;间
             </div>
             <div class="user-info-btn" @click="toIndex" v-if="props.backToIndex">Back to Index</div>
-        </div></CardView
-    >
+        </div>
+    </CardView>
 </template>
 
 <script setup>
@@ -41,7 +41,7 @@ import { onMounted, ref } from "vue";
 import { getUserInfo } from "@/api/User/index";
 import router from "@/router";
 import md5 from "js-md5";
-
+import CardView from "@/components/CardView.vue";
 const props = defineProps({
     backToIndex: {
         type: Boolean,

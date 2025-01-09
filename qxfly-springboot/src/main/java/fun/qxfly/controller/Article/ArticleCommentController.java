@@ -1,11 +1,10 @@
 package fun.qxfly.controller.Article;
 
-import fun.qxfly.common.domain.po.Result;
-import fun.qxfly.common.utils.JwtUtils;
 import fun.qxfly.common.domain.entity.Comment;
-import fun.qxfly.common.domain.entity.Token;
 import fun.qxfly.common.domain.entity.User;
 import fun.qxfly.common.domain.po.PageBean;
+import fun.qxfly.common.domain.po.Result;
+import fun.qxfly.common.utils.JwtUtils;
 import fun.qxfly.service.Article.ArticleCommentService;
 import fun.qxfly.service.User.UserInfoService;
 import io.jsonwebtoken.Claims;
@@ -59,12 +58,9 @@ public class ArticleCommentController {
     @Operation(description = "发布评论", summary = "发布评论")
     public Result releaseComment(@RequestBody Comment comment, HttpServletRequest request) {
         String token = request.getHeader("token");
-        Integer uid;
-        try {
-            uid = (Integer) JwtUtils.parseJWT(token).get("uid");
-        }catch (Exception e){
-            return Result.error("发布失败");
-        }
+        Claims claims = JwtUtils.parseJWT(token);
+        if (claims == null) return Result.error("发布失败");
+        Integer uid = (Integer) claims.get("uid");
         User u = userInfoService.getUserInfo(uid);
         User user = new User();
         user.setId(u.getId());
@@ -72,11 +68,11 @@ public class ArticleCommentController {
         comment.setUser(user);
         comment.setCreateTime(new Date());
         boolean b = articleCommentService.releaseComment(comment);
-        if(b){
+        if (b)
             return Result.success();
-        }else{
+        else
             return Result.error("评论审核中，请耐心等待");
-        }
+
     }
 
     /**
@@ -89,13 +85,9 @@ public class ArticleCommentController {
     @Operation(description = "获取用户评论点赞", summary = "获取用户评论点赞")
     public Result getUserLikeComment(@RequestParam Integer aid, HttpServletRequest request) {
         String token = request.getHeader("token");
-        int uid;
-        try {
-            uid = (Integer) JwtUtils.parseJWT(token).get("uid");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.error("未登录");
-        }
+        Claims claims = JwtUtils.parseJWT(token);
+        if (claims == null) return Result.noLoginError();
+        int uid = (Integer) claims.get("uid");
         List<Integer> likeComment = articleCommentService.getUserLikeComment(aid, uid);
         return Result.success(likeComment);
     }
@@ -113,11 +105,9 @@ public class ArticleCommentController {
     public Result likeComment(@RequestBody Comment comment, HttpServletRequest request) {
         String token = request.getHeader("token");
         User u = new User();
-        try {
-            u.setId((Integer) JwtUtils.parseJWT(token).get("uid"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Claims claims = JwtUtils.parseJWT(token);
+        if (claims == null) return Result.noLoginError();
+        u.setId((Integer) claims.get("uid"));
         Integer f = articleCommentService.likeComment(comment, u);
         return Result.success(f);
     }

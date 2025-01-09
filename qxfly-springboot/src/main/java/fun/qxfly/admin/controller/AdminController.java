@@ -3,6 +3,7 @@ package fun.qxfly.admin.controller;
 import fun.qxfly.admin.service.AdminService;
 import fun.qxfly.common.domain.po.Result;
 import fun.qxfly.common.utils.JwtUtils;
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,20 +31,15 @@ public class AdminController {
     @Operation(description = "检查是否为管理员、审核员", summary = "检查是否为管理员、审核员")
     @PostMapping("/check")
     public Result check(HttpServletRequest request) {
-        String username;
         String token = request.getHeader("token");
-        try {
-            username = (String) JwtUtils.parseJWT(token).get("username");
-            Integer f;
-            if ((f = adminService.check(username)) != 0) {
-                return Result.success(f);
-            } else {
-                return Result.error("您没有权限访问！");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        Claims claims = JwtUtils.parseJWT(token);
+        if (claims == null) return Result.error("您没有权限访问！");
+        Integer uid = (Integer) JwtUtils.parseJWT(token).get("uid");
+        Integer f = adminService.check(uid);
+        if (f != 0) {
+            return Result.success(f);
+        } else {
             return Result.error("您没有权限访问！");
         }
-
     }
 }

@@ -2,8 +2,8 @@ package fun.qxfly.service.Article.Impl;
 
 import fun.qxfly.common.domain.entity.Comment;
 import fun.qxfly.common.domain.entity.User;
-import fun.qxfly.mapper.Article.ArticleCommentMapper;
 import fun.qxfly.common.domain.po.PageBean;
+import fun.qxfly.mapper.Article.ArticleCommentMapper;
 import fun.qxfly.service.Article.ArticleCommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,22 +26,22 @@ public class ArticleCommentServiceImpl implements ArticleCommentService {
     /**
      * 评论点赞
      *
-     * @param comment
-     * @param user
-     * @return
+     * @param comment 评论
+     * @param user    用户
+     * @return 0 为点赞，1为取消点赞
      */
     @Override
     public Integer likeComment(Comment comment, User user) {
         Integer i = articleCommentMapper.getUserCommentLike(user, comment);
         Integer userCommentDailyLike = articleCommentMapper.getUserCommentDailyLike(user, comment);
-        // 0 为点赞，1为取消点赞
-        // 用户点过赞
+
         if (i != null && i != 0 && userCommentDailyLike != null && userCommentDailyLike != 0) {
+            // 用户点过赞
             articleCommentMapper.cancelUserCommentLike(user, comment);
             articleCommentMapper.reduceCommentLike(comment);
             return 0;
         } else {
-            /*用户没有点赞，且行为为点赞*/
+            //用户没有点赞，且行为为点赞
             articleCommentMapper.addUserCommentLike(user, comment);
             articleCommentMapper.addUserCommentDailyLike(user, comment);
             articleCommentMapper.addCommentLike(comment);

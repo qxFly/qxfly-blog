@@ -29,9 +29,16 @@ public class JwtUtils {
         if (token == null || token.isEmpty() || token.isBlank()) {
             return null;
         }
-        return Jwts.parser()
-                .setSigningKey(SignKey)
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts.parser()
+                    .setSigningKey(SignKey)
+                    .parseClaimsJws(token)
+                    .getBody();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 }

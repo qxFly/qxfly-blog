@@ -1,10 +1,9 @@
-package fun.qxfly.framework.service.impl;
+package fun.qxfly.quartz.service.impl;
 
-import fun.qxfly.common.domain.entity.Token;
 import fun.qxfly.common.domain.entity.User;
 import fun.qxfly.common.service.CUserInfoService;
-import fun.qxfly.framework.mapper.ScheduledTaskMapper;
-import fun.qxfly.framework.service.ScheduledTaskService;
+import fun.qxfly.quartz.mapper.ScheduledTaskMapper;
+import fun.qxfly.quartz.service.ScheduledTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

@@ -12,14 +12,15 @@
             </div>
         </div>
 
-        <div class="nav-items" v-for="item in navigation" :key="item" :class="item.class + '-1'">
+        <div class="nav-items" v-for="item in navigation" :key="item" :class="item.cssClass + '-1'">
             <div :class="{ active: currRoute(item) }">
                 <router-link
-                    :class="judgeStyle(item.class)"
-                    :id="item.class"
+                    :class="item.cssClass"
+                    :id="item.cssClass"
                     :to="item.path"
                     @click="back(item)"
                     active-class="menu-item-active">
+                    <i class="iconfont" v-html="item.icon"></i>
                     <span v-text="item.name"></span>
                 </router-link>
             </div>
@@ -31,20 +32,25 @@
 import router from "@/router";
 import { onMounted, ref } from "vue";
 import { onBeforeRouteUpdate, useRoute } from "vue-router";
+import { listIndexNav } from "@/api";
 import MyInput from "../MyInput.vue";
 let useRouter = useRoute();
-let navigation = ref([
-    { name: "首页", path: "/", class: "nav-item-home" },
-    { name: "图片", path: "/imageView", class: "nav-item-image" },
-    { name: "文章", path: "/articleView?page=1", class: "nav-item-article" },
-    { name: "分类", path: "/articleView?classify=", class: "nav-item-classify", classify: true },
-    { name: "返回", path: "", class: "nav-item-back" },
-    {
-        name: "发布",
-        path: "/article/editArticle/14/45/14",
-        class: "nav-item-editArticle",
-    },
-]);
+
+/* 首页导航栏列表 */
+let navigation = ref([]);
+function getNavigation() {
+    listIndexNav().then((res) => {
+        if (res.data.code == 1) {
+            /* 文章编辑模式时移除发布按钮 */
+            if (router.currentRoute.value.fullPath.match(/editArticle/) != null) editArticleMode(res.data.data);
+            else navigation.value = res.data.data;
+        }
+    });
+}
+/* 文章编辑模式时移除发布按钮 */
+function editArticleMode(data) {
+    navigation.value = data.filter((item) => item.path.match(/editArticle/) == null);
+}
 let searchData = ref("");
 /* 搜索 */
 function search() {
@@ -54,7 +60,7 @@ function search() {
     let query = router.currentRoute.value.query;
     if (router.currentRoute.value.path.match(/articleView/) != null) {
         router.push({
-            path: "/articleView",
+            path: process.env.APP_VUE_INDEX_PATH,
             query: {
                 page: 1,
                 search: searchData.value.trim(),
@@ -83,7 +89,7 @@ function search() {
         });
     } else {
         router.push({
-            path: "/articleView",
+            path: process.env.APP_VUE_INDEX_PATH,
             query: {
                 page: 1,
                 search: searchData.value.trim(),
@@ -92,40 +98,31 @@ function search() {
         });
     }
 }
-/* 样式判断 */
-function judgeStyle(cla) {
-    if (cla != "nav-item-editArticle") {
-        return cla + " nav-item";
-    } else {
-        return cla;
-    }
-}
 function back(item) {
-    if (item.path == "" && router.currentRoute != "/articleView") router.go(-1);
+    if (item.path == "" && !router.currentRoute.value.fullPath.match(/articleView/)) router.go(-1);
 }
 /* 高亮当前导航 */
 function currRoute(item) {
-    if (
-        item.path.match(/articleView/) != null &&
-        router.currentRoute.value.fullPath.match(/articleView/) &&
-        !item.classify &&
-        router.currentRoute.value.fullPath.match(/classify/) == null
-    ) {
-        return true;
-    }
-    if (
-        item.path.match(/articleView/) != null &&
-        router.currentRoute.value.fullPath.match(/classify/) &&
-        item.classify
-    ) {
-        return true;
-    }
+    // 当前路由是否是首页,是则继续
+    if (router.currentRoute.value.fullPath.match(/index/) == null) return false;
+    // 当前路由是否与文章相关
+    let isArticleView =
+        item.path.match(/articleView/) != null && router.currentRoute.value.fullPath.match(/articleView/) != null;
+    // 当前路由是否是分类
+    let currentRouteIsClassify = router.currentRoute.value.fullPath.match(/classify/) != null;
+
     if (item.path == router.currentRoute.value.fullPath) {
-        if (!item.path.includes("/article/editArticle")) {
-            return true;
-        }
+        // 当前路由是否是编辑文章
+        if (!item.path.includes("/article/editArticle")) return true;
+    } else if (isArticleView && item.path.match(/classify/) == null && !currentRouteIsClassify) {
+        // 当前路由是文章页面，单不是文章分类
+        return true;
+    } else if (isArticleView && item.path.match(/classify/) != null && currentRouteIsClassify) {
+        // 当前路由是文章分类页面
+        return true;
     }
 }
+
 /* 判断首页，是否显示返回首页 */
 function isIndex(item) {
     if (item.path != "/") {
@@ -139,7 +136,7 @@ function isIndex(item) {
     }
 }
 router.beforeEach((to) => {
-    if (to.path.includes("/article/editArticle/editArticle/")) {
+    if (to.path.includes("/index/article//editArticle/")) {
         let ele = document.getElementsByClassName("nav-item-editArticle");
         ele[0].innerHTML = "加载中";
         ele[0].style["content"] = "";
@@ -148,7 +145,7 @@ router.beforeEach((to) => {
 onBeforeRouteUpdate((to) => {
     if (to.fullPath === "/") {
         router.push({
-            path: "/articleView",
+            path: process.env.APP_VUE_INDEX_PATH,
             query: {
                 page: 1,
             },
@@ -156,6 +153,7 @@ onBeforeRouteUpdate((to) => {
     }
 });
 onMounted(() => {
+    getNavigation();
     searchData.value = useRouter.query.search;
 });
 </script>
@@ -235,39 +233,14 @@ onMounted(() => {
     cursor: pointer;
     transition: all 0.3s ease;
 }
-.nav-item-home::before {
-    content: "\e6fe";
-    font-family: "iconfont";
+.iconfont {
+    font-family: "iconfont" !important;
+    font-style: normal;
     margin-right: 4px;
+    color: #000;
 }
-.nav-item-image::before {
-    content: "\e6c5";
-    font-family: "iconfont";
-    margin-right: 4px;
-}
-.nav-item-article::before {
-    content: "\e6db";
-    font-family: "iconfont";
-    margin-right: 4px;
-}
-.nav-item-word::before {
-    content: "\e64e";
-    font-family: "iconfont";
-    margin-right: 4px;
-}
-.nav-item-back::before {
-    content: "\e623";
-    font-family: "iconfont";
-    margin-right: 4px;
-}
-.nav-item-classify::before {
-    content: "\e6da";
-    font-family: "iconfont";
-    margin-right: 4px;
-}
-
 .nav-item-editArticle {
-    display: block;
+    display: inline-block;
     width: 80px;
     font-weight: 500;
     font-size: 18px;

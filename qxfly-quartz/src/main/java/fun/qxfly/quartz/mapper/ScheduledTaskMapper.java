@@ -1,4 +1,4 @@
-package fun.qxfly.framework.mapper;
+package fun.qxfly.quartz.mapper;
 
 import fun.qxfly.common.domain.entity.User;
 import org.apache.ibatis.annotations.Delete;

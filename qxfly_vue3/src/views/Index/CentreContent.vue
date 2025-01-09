@@ -1,5 +1,5 @@
 <template>
-    <div class="main">
+    <CardView class="main">
         <div class="Content">
             <router-view v-slot="{ Component }">
                 <keep-alive>
@@ -10,25 +10,25 @@
                 </keep-alive>
             </router-view>
         </div>
-    </div>
+    </CardView>
 </template>
 
-<script setup></script>
+<script setup>
+import CardView from "@/components/CardView.vue";
+</script>
 <style scoped>
 .main {
-    /* position: relative; */
     width: 60%;
     min-width: 340px;
-    margin: 0 20px;
-    margin-bottom: 20px;
+    margin: 0 20px 20px 20px;
+    padding: 30px 24px;
     transition: all 0.3s ease;
-    overflow: hidden;
     height: 100%;
 }
-.Content {
+/* .Content {
     overflow: hidden;
     padding: 30px 24px;
-}
+} */
 @media (max-width: 700px) {
     .main {
         min-width: unset;

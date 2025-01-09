@@ -18,13 +18,25 @@
     <dependencies>
         <dependency>
             <groupId>fun.qxfly</groupId>
+            <artifactId>qxfly-framework</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <!-- 定时任务 -->
+        <dependency>
+            <groupId>fun.qxfly</groupId>
+            <artifactId>qxfly-quartz</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <!-- 通用 -->
+        <dependency>
+            <groupId>fun.qxfly</groupId>
             <artifactId>qxfly-common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
         <dependency>
-            <groupId>fun.qxfly</groupId>
-            <artifactId>qxfly-framework</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
     </dependencies>
 
@@ -33,13 +45,16 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
+                    <outputDirectory>${project.build.directory}/../../outputDirectory</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>

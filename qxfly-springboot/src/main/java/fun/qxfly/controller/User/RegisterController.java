@@ -72,7 +72,6 @@ public class RegisterController {
                 e.printStackTrace();
                 return Result.error("请输入正确的验证码或邀请码");
             }
-
         }
 
         /* 解码密码 */

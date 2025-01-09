@@ -256,6 +256,7 @@ async function release() {
     }
     if (formData.get("file") != null) {
         /* 先上传封面 */
+
         await updateArticleCover(formData).then((res) => {
             if (res.data.code == 1) {
                 article.value.cover = res.data.data;
@@ -550,43 +551,34 @@ function delimg() {
 let isChoice = ref(false);
 let previewCover = ref(require("@/assets/img/icon/addImage.svg"));
 let formData = new FormData();
+let coverFileName = "";
 /* 获取文件数据 */
 function getFile(event) {
     let file = event.target.files[0];
-    if (file != null) {
-        if (file.type.match(/image/) != null) {
-            if (file.size < 1024 * 1024 * 10) {
-                /* 展示预览图片 */
-                isChoice.value = true;
-                cropperCoverDialog.value = true;
-                option.img = URL.createObjectURL(file);
-                prePreviewCover.value = previewCover.value;
-                previewCover.value = URL.createObjectURL(file);
-                const a = document.getElementById("input-cover");
-                a.value = null;
-            } else {
-                alert("封面大小不能超过10MB");
-            }
-        } else {
-            alert("请选择选择格式为png、jpg、jpeg、webp的图片");
-        }
-    }
+    fileHandler(file);
 }
 /* 拖拽上传 */
 function dragenter(event) {
     event.preventDefault();
     event.stopPropagation();
     let file = event.dataTransfer.files[0];
+    fileHandler(file);
+}
+function fileHandler(file) {
     if (file != null) {
         if (file.type.match(/image/) != null) {
-            if (file.size < 1024 * 1024 * 3) {
+            if (file.size < 1024 * 1024 * 10) {
                 /* 展示预览图片 */
+                coverFileName = file.name;
                 isChoice.value = true;
                 cropperCoverDialog.value = true;
                 option.img = URL.createObjectURL(file);
+                // prePreviewCover.value = previewCover.value;
                 previewCover.value = URL.createObjectURL(file);
+                const a = document.getElementById("input-cover");
+                a.value = null;
             } else {
-                alert("封面大小不能超过3MB");
+                alert("封面大小不能超过10MB");
             }
         } else {
             alert("请选择选择格式为png、jpg、jpeg、webp的图片");
@@ -835,10 +827,6 @@ onMounted(() => {
     const Editor = document.getElementById("Editor");
     let height = document.body.scrollHeight - 300;
     Editor.style.height = height + "px";
-
-    /* 进入发布、编辑页，移除导航栏对应的图标 */
-    const ele = document.getElementById("nav-item-editArticle");
-    ele.style.display = "none";
     /* 判断是否可以编辑文章 */
     if (userRoute.params.editMode == "true") {
         editMode.value = true;

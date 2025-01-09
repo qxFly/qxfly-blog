@@ -120,25 +120,26 @@
 
 <script setup>
 import { onMounted, ref, watch } from "vue";
-import { getArticles } from "@/api/Article/index";
+import { listArticles } from "@/api/Article/index";
 import router from "@/router";
 import { useRoute } from "vue-router";
 import md5 from "js-md5";
 import mymd5 from "@/utils/md5.js";
 import ArticleClassify from "@/views/Index/ArticleClassify.vue";
-import Pagination from "@/components/Pagination";
+import pagination from "@/components/Pagination";
+let indexPath = process.env.VUE_APP_INDEX_PATH;
 let useRouter = useRoute();
 let isload = ref(true);
 /* 分页查询 */
 let totalPages = ref(1); //总分页数
 let currPage = ref(1); //当前页
-let pageSize = ref(10); //分页大小
+let pageSize = ref(15); //分页大小
 let posts = ref([]);
 let searchData = ref("");
 let isClassify = ref(false);
 let totalArticleCount = ref(0);
-async function GetArticles() {
-    await getArticles(
+async function ListArticles() {
+    await listArticles(
         currPage.value,
         pageSize.value,
         searchData.value,
@@ -149,10 +150,10 @@ async function GetArticles() {
         classify.value.toString(),
         tags.value.toString()
     ).then((res) => {
-        if ((res.data.code = 1)) {
-            if (res.data.data.data != "") {
-                posts.value = res.data.data.data;
-
+        if (res.data.code == 1) {
+            let resData = res.data.data;
+            if (resData.list != "") {
+                posts.value = res.data.data.list;
                 Backtop();
             } else {
                 posts.value = [
@@ -163,8 +164,8 @@ async function GetArticles() {
                 ];
             }
 
-            totalPages.value = res.data.data.totalPage;
-            totalArticleCount.value = res.data.data.totalRecord;
+            totalPages.value = resData.pages;
+            totalArticleCount.value = resData.total;
             isload.value = false;
         } else {
             isload.value = false;
@@ -222,7 +223,7 @@ let tags = ref([]);
 function Classifys(value) {
     classify.value = value;
     router.push({
-        path: "/articleView",
+        path: indexPath,
         query: {
             page: 1,
             search: searchData.value,
@@ -236,7 +237,7 @@ function Classifys(value) {
 function Tags(value) {
     tags.value = value;
     router.push({
-        path: "/articleView",
+        path: indexPath,
         query: {
             page: 1,
             search: searchData.value,
@@ -248,7 +249,8 @@ function Tags(value) {
 }
 /* 每次进入界面回到顶部 */
 function Backtop() {
-    document.body.scrollTop = document.documentElement.scrollTop = 0;
+    let backTop = document.getElementById("backTop");
+    if (backTop != null) backTop.click();
 }
 /* 排序 */
 let sortValue = ref("new");
@@ -258,59 +260,39 @@ function sort(value) {
     if (value == "hot") sortLabel.value = "浏览最多";
     if (value == "likes") sortLabel.value = "点赞最多";
     sortValue.value = value;
+    let params = {
+        page: 1,
+        search: searchData.value,
+        sort: sortValue.value,
+        tag: tags.value.toString(),
+    };
     if (classify.value != "" || router.currentRoute.value.fullPath.includes("classify")) {
-        router.push({
-            path: "/articleView",
-            query: {
-                page: 1,
-                search: searchData.value,
-                sort: value,
-                classify: classify.value,
-                tag: tags.value.toString(),
-            },
-        });
-    } else {
-        router.push({
-            path: "/articleView",
-            query: {
-                page: 1,
-                search: searchData.value,
-                sort: value,
-                tag: tags.value.toString(),
-            },
-        });
+        params.classify = classify.value;
     }
+    router.push({
+        path: indexPath,
+        query: params,
+    });
 }
 /* 换页操作 */
 function changePage(page = 0) {
-    if (totalPages.value != 0) {
-        if (page != 0) {
-            if (page > totalPages.value) {
-                page = totalPages.value;
-            }
-            if (classify.value != "" || router.currentRoute.value.fullPath.includes("classify")) {
-                router.push({
-                    path: "articleView",
-                    query: {
-                        page: page,
-                        search: searchData.value,
-                        sort: sortValue.value,
-                        classify: classify.value,
-                        tag: tags.value.toString(),
-                    },
-                });
-            } else {
-                router.push({
-                    path: "/articleView",
-                    query: {
-                        page: page,
-                        search: searchData.value,
-                        sort: sortValue.value,
-                        tag: tags.value.toString(),
-                    },
-                });
-            }
+    if (totalPages.value != 0 && page != 0) {
+        if (page > totalPages.value) {
+            page = totalPages.value;
         }
+        let params = {
+            page: page,
+            search: searchData.value,
+            sort: sortValue.value,
+            tag: tags.value.toString(),
+        };
+        if (classify.value != "" || router.currentRoute.value.fullPath.includes("classify")) {
+            params.classify = classify.value;
+        }
+        router.push({
+            path: indexPath,
+            query: params,
+        });
     }
 }
 /* 路由后恢复分页等数据 */
@@ -341,7 +323,7 @@ watch(
     (newVal, oldVal) => {
         showClassify();
         setRoutePage();
-        GetArticles();
+        ListArticles();
     },
     {
         deep: true,
@@ -375,11 +357,14 @@ onMounted(() => {
         sortValue.value = useRouter.query.sort;
     }
     setRoutePage();
-    GetArticles();
+    ListArticles();
 });
 </script>
 
 <style scoped lang="less">
+.article-page-cardview {
+    padding: 40px 30px;
+}
 .header {
     display: flex;
     justify-content: space-between;
@@ -433,9 +418,9 @@ onMounted(() => {
 .posts {
     width: 100%;
 }
-.content {
-    text-indent: 2em;
-}
+// .content {
+//     text-indent: 2em;
+// }
 .posts-item {
     height: 230px;
     margin-bottom: 20px;
@@ -528,9 +513,11 @@ onMounted(() => {
 .content {
     display: -webkit-box;
     -webkit-line-clamp: 4;
+    line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
     line-height: 26px;
+    text-indent: 2em;
 }
 </style>
 <!-- 文章卡片 -->

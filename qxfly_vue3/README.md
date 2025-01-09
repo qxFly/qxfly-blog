@@ -46,4 +46,4 @@ cnpm install v-preview-image@^3.x -S
 
 ### 计划：
 
-修改手机需验证
+//TODO 侧栏新增消息通知

@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/manage")
 @Tag(name = "管理员")
 @Tag(name = "站点管理")
-public class SiteManegeController {
+public class SiteManageController {
     private final SiteManegeService siteManegeService;
 
-    public SiteManegeController(SiteManegeService siteManegeService) {
+    public SiteManageController(SiteManegeService siteManegeService) {
         this.siteManegeService = siteManegeService;
     }
 

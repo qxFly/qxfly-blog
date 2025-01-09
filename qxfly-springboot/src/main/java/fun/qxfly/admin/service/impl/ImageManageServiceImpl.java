@@ -42,7 +42,7 @@ public class ImageManageServiceImpl implements ImageManageService {
             con = (HttpURLConnection) reqUrl.openConnection();
             /*获取 GitHub Api*/
             String githubAPI = System.getProperty("GithubAPI");
-            if (!githubAPI.isBlank()) {
+            if (!githubAPI.isEmpty()) {
                 con.setRequestProperty("Authorization", "token " + githubAPI);
             }
             con.connect();

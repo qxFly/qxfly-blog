@@ -21,7 +21,6 @@ public interface CUserInfoMapper {
     /**
      * 获取文章、点赞、收藏、浏览数
      *
-     * @param token
      * @return
      */
     Integer getArticleCount(Integer uid);

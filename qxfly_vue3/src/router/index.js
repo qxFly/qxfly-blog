@@ -4,23 +4,31 @@ import { check } from "@/api/Admin/index";
 const routes = [
     {
         path: "/",
-        redirect: "/articleView?page=1",
+        redirect: "/index/articleView?page=1",
         component: () => import("@/views/Index/Index"),
         meta: {
             keepAlive: true,
         },
         children: [
             {
-                path: "/imageView",
+                path: "/index/imageView",
                 component: () => import("@/views/Index/ImagePage.vue"),
                 meta: {
                     keepAlive: true,
                 },
             },
             {
-                path: "/articleView",
+                path: "/index/articleView",
                 name: "articleView",
                 component: () => import("@/views/Index/ArticlePage.vue"),
+                meta: {
+                    keepAlive: true,
+                },
+            },
+            {
+                path: "/index/leaveMessage",
+                name: "leaveMessage",
+                component: () => import("@/views/Index/LeaveMessage.vue"),
                 meta: {
                     keepAlive: true,
                 },
@@ -75,6 +83,10 @@ const routes = [
             {
                 path: "/manage/site",
                 component: () => import("@/views/AdminPage/Site"),
+            },
+            {
+                path: "/manage/navigation",
+                component: () => import("@/views/AdminPage/Navigation"),
             },
         ],
     },
@@ -159,11 +171,9 @@ router.beforeEach(async (to, from, next) => {
         if (to.path.match(black) != null) {
             isStop = true;
         }
-
         if (isStop) {
             // 获取 token
             const token = localStorage.getItem(md5("token"));
-            // TODO if (token != md5("nologin")) {
             if (token != null) {
                 next();
             } else {

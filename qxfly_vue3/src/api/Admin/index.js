@@ -207,3 +207,61 @@ export function deleteImage(id) {
         },
     });
 }
+
+/**
+ * 列出管理员导航栏
+ * @returns
+ */
+export function listAdminNavigations() {
+    return request({
+        url: "/listAdminNavigations",
+        method: "get",
+    });
+}
+
+/**
+ * 分页列出导航栏
+ * @returns
+ */
+export function listNavigations(data) {
+    return request({
+        url: "/listNavigations",
+        method: "post",
+        data: data,
+    });
+}
+/**
+ * 新增导航栏
+ * @returns
+ */
+export function addNavigation(data) {
+    return request({
+        url: "/addNavigation",
+        method: "post",
+        data: data,
+    });
+}
+
+/**
+ * 编辑导航栏
+ * @returns
+ */
+export function updateNavigation(data) {
+    return request({
+        url: "/updateNavigation",
+        method: "post",
+        data: data,
+    });
+}
+
+/**
+ * 删除导航栏
+ * @returns
+ */
+export function deleteNavigation(data) {
+    return request({
+        url: "/deleteNavigation",
+        method: "post",
+        data: data,
+    });
+}

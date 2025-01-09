@@ -23,10 +23,8 @@ import DailyHotArticle from "@/views/Sider/DailyHotArticle.vue";
     max-width: 260px;
 }
 .HotArticle {
-    margin-bottom: 20px;
 }
 .DailyHotArticle {
-    margin-bottom: 20px;
 }
 @media (max-width: 1200px) {
     .left-Sidebar-main {

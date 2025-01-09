@@ -65,7 +65,6 @@
         <if test="sort == 'likes'">
             order by a.likes desc
         </if>
-        limit #{start}, #{pageSize}
     </select>
     <!--分页获取文章评论-->
     <resultMap id="comment" type="fun.qxfly.common.domain.entity.Comment">

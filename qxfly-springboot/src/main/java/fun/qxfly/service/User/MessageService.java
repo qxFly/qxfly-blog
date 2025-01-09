@@ -49,8 +49,8 @@ public interface MessageService {
 
     /**
      * 查看是否有未读消息
-     * @param userId
+     * @param uid
      * @return
      */
-    Integer getNoReadMessageCount(Integer userId);
+    Integer getNoReadMessageCount(Integer uid);
 }

@@ -52,19 +52,14 @@ function cencel() {
 
 /* 退出 */
 async function logout() {
-    const res = await Logout({
-        token: localStorage.getItem(md5("token")),
-        username: localStorage.getItem("username"),
-    });
-    router.replace("/");
+    const res = await Logout();
+    localStorage.clear();
+    sessionStorage.clear();
+    dialogLogoutVisible.value = false;
     setTimeout(() => {
-        localStorage.clear();
-        localStorage.setItem(md5("islogin"), md5("false"));
-        localStorage.setItem("username", "未登录");
-        localStorage.setItem(md5("token"), md5("nologin"));
-        dialogLogoutVisible.value = false;
-        window.location.reload();
-    }, 10);
+        location.reload();
+    }, 200);
+    router.replace("/");
 }
 
 /* 检查登录状态*/

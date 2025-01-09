@@ -33,7 +33,7 @@ public class UserManageServiceImpl implements UserManageService {
         PageHelper.startPage(currPage, pageSize);
         List<User> userList = userManageMapper.listUser(user);
         for (User user1 : userList) {
-            if (user1.getAvatar() != null && !user1.getAvatar().equals("")) {
+            if (user1.getAvatar() != null && !user1.getAvatar().isEmpty()) {
                 user1.setAvatar(userAvatarDownloadPath + user1.getAvatar());
             }
 

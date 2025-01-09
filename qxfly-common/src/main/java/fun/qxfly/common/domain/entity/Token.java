@@ -26,4 +26,8 @@ public class Token {
     public Token(Integer id) {
         this.id = id;
     }
+    public Token(String username,String token) {
+        this.token = token;
+        this.username = username;
+    }
 }

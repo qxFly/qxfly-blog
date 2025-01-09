@@ -13,35 +13,36 @@ const service = axios.create({
     },
 });
 const passurl = [
-    "/login",
-    "/logout",
-    "/register",
-    "/gs",
-    "/updateLoginStatue",
-    "/listFile",
-    "/listSite",
-    "/download",
-    "/fileList",
-    "/listWord",
-    "/searchWord",
-    "/searchWord",
-    "/likeSearchWord",
-    "/userImg",
-    "/user/getUserInfo",
-    "/user/getSuggestAuthor",
-    "/user/findPassword",
-    "/user/sendCode",
-    "/check",
-    "/getImage",
-    "/saying/getWord",
-    "/article/getArticles",
-    "/article/getArticleById",
-    "/article/getArticleComments",
-    "/article/addArticleView",
-    "/article/getTags",
-    "/article/getClassifies",
-    "/article/getArticleAttachment",
-    "/article/getCollectionArticles",
+    "/gs", //获取公匙
+    "/login", //登陆
+    "/logout", //退出
+    "/register", //注册
+    "/updateLoginStatue", //检测更用户信息
+    "/getImage", //图片列表
+    "/index/listSite", //网站列表
+    "/index/listIndexNav", //首页导航
+    "/download/**", // 下载
+    "/v3/**", //api文档
+    "/swagger-ui/**", //api文档
+    "/userAvatar/**", //用户头像
+    "/user/getUserInfo", //获取用户信息
+    "/user/getSuggestAuthor", // 获取推荐作者
+    "/user/findPassword", // 找回密码
+    "/user/sendCode", // 找回密码
+    "/article/listArticles", //文章列表
+    "/article/getArticleById", //文章详情
+    "/articleCover/**", //文章封面
+    "/articleImage/**", //文章内容图片
+    "/article/getArticleComments", //获取文章评论
+    "/article/addArticleView", // 增加浏览量
+    "/article/getTags", // 获取标签
+    "/article/getClassifies", // 获取分类
+    "/article/getArticleAttachment", //文章附件
+    "/articleAttachment/**", //附件下载
+    "/article/getCollectionArticles", //获取用户收藏
+    "/index/listLeaveMessage", //列出留言
+    "/index/sendLeaveMessage", //发送留言
+    "/index/deleteLeaveMessage", //删除留言
 ];
 /* 请求拦截器 */
 service.interceptors.request.use(async (config) => {
@@ -69,7 +70,6 @@ service.interceptors.request.use(async (config) => {
                 }
             }
         } else {
-           // TODO if (token == md5("nologin")) {
             if (token == null) {
                 console.log("nologin", config.url);
                 router.replace("/login");

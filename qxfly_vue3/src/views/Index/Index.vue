@@ -43,6 +43,7 @@ import RightSidebar from "@/views/Sider/RightSidebar";
 import BackTop from "@/components/BackTop.vue";
 import ChangeBackgroundImage from "./ChangeBackgroundImage.vue";
 import { onMounted, onUnmounted } from "vue";
+
 import router from "@/router";
 // 判断是否是手机端，如果是，返回true
 function isMobile() {
@@ -70,13 +71,13 @@ onMounted(() => {
             console.log("手机端");
             sessionStorage.setItem("userAgent", "phone");
             router.replace({
-                path: "/articleView?page=1",
+                path: process.env.VUE_APP_INDEX_PATH + "?page=1",
             });
         } else {
             console.log("pc端");
             sessionStorage.setItem("userAgent", "pc");
             router.replace({
-                path: "/articleView?page=1",
+                path: process.env.VUE_APP_INDEX_PATH + "?page=1",
             });
         }
     }
@@ -115,14 +116,13 @@ onUnmounted(() => {
     justify-content: center;
     padding-top: 100px;
 }
-.CentreContent {
+/* .CentreContent {
     border-radius: 4px;
     box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.05);
 }
 .CentreContent:hover {
     box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.1);
-    /* transform: scale(1.005); */
-}
+} */
 .changebg {
     position: fixed;
     left: 50px;

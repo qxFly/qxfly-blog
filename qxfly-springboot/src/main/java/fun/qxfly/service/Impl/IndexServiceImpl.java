@@ -1,25 +1,31 @@
-package fun.qxfly.service.impl;
+package fun.qxfly.service.Impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import fun.qxfly.common.domain.entity.Navigation;
 import fun.qxfly.common.domain.entity.Site;
-import fun.qxfly.mapper.SiteMapper;
-import fun.qxfly.service.SiteService;
-import org.springframework.beans.factory.annotation.Autowired;
+import fun.qxfly.mapper.IndexMapper;
+import fun.qxfly.service.IndexService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class SiteServiceImpl implements SiteService {
-    @Autowired
-    private SiteMapper siteMapper;
+@Slf4j
+public class IndexServiceImpl implements IndexService {
 
+    private final IndexMapper indexMapper;
+
+    public IndexServiceImpl(IndexMapper indexMapper) {
+        this.indexMapper = indexMapper;
+    }
 
     /**
      * 列出网站
@@ -29,7 +35,7 @@ public class SiteServiceImpl implements SiteService {
     @Override
     public PageInfo<Site> listSites(Integer currPage, Integer pageSize, String name) {
         PageHelper.startPage(currPage, pageSize);
-        List<Site> sites = siteMapper.listSites(name);
+        List<Site> sites = indexMapper.listSites(name);
         // 检查网站是否可用
 
         ExecutorService executorService = Executors.newFixedThreadPool(5);
@@ -53,5 +59,17 @@ public class SiteServiceImpl implements SiteService {
             throw new RuntimeException(e);
         }
         return new PageInfo<>(sites);
+    }
+
+    /**
+     * 首页导航栏列表
+     *
+     * @return 首页导航栏列表
+     */
+    @Override
+    public List<Navigation> listIndexNav() {
+        List<Navigation> navigations = indexMapper.listIndexNav();
+        navigations.sort(Comparator.comparingInt(Navigation::getIndex));
+        return navigations;
     }
 }

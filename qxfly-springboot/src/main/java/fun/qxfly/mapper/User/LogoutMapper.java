@@ -21,8 +21,8 @@ public interface LogoutMapper {
      *
      * @param token
      */
-    @Delete("delete from logout_users where username = #{username}")
-    void deleteToken(Token token);
+    @Delete("delete from logout_users where token = #{token}")
+    void deleteToken(String token);
 
     /**
      * 获取退出状态信息

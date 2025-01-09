@@ -96,7 +96,7 @@ function loadImageSuccess(item) {
         emit("load", true); // 图片全部加载完成向父组件发送完成事件
     }
     loaded.push(item);
-    if (router.currentRoute.value.path == "/imageView") showLoadedImage();
+    if (router.currentRoute.value.path == "/index/imageView") showLoadedImage();
 }
 function showLoadedImage() {
     for (let i = 0; i < loaded.length; i++) {
@@ -114,7 +114,6 @@ onMounted(() => {});
 onActivated(() => {
     showLoadedImage();
     if (count === 3) {
-        console.log("awd");
         emit("load", true); // 图片全部加载完成向父组件发送完成事件
         count = 0;
     }

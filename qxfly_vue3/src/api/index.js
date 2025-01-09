@@ -33,8 +33,8 @@ export const updateLoginStatue = (params) => request.post("/updateLoginStatue", 
  * @param {token, username} params
  * @returns
  */
-export const Logout = (params) =>
-    request.post("/logout", params, {
+export const Logout = () =>
+    request.post("/logout", {
         headers: { "Content-Type": "application/json" },
     });
 
@@ -86,7 +86,7 @@ export function downloadtest(fileName) {
  */
 export function listSite(data) {
     return request({
-        url: "/listSite",
+        url: "/index/listSite",
         method: "get",
         params: data,
     });
@@ -143,5 +143,46 @@ export function getUserCardInfo(token) {
         url: "/user/getUserCardInfo",
         method: "post",
         data: token,
+    });
+}
+
+/**
+ * 首页导航栏列表
+ */
+export function listIndexNav() {
+    return request({
+        url: "/index/listIndexNav",
+        method: "get",
+    });
+}
+
+/**
+ * 分页获取留言列表
+ */
+export function listLeaveMessage(data) {
+    return request({
+        url: "/index/listLeaveMessage",
+        method: "post",
+        data: data,
+    });
+}
+/**
+ * 发送留言
+ */
+export function sendLeaveMessage(data) {
+    return request({
+        url: "/index/sendLeaveMessage",
+        method: "post",
+        data: data,
+    });
+}
+/**
+ * 删除留言
+ */
+export function deleteLeaveMessage(id) {
+    return request({
+        url: "/index/deleteLeaveMessage",
+        method: "get",
+        params: id,
     });
 }

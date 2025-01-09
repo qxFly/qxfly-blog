@@ -2,14 +2,21 @@
     <div class="login" id="login">
         <div class="bg" id="bg"></div>
         <div class="login-box">
-            <div class="form-box">
+            <form class="form-box" @submit.prevent="">
                 <h2 class="title">找回密码</h2>
 
                 <div action="" class="form">
                     <div class="col">
                         <div class="label">手机号：</div>
                         <div class="inpcol">
-                            <input type="text" required name="phone" placeholder="请输入手机" v-model="phone" />
+                            <input
+                                type="text"
+                                required
+                                name="phone"
+                                minlength="11"
+                                maxlength="11"
+                                placeholder="请输入手机"
+                                v-model="phone" />
                         </div>
                     </div>
                     <div class="col">
@@ -37,6 +44,7 @@
                                 required
                                 name="password"
                                 placeholder="请输入新密码"
+                                minlength="6"
                                 v-model="pwd" />
                             <div class="pwd-btn" @click="showPwd('password')">
                                 <svg
@@ -88,6 +96,7 @@
                                 required
                                 name="repassword"
                                 placeholder="请确认密码"
+                                minlength="6"
                                 v-model="rpwd" />
                             <div class="pwd-btn" @click="showPwd('repassword')">
                                 <svg
@@ -135,11 +144,12 @@
                         <button class="btn-login" @click="findPwd">立即找回</button>
                         <div class="rows">
                             <router-link class="item aleft" to="login">登录</router-link>
-                            <router-link class="item aright" to="register">注册</router-link>
+                            <router-link class="item aright" to="register">注册</router-link
+                            ><router-link class="item aleft" to="/">首页</router-link>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </template>

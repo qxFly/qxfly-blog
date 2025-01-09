@@ -35,30 +35,6 @@
                     </div>
                 </div>
             </div>
-            <!-- <div class="sider-right">
-                <div class="sider-container" id="sider-left-content">
-                    <ArticleAuthorInfoCard
-                        class="ArticleAuthorInfoCard-right"
-                        :authorId="article.authorId"
-                        @load="authorCardLoadFun" />
-                    <div class="attachments" v-if="attachments.length > 0">
-                        <h3>附件</h3>
-                        <div
-                            class="attachment"
-                            v-for="(a, item) in attachments"
-                            :key="item"
-                            @click="downloadAttachment(a)">
-                            <div class="span-number">{{ item + 1 }}</div>
-                            {{ a.fileOriginName }}
-                        </div>
-                    </div>
-
-                    <div class="sider-edit-Btns">
-                        <div class="sider-edit-Btn ok" @click="pass(3)">审核通过</div>
-                        <div class="sider-edit-Btn no" @click="pass(2)">审核不通过</div>
-                    </div>
-                </div>
-            </div> -->
             <div class="sider-right">
                 <div class="sider-container" id="sider-right-content">
                     <div>

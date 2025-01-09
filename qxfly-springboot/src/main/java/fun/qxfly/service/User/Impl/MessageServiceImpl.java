@@ -1,9 +1,9 @@
 package fun.qxfly.service.User.Impl;
 
 import fun.qxfly.common.domain.entity.Message;
+import fun.qxfly.common.domain.vo.MessageNavVO;
 import fun.qxfly.mapper.User.MessageMapper;
 import fun.qxfly.service.User.MessageService;
-import fun.qxfly.common.domain.vo.MessageNavVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,24 +28,25 @@ public class MessageServiceImpl implements MessageService {
     /**
      * 发送消息
      *
-     * @param message
-     * @return
+     * @param message 消息对象
+     * @return 成功返回msgId, 失败返回null
      */
     @Override
     public String sendMessage(Message message) {
-        String msgId = null;
-        if (message.getMsgId() == null || "".equals(message.getMsgId())) {
-            msgId = UUID.randomUUID().toString();
+        String msgId;
+        if (message.getMsgId() == null || message.getMsgId().isEmpty()) {
+            msgId = messageMapper.getMsgId(message.getToUid(), message.getFromUid());
+            if (msgId == null || msgId.isEmpty()) {
+                msgId = UUID.randomUUID().toString();
+            }
             message.setMsgId(msgId);
+        } else {
+            msgId = message.getMsgId();
         }
         message.setSendTime(new Date());
         boolean b = messageMapper.sendMessage(message);
-        if (b) {
-            return msgId;
-        } else {
-            return "error";
-        }
-
+        if (b) return msgId;
+        else return null;
     }
 
     /**
@@ -107,7 +108,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Integer getNoReadMessageCount(Integer userId) {
-        return messageMapper.getNoReadCountByUid(userId);
+    public Integer getNoReadMessageCount(Integer uid) {
+        return messageMapper.getNoReadCountByUid(uid);
     }
 }

@@ -1,13 +1,12 @@
 package fun.qxfly.admin.controller;
 
-import fun.qxfly.admin.service.ImageManageService;
 import com.github.pagehelper.PageInfo;
-import fun.qxfly.common.domain.po.Result;
+import fun.qxfly.admin.service.ImageManageService;
 import fun.qxfly.common.domain.entity.Image;
+import fun.qxfly.common.domain.po.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -18,8 +17,11 @@ import java.util.HashMap;
 @Tag(name = "图库")
 @Tag(name = "管理员")
 public class ImageManageController {
-    @Autowired
-    private ImageManageService imageManageService;
+    private final ImageManageService imageManageService;
+
+    public ImageManageController(ImageManageService imageManageService) {
+        this.imageManageService = imageManageService;
+    }
 
     /**
      * 更新图库
@@ -35,8 +37,6 @@ public class ImageManageController {
     /**
      * 分页查询图库
      *
-     * @param currPage
-     * @param pageSize
      * @return
      */
     @Operation(description = "分页查询图库", summary = "分页查询图库")
@@ -49,7 +49,7 @@ public class ImageManageController {
         String originName = (String) map.get("originName");
         Integer verify = (Integer) map.get("verify");
         Integer aid = (Integer) map.get("aid");
-        PageInfo<Image> pageBean = imageManageService.getImagesByPage(currPage, pageSize, aid,originName, createTimeStart, createTimeEnd, verify);
+        PageInfo<Image> pageBean = imageManageService.getImagesByPage(currPage, pageSize, aid, originName, createTimeStart, createTimeEnd, verify);
         return Result.success(pageBean);
     }
 

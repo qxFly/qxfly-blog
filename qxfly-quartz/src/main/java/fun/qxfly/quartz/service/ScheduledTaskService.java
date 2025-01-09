@@ -1,4 +1,4 @@
-package fun.qxfly.framework.service;
+package fun.qxfly.quartz.service;
 
 public interface ScheduledTaskService {
     /**

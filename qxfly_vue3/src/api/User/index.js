@@ -157,3 +157,14 @@ export function getNoReadMessageCount(data) {
         params: data,
     });
 }
+
+/**
+ * 获取用户空间导航栏
+ * @returns
+ */
+export function listUserSpaceNav() {
+    return request({
+        url: "/user/listUserSpaceNav",
+        method: "get",
+    });
+}

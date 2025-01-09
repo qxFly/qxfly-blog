@@ -16,10 +16,10 @@ public class Message {
     private Integer id;
 
     @Schema(description = "发送方用户id")
-    private Integer uid1;
+    private Integer fromUid;
 
     @Schema(description = "接收方用户id")
-    private Integer uid2;
+    private Integer toUid;
 
     @Schema(description = "内容")
     private String content;
@@ -32,4 +32,7 @@ public class Message {
 
     @Schema(description = "对话唯一标识id")
     private String msgId;
+
+    @Schema(description = "是否发送成功")
+    private boolean sendSuccess;
 }

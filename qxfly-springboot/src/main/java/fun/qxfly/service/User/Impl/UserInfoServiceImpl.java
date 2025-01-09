@@ -2,45 +2,50 @@ package fun.qxfly.service.User.Impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import fun.qxfly.common.domain.po.Result;
-import fun.qxfly.common.utils.AliyunDysmsapi;
-import fun.qxfly.common.domain.entity.Token;
+import fun.qxfly.admin.service.AdminService;
+import fun.qxfly.common.domain.entity.Navigation;
 import fun.qxfly.common.domain.entity.User;
+import fun.qxfly.common.domain.po.Result;
 import fun.qxfly.common.domain.vo.UserVO;
+import fun.qxfly.common.enums.FilePaths;
+import fun.qxfly.common.utils.AliyunDysmsapi;
+import fun.qxfly.common.utils.FileUtils;
 import fun.qxfly.mapper.User.UserInfoMapper;
 import fun.qxfly.service.User.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Service
 public class UserInfoServiceImpl implements UserInfoService {
 
-    @Autowired
-    private UserInfoMapper userInfoMapper;
+    private final UserInfoMapper userInfoMapper;
 
-    @Autowired
-    AliyunDysmsapi aliyunDysmsapi;
+    private final AliyunDysmsapi aliyunDysmsapi;
+
+    private final AdminService adminService;
 
     @Value("${file.userImg.download.path}")
     private String userAvatarPath;
 
+    public UserInfoServiceImpl(UserInfoMapper userInfoMapper, AliyunDysmsapi aliyunDysmsapi, AdminService adminService) {
+        this.userInfoMapper = userInfoMapper;
+        this.aliyunDysmsapi = aliyunDysmsapi;
+        this.adminService = adminService;
+    }
+
     /**
-     * 根据Token获取用户
+     * 根据uid获取用户
      *
-     * @param uid
-     * @return
+     * @param uid uid
+     * @return 用户对象
      */
     @Override
     public User getUserInfo(Integer uid) {
@@ -57,22 +62,19 @@ public class UserInfoServiceImpl implements UserInfoService {
     /**
      * 更改用户信息
      *
-     * @param user
-     * @return
+     * @param user 新的用户对象
+     * @return true or false
      */
     @Override
     public boolean updateUserInfo(User user) {
-//        log.info("user:{}",user);
-//        String[] split = user.getAvatar().split("/");
-//        user.setAvatar(split[split.length - 1]);
         return userInfoMapper.updateUserInfo(user);
     }
 
     /**
      * 检查用户名是否可行
      *
-     * @param user
-     * @return
+     * @param user 用户对象
+     * @return 可行为空，不可行返回已存在用户
      */
     @Override
     public User checkUsername(User user) {
@@ -82,33 +84,21 @@ public class UserInfoServiceImpl implements UserInfoService {
     /**
      * 头像上传
      *
-     * @param file
-     * @return
+     * @param file 上传的文件
+     * @return Result对象
      */
     @Override
     public Result updateAvatar(MultipartFile file, Integer uid) {
-        String path = System.getProperty("user.dir") + "/data/qxfly-userAvatar";
-        File file1 = new File(path);
-        if (!file1.exists()) {
-            file1.mkdirs();
-        }
+        String path = FilePaths.USER_AVATAR_PATH.getPath();
         User user = userInfoMapper.getUserInfo(uid);
         /* 先删除原来的头像 */
-        String ava;
-        if ((ava = user.getAvatar()) != null) {
-//            String[] split = user.getAvatar().split("/");
-//            String avatarName = split[split.length - 1];
-//            File avatarDelete = new File(path + "/" + avatarName);
-            File avatarDelete = new File(path + "/" + ava);
-
+        String ava = user.getAvatar();
+        if (ava != null) {
+            File avatarDelete = new File(path + File.separator + ava);
             boolean delete = avatarDelete.delete();
         }
-        String uuid = UUID.randomUUID().toString();
-        String[] split1 = file.getOriginalFilename().split("\\.");
-        String fileName = uuid + "." + "webp";
-        try (OutputStream outputStream = new FileOutputStream(path + "/" + fileName)) {
-            outputStream.write(file.getBytes());
-//            userInfoMapper.updateImg(downloadPath + fileName, user.getId());
+        try {
+            String fileName = FileUtils.upload(path, file);
             userInfoMapper.updateImg(fileName, user.getId());
             return Result.success(userAvatarPath + fileName);
         } catch (IOException e) {
@@ -117,40 +107,12 @@ public class UserInfoServiceImpl implements UserInfoService {
         }
     }
 
-//    /**
-//     * 刷新用户信息
-//     *
-//     * @param token
-//     * @return
-//     */
-//    @Override
-//    public boolean refreshUserInfoTask(Token token) {
-//        Integer articleCount = userInfoMapper.getArticleCount(token);
-//        Integer LikeCount = userInfoMapper.getLikeCount(token);
-//        Integer Collection = userInfoMapper.getCollectionCount(token);
-//        Integer Views = userInfoMapper.getViewsCount(token);
-//        if (articleCount == null) {
-//            articleCount = 0;
-//        }
-//        if (LikeCount == null) {
-//            LikeCount = 0;
-//        }
-//        if (Collection == null) {
-//            Collection = 0;
-//        }
-//        if (Views == null) {
-//            Views = 0;
-//        }
-//        return userInfoMapper.refreshUserInfo(articleCount, LikeCount, Collection, Views, 0, token.getId());
-//    }
-
-
     /**
      * 获取推荐作者
      *
-     * @param currPage
-     * @param pageSize
-     * @return
+     * @param currPage 当前页
+     * @param pageSize 分页大小
+     * @return 推荐作者列表
      */
     @Override
     public PageInfo<UserVO> getSuggestAuthorByPage(Integer currPage, Integer pageSize) {
@@ -166,21 +128,20 @@ public class UserInfoServiceImpl implements UserInfoService {
     /**
      * 发送验证码
      *
-     * @param user
-     * @return
+     * @param user 用户对象
+     * @return 成功返回验证码，失败返回-1
      */
     @Override
     public int sendCode(User user) {
         int code = aliyunDysmsapi.sendCode(user.getPhone());
-        log.info("验证码为：{}", code);
         return code == -1 ? -1 : userInfoMapper.captcha(user.getPhone(), code, new Date().getTime());
     }
 
     /**
      * 检测验证码
      *
-     * @param user
-     * @return
+     * @param user phone:手机号。role:验证码
+     * @return 1：验证码正确。-1：验证码不存在。0：验证码错误。
      */
     @Override
     public int testCode(User user) {
@@ -190,8 +151,8 @@ public class UserInfoServiceImpl implements UserInfoService {
     /**
      * 获取用户原手机号
      *
-     * @param uid
-     * @return
+     * @param uid uid
+     * @return 手机号
      */
     @Override
     public String getOriginPhone(Integer uid) {
@@ -199,12 +160,27 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     /**
+     * 获取用户空间导航栏
+     *
+     * @param uid uid
+     * @return 导航栏列表
+     */
+    @Override
+    public List<Navigation> listUserSpaceNav(Integer uid) {
+        List<Navigation> navigations;
+        Integer role = adminService.check(uid);
+        if (role != 0) role = 5;
+        navigations = userInfoMapper.listUserSpaceNav(role);
+        return navigations;
+    }
+
+    /**
      * 找回密码
      *
-     * @param phone
-     * @param password
-     * @param code
-     * @return
+     * @param phone    手机
+     * @param password 密码
+     * @param code     验证码
+     * @return 1：验证码正确。-1：验证码不存在。0：验证码错误。
      */
     @Override
     public Integer resetPassword(String phone, String password, Integer code) {
@@ -217,6 +193,4 @@ public class UserInfoServiceImpl implements UserInfoService {
             return userInfoMapper.resetPassword(phone, password);
         }
     }
-
-
 }

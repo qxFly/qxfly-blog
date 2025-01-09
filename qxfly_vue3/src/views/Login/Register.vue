@@ -3,7 +3,7 @@
         <div class="login-main">
             <div class="bg" id="bg"></div>
             <div class="login-box">
-                <div class="form-box">
+                <form class="form-box" @submit.prevent="">
                     <h2 class="title">注册</h2>
                     <div class="form">
                         <div class="col">
@@ -13,6 +13,7 @@
                                     type="text"
                                     id="account"
                                     maxlength="20"
+                                    minlength="5"
                                     required
                                     name="name"
                                     placeholder="用户名"
@@ -27,6 +28,7 @@
                                     type="text"
                                     id="phone"
                                     maxlength="11"
+                                    minlength="11"
                                     required
                                     name="name"
                                     placeholder="手机号"
@@ -39,12 +41,11 @@
                             <div class="inpcol Verification">
                                 <input
                                     type="text"
-                                    required
                                     name="Verification"
                                     placeholder="请输入验证码"
                                     v-model="Verification" />
                                 <div class="btns">
-                                    <button class="btn-Verification" id="btn-Verification" @click="SendCode">
+                                    <button class="btn-Verification" id="btn-Verification" @click.prevent="SendCode">
                                         获取验证码
                                     </button>
                                 </div>
@@ -59,6 +60,7 @@
                                     required
                                     name="password"
                                     placeholder="请输入密码"
+                                    minlength="6"
                                     v-model="password" />
                                 <div class="pwd-btn" @click="showPwd('password')">
                                     <svg
@@ -110,6 +112,7 @@
                                     required
                                     name="repassword"
                                     placeholder="请确认密码"
+                                    minlength="6"
                                     v-model="repassword" />
                                 <div class="pwd-btn" @click="showPwd('repassword')">
                                     <svg
@@ -170,10 +173,11 @@
                             <div class="rows">
                                 <router-link class="item aleft" to="login">登录</router-link>
                                 <router-link class="item aright" to="findpassword">找回密码</router-link>
+                                <router-link class="item aleft" to="/">首页</router-link>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>

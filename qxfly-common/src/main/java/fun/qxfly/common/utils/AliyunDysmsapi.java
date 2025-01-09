@@ -23,10 +23,9 @@ public class AliyunDysmsapi {
     /**
      * 使用AK&SK初始化账号Client
      *
-     * @param accessKeyId
-     * @param accessKeySecret
+     * @param accessKeyId     阿里云账号AccessKey ID
+     * @param accessKeySecret 阿里云账号AccessKey Secret
      * @return Client
-     * @throws Exception
      */
     public static com.aliyun.dysmsapi20170525.Client createClient(String accessKeyId, String accessKeySecret) throws Exception {
         com.aliyun.teaopenapi.models.Config config = new com.aliyun.teaopenapi.models.Config()
@@ -39,6 +38,12 @@ public class AliyunDysmsapi {
         return new com.aliyun.dysmsapi20170525.Client(config);
     }
 
+    /**
+     * 发送验证码
+     *
+     * @param phone 手机号
+     * @return 成功返回验证码，失败返回-1
+     */
     public int sendCode(String phone) {
         String accessKeyId = System.getProperty("Aliyun_AccessKeyId");
         String accessKeySecret = System.getProperty("Aliyun_AccessKeySecret");
@@ -67,15 +72,15 @@ public class AliyunDysmsapi {
     }
 
     /**
-     * 验证验证码，返回值 0、验证码错误，1、验证码正确，-1、验证码不存在
+     * 判断验证码
      *
-     * @param phone
-     * @param code
-     * @return
+     * @param phone 手机号
+     * @param code  验证码
+     * @return 1：验证码正确。-1：验证码不存在。0：验证码错误。
      */
     public int testCode(String phone, Integer code) {
         List<String> listCode = aliyunDysmsapiMapper.getCode(phone);
-        if (listCode.size() == 0) return -1;
+        if (listCode.isEmpty()) return -1;
         for (String s : listCode) {
             if (code.toString().equals(s)) {
                 aliyunDysmsapiMapper.deleteCode(phone);

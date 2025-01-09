@@ -57,9 +57,9 @@ export function uploadArticleImage(data) {
  * @param {*} data
  * @returns
  */
-export function getArticles(currPage, pageSize, searchData, sort, authorId, daily, verify, classify, tag) {
+export function listArticles(currPage, pageSize, searchData, sort, authorId, daily, verify, classify, tag) {
     return request({
-        url: "/article/getArticles",
+        url: "/article/listArticles",
         method: "get",
         params: {
             currPage: currPage,
@@ -98,11 +98,11 @@ export function getCollectionArticles(currPage, pageSize, searchData, sort, uid)
  * @param {*} id
  * @returns
  */
-export function getArticleById(id) {
+export function getArticleById(aid) {
     return request({
         url: "/article/getArticleById",
         method: "get",
-        params: { id: id },
+        params: { aid: aid },
     });
 }
 

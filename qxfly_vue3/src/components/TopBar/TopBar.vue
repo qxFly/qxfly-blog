@@ -49,7 +49,7 @@ onMounted(() => {
     // loadUserTheme();
     setTimeout(() => {
         const topbar = document.getElementById("top-bar-1");
-        topbar.style.top = "0px";
+        if (topbar != null) topbar.style.top = "0px";
     }, 300);
 
     window.addEventListener("scroll", Listener);

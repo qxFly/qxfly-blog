@@ -52,7 +52,7 @@ public interface LoginMapper {
      * @param newJwt
      */
     @Update("update user_token set token = #{newJwt}, create_time = #{nowDate} where username = #{username}")
-    void updateJwt(String username, String newJwt, long nowDate);
+    void updateJwt(@Param("username") String username, @Param("newJwt") String newJwt, @Param("nowDate") long nowDate);
 
     /**
      * 获取token创建时间

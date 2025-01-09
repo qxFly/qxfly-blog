@@ -9,11 +9,8 @@ public interface AdminMapper {
     /**
      * 判断用户是否为管理员
      *
-     * @param username
-     * @return
+     * @param uid uid
      */
-    @Select("select role from user where username = #{username}")
-    Integer check(String username);
-
-
+    @Select("select role from user where id = #{uid}")
+    Integer check(Integer uid);
 }

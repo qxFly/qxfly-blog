@@ -1,12 +1,13 @@
-package fun.qxfly.framework.config;
+package fun.qxfly.quartz.Task;
 
-import fun.qxfly.framework.service.ScheduledTaskService;
+import fun.qxfly.quartz.service.ScheduledTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 @Slf4j
-@Configuration
+@Component
 public class ScheduledTaskConfig {
     final ScheduledTaskService scheduledTaskService;
 

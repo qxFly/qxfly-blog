@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace等于mapper接口类的全限定名,这样实现对应 -->
+<mapper namespace="fun.qxfly.mapper.LeaveMessageMapper">
+    <select id="listLeaveMessage" resultType="fun.qxfly.common.domain.entity.LeaveMessage">
+        select * from leave_message
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="uid != null">
+                and uid = #{uid}
+            </if>
+            <if test="username != null">
+                and username = #{username}
+            </if>
+            <if test="content != null">
+                and content like concat('%',#{content},'%')
+            </if>
+        </where>
+    </select>
+</mapper>

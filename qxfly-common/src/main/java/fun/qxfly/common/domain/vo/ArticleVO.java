@@ -42,5 +42,9 @@ public class ArticleVO {
     private String reason;
     @Schema(description = "是否公开")
     private Integer pub;
+    @Schema(description = "是否点赞")
+    private Boolean isLike = false;
+    @Schema(description = "是否收藏")
+    private Boolean isCollection = false;
 
 }

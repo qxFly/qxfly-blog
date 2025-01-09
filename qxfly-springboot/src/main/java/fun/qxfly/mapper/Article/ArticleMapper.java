@@ -27,11 +27,9 @@ public interface ArticleMapper {
     /**
      * 分页获取文章
      *
-     * @param start
-     * @param pageSize
      * @return
      */
-    List<ArticleVO> getArticlesByPage(@Param("start") int start, @Param("pageSize") int pageSize, @Param("searchData") String searchData, @Param("sort") String sort, @Param("authorId") int authorId, @Param("verify") int verify, @Param("classify") String classify, @Param("tagArr") String[] tagArr, @Param("pub") int pub);
+    List<ArticleVO> getArticlesByPage( @Param("searchData") String searchData, @Param("sort") String sort, @Param("authorId") int authorId, @Param("verify") int verify, @Param("classify") String classify, @Param("tagArr") String[] tagArr, @Param("pub") int pub);
 
     /**
      * 根据id获取文章
@@ -147,12 +145,10 @@ public interface ArticleMapper {
     /**
      * 获取每日热门文章
      *
-     * @param start
-     * @param pageSize
      * @return
      */
-    @Select("select * from article a, daily_view dv where dv.articleId = a.id and a.verify = 3 and dv.daily_views != 0 order by dv.daily_views desc limit #{start}, #{pageSize}")
-    List<ArticleVO> getDailyArticlesByPage(@Param("start") int start, @Param("pageSize") int pageSize);
+    @Select("select * from article a, daily_view dv where dv.articleId = a.id and a.verify = 3 and dv.daily_views != 0 order by dv.daily_views desc")
+    List<ArticleVO> getDailyArticlesByPage();
 
     /**
      * 分页获取收藏文章

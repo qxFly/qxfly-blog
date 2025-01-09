@@ -1,4 +1,4 @@
-package fun.qxfly.service.impl;
+package fun.qxfly.service.Impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;

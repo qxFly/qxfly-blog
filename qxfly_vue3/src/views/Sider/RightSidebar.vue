@@ -4,6 +4,7 @@
             <Date class="Date item"></Date>
             <!-- <Saying></Saying> -->
             <ArticleAuthorInfoCard :authorId="uid" class="UserInfoCard item" :btnType="btnType"></ArticleAuthorInfoCard>
+            <MessageTips></MessageTips>
             <SuggestAuthor class="SuggestAuthor item"></SuggestAuthor>
             <!-- <Resource class="Resource item"></Resource> -->
             <Site class="item"></Site>
@@ -13,7 +14,7 @@
 
 <script setup>
 import Date from "@/views/Sider/Date.vue";
-import Saying from "@/views/Sider/Saying.vue";
+import MessageTips from "@/views/Sider/MessageTips.vue";
 import Site from "@/views/Sider/Site.vue";
 import SuggestAuthor from "@/views/Sider/SuggestAuthor.vue";
 import ArticleAuthorInfoCard from "@/views/Article/ArticleAuthorInfoCard.vue";
@@ -55,9 +56,6 @@ onUnmounted(() => {});
     transition: all 0.6s ease;
     max-width: 260px;
     width: 260px;
-}
-.item {
-    margin-bottom: 20px;
 }
 @media (max-width: 1200px) {
     .right-Sidebar-main {

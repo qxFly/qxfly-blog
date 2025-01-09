@@ -340,6 +340,7 @@ let editAatarDialog = ref(false);
 let avatar = ref();
 let uploadAvatar = ref();
 let formData = new FormData();
+let fileName = "";
 function editAatar() {
     editAatarDialog.value = true;
 }
@@ -355,6 +356,7 @@ function getFile(event) {
                 option.img = URL.createObjectURL(file);
                 uploadAvatar.value = URL.createObjectURL(file);
                 cropperAatarDialog.value = true;
+                fileName = file.name;
             }
         } else {
             alert("请选择选择格式为png、jpg、jpeg、webp的图片");
@@ -390,8 +392,8 @@ function cropperAvatar() {
     cropperAatarDialog.value = false;
     cropper.value.getCropBlob((data) => {
         formData = new FormData();
-        formData.append("file", data);
-        formData.append("token", localStorage.getItem(md5("token")));
+        let file = new File([data], fileName.split(".")[0] + ".webp");
+        formData.append("file", file);
         /* 展示预览图片 */
         uploadAvatar.value = URL.createObjectURL(data);
     });
@@ -582,6 +584,8 @@ function SendCode() {
     if (f == 1) return;
     var phonereg = /0?(13|14|15|17|18|19)[0-9]{9}/;
     let phone = originalPhone.value;
+    console.log(phone);
+    
     if (!phonereg.test(phone)) {
         isTip.value = true;
         tip.value = "请输入正确的手机号";

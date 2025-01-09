@@ -21,14 +21,14 @@
                     </div>
                 </div>
             </div>
-        </div></CardView
-    >
+        </div>
+    </CardView>
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
 import { getSuggestAuthor } from "@/api/User/index";
-import mymd5 from "@/utils/md5.js";
 import router from "@/router";
+import CardView from "@/components/CardView.vue";
 let authors = ref([]);
 async function GetSuggestAuthor() {
     await getSuggestAuthor(1, 5).then((res) => {

@@ -24,7 +24,7 @@ public class LogoutServiceImpl implements LogoutService {
      * @param token
      */
     @Override
-    public void deleteToken(Token token) {
+    public void deleteToken(String token) {
         logoutMapper.deleteToken(token);
     }
 

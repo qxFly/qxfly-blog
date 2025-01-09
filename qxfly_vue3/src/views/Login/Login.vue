@@ -3,7 +3,7 @@
         <div class="login-main">
             <div class="bg" id="bg"></div>
             <div class="login-box">
-                <div class="form-box">
+                <form class="form-box" @submit.prevent="">
                     <h2 class="title">欢迎登录</h2>
                     <div class="form">
                         <div class="col">
@@ -92,10 +92,11 @@
                             <div class="rows">
                                 <router-link class="item aleft" to="register">注册</router-link>
                                 <router-link class="item aright" to="findpassword">找回密码</router-link>
+                                <router-link class="item aleft" to="/">首页</router-link>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>

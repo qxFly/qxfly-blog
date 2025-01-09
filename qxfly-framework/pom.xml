@@ -17,10 +17,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+        <!-- 通用 -->
         <dependency>
             <groupId>fun.qxfly</groupId>
             <artifactId>qxfly-common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <!-- websocket -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
     </dependencies>
 </project>

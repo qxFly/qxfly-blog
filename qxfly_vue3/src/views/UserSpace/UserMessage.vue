@@ -53,6 +53,7 @@ import router from "@/router";
 import UserMessageDetail from "@/views/UserSpace/UserMessageDetail.vue";
 import { ElMessage } from "element-plus";
 import { useRoute, onBeforeRouteUpdate } from "vue-router";
+import * as socketUtil from "@/utils/Socket";
 let route = useRoute();
 let uid = ref(sessionStorage.getItem("uid"));
 /* 获取给当前用户发送消息的用户 */
@@ -72,14 +73,15 @@ function listUserAsNav() {
         }
     });
 }
-function listUserMessage(n) {
-    activeUser.value = n;
-    msgId.value = n.msgId;
-    n.noReadCount = 0;
-    readMessage({ msgId: n.msgId, uid2: uid.value }).then((res) => {
+/* 获取用户消息 */
+async function listUserMessage(n) {
+    await readMessage({ msgId: n.msgId, toUid: uid.value }).then((res) => {
         if (res.data.code == 1) {
         }
     });
+    activeUser.value = n;
+    msgId.value = n.msgId;
+    n.noReadCount = 0;
 }
 /* 初始化消息导航 */
 function initMessageNav() {
@@ -112,6 +114,7 @@ function setMainSize() {
 }
 /* 设置未读消息数 */
 function getNoReadCount(n) {
+    if (activeUser.value.id == n.id) return;
     return n.noReadCount == 0 ? "" : n.noReadCount;
 }
 /* 返回的msgId */
@@ -126,13 +129,49 @@ function setUserAvatar(a) {
         return a;
     }
 }
-
+//socket监听器
+function socketEventListener(event) {
+    let msgObj = JSON.parse(event.data); //socket消息对象
+    //发送后自己给自己的回执消息
+    if (msgObj.fromUid == msgObj.toUid) {
+        // msgId.value = msgObj.msgId;
+        return;
+    }
+    //查找消息列表是否有该用户
+    let u = userNav.value.find((item) => item.id == msgObj.fromUid);
+    if (u != null) {
+        if (activeUser.value.id != u.id) {
+            u.noReadCount++;
+        } else u.noReadCount = 0;
+    } else {
+        //没有则添加
+        initUserMessage({ uid: msgObj.fromUid }).then((res) => {
+            if (res.data.code == 1) {
+                let m = res.data.data; //用户消息对象
+                m.msgId = msgObj.msgId; //设置msgId
+                userNav.value.push(m);
+                //设置选中用户
+                if (activeUser.value == null) {
+                    activeUser.value = m;
+                    msgId.value = msgObj.msgId;
+                } else {
+                    if (activeUser.value.id != m.id) m.noReadCount++;
+                    else m.noReadCount = 0;
+                }
+            }
+        });
+    }
+}
 onMounted(() => {
-    listUserAsNav();
-    setMainSize();
-    // console.log(1);
+    if (localStorage.getItem(md5("token")) != null) {
+        listUserAsNav(); //获取给当前用户发送消息的用户,初始化消息导航
+        setMainSize(); //设置消息窗口大小
+        socketUtil.addSocketEventListener(socketEventListener); //添加socket监听器
+    }
 });
-onUnmounted(() => {});
+onUnmounted(() => {
+    socketUtil.removeSocketEventListener(socketEventListener);
+});
 </script>
 
 <style scoped>
@@ -141,9 +180,10 @@ onUnmounted(() => {});
     border-radius: 8px;
     overflow: hidden;
     display: flex;
+    min-width: 500px;
 }
 .user-nav {
-    width: 200px;
+    max-width: 250px;
     min-width: 150px;
     border-right: 2px solid #c9c9c9;
     overflow: auto;
@@ -170,8 +210,8 @@ onUnmounted(() => {});
     cursor: pointer;
 }
 .avatar {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     overflow: hidden;
     object-fit: cover;

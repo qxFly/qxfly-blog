@@ -14,7 +14,7 @@ public interface MessageMapper {
      * @param message
      * @return
      */
-    @Insert("insert into message (uid2, uid1, content, sendTime, msgId) values(#{uid2}, #{uid1}, #{content}, #{sendTime}, #{msgId})")
+    @Insert("insert into message (toUid, fromUid, content, sendTime, msgId) values(#{toUid}, #{fromUid}, #{content}, #{sendTime}, #{msgId})")
     boolean sendMessage(Message message);
 
     /**
@@ -23,7 +23,7 @@ public interface MessageMapper {
      * @param message
      * @return
      */
-    @Update("update message set status = 1 where msgId = #{msgId} and uid2 = #{uid2}")
+    @Update("update message set status = 1 where msgId = #{msgId} and toUid = #{toUid}")
     boolean readMessage(Message message);
 
     /**
@@ -43,7 +43,7 @@ public interface MessageMapper {
      * @param size
      * @return
      */
-    @Select("select id, username, avatar from user where (id in (select distinct uid2 from message where uid1 = #{uid} order by sendTime desc)) or (id in (select distinct uid1 from message where uid2 = #{uid} order by sendTime desc)) limit #{size}")
+    @Select("select id, username, avatar from user where (id in (select distinct toUid from message where fromUid = #{uid} order by sendTime desc)) or (id in (select distinct fromUid from message where toUid = #{uid} order by sendTime desc)) limit #{size}")
     List<MessageNavVO> listMessageUserNav(@Param("uid") Integer uid, @Param("size") Integer size);
 
     /**
@@ -53,7 +53,7 @@ public interface MessageMapper {
      * @param fromUid
      * @return
      */
-    @Select("select distinct msgId from message where (uid1 = #{uid} and uid2 = #{fromUid} )or (uid2 = #{uid} and uid1 = #{fromUid})")
+    @Select("select distinct msgId from message where (fromUid = #{uid} and toUid = #{fromUid} )or (toUid = #{uid} and fromUid = #{fromUid})")
     String getMsgId(@Param("uid") Integer uid, @Param("fromUid") Integer fromUid);
 
     /**
@@ -71,15 +71,15 @@ public interface MessageMapper {
      * @param msgId
      * @return
      */
-    @Select("select count(*) from message where msgId = #{msgId} and uid2 = #{uid} and status = 0")
+    @Select("select count(*) from message where msgId = #{msgId} and toUid = #{uid} and status = 0")
     Integer getNoReadCountByMsgId(@Param("uid") Integer uid, @Param("msgId") String msgId);
 
     /**
      * 根据用户id查看是否有未读消息
      *
-     * @param userId
+     * @param uid
      * @return
      */
-    @Select("select count(*) from message where uid2 = #{userId} and status = 0")
-    Integer getNoReadCountByUid(Integer userId);
+    @Select("select count(*) from message where toUid = #{uid} and status = 0")
+    Integer getNoReadCountByUid(Integer uid);
 }

@@ -2,20 +2,20 @@ package fun.qxfly.framework.config;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import fun.qxfly.common.enums.FilePaths;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @Data
-@Configuration
 public class UserConfig {
     /*jwt令牌密匙*/
     private String JwtSignKey = "qxfly";
@@ -34,10 +34,15 @@ public class UserConfig {
     /*阿里云短信服务模板代码*/
     private String Aliyun_Dysmsapi_TemplateCode = "";
 
-    @Bean
-    public void writeConfig() {
+    private static ConfigurableApplicationContext configurableApplicationContext;
+
+    public static void setApplicationContext(ConfigurableApplicationContext configurableApplicationContext) {
+        UserConfig.configurableApplicationContext = configurableApplicationContext;
+    }
+
+    public static boolean writeConfig() {
         // 目录路径
-        File dir = new File(System.getProperty("user.dir") + "/data/qxfly-conf");
+        File dir = new File(FilePaths.USER_CONFIG_PATH.getPath());
         // 配置文件路径
         File userConfigFile = new File(dir + "/config.json");
         //目录不存在
@@ -49,7 +54,9 @@ public class UserConfig {
                 userConfigFile.createNewFile();
             } catch (Exception e) {
                 e.printStackTrace();
-                log.error("配置文件创建失败！");
+                log.error("配置文件创建失败！请删除相关目录文件后重试：{}", userConfigFile.getAbsolutePath());
+                configurableApplicationContext.close();
+                return false;
             }
             try (OutputStream outputStream = new FileOutputStream(userConfigFile)) {
                 log.warn("正在写出配置文件...");
@@ -57,16 +64,20 @@ public class UserConfig {
                 byte[] bytes = JSONObject.toJSONBytes(userConfig, SerializerFeature.PrettyFormat);
                 outputStream.write(bytes);
                 log.warn("配置文件写出完成，请先填写配置文件后再重新启动程序！");
+                configurableApplicationContext.close();
+                return false;
             } catch (Exception e) {
                 e.printStackTrace();
-                log.error("配置文件写出失败！");
+                log.error("配置文件写出失败！请删除相关目录文件后重试：{}", userConfigFile.getAbsolutePath());
+                configurableApplicationContext.close();
+                return false;
             }
         } else {
-            readUserConfig(userConfigFile);
+            return readUserConfig(userConfigFile);
         }
     }
 
-    public void readUserConfig(File userConfigFile) {
+    private static boolean readUserConfig(File userConfigFile) {
         try (InputStream inputStream = new FileInputStream(userConfigFile);
              InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
              BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
@@ -78,9 +89,6 @@ public class UserConfig {
             while ((line = bufferedReader.readLine()) != null) {
                 config.append(line);
             }
-//            byte[] bytes = inputStream.readAllBytes();
-//            String config = new String(bytes);
-            log.info("读取到的配置文件内容为：{}", config);
             /*把 json 格式转化为 UserConfig 对象*/
             JSONObject jsonObject = JSONObject.parseObject(config.toString());
             UserConfig userConfig = jsonObject.toJavaObject(UserConfig.class);
@@ -90,7 +98,8 @@ public class UserConfig {
             for (Field field : fields) {
                 String fieldName = field.getName();
                 /*排除log对象*/
-                if (fieldName.equals("log")) continue;
+                List<String> exclude = Arrays.asList("log", "configurableApplicationContext");
+                if (exclude.contains(fieldName)) continue;
                 /*通过反射获取 UserConfig 对象的成员变量的 get 方法*/
                 Method method = userConfigClass.getMethod("get" + field.getName());
                 /*通过反射获取成员变量的值*/
@@ -103,6 +112,9 @@ public class UserConfig {
             e.printStackTrace();
             log.warn("读取配置文件失败!");
             log.warn("请检查文件格式 或 删除文件后重新启动生成配置文件！");
+            configurableApplicationContext.close();
+            return false;
         }
+        return true;
     }
 }

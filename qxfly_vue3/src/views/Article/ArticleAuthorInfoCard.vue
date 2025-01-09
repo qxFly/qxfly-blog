@@ -1,5 +1,5 @@
 <template>
-    <div class="user-info-card">
+    <CardView>
         <div class="user-info">
             <div class="user-img">
                 <div class="img">
@@ -57,7 +57,7 @@
                 私 信
             </div>
         </div>
-    </div>
+    </CardView>
 </template>
 
 <script setup>
@@ -65,6 +65,7 @@ import { onMounted, onUnmounted, ref, watchEffect } from "vue";
 import { getUserInfo } from "@/api/User/index";
 import router from "@/router";
 import md5 from "js-md5";
+import CardView from "@/components/CardView.vue";
 let uid = ref(sessionStorage.getItem("uid"));
 const props = defineProps({
     btnType: {
@@ -132,20 +133,19 @@ function toIndex() {
 }
 /* 私信 */
 function sendMessageToUser(muid) {
-    if (localStorage.getItem(md5("token")) != null && localStorage.getItem(md5("token")) != md5("nologin")) {
-        router.push({
-            path: "/user/space/userMessage",
-            query: {
-                uid: uid.value,
-                muid: muid,
-            },
-        });
-
+    if (localStorage.getItem(md5("token")) != null) {
         if (router.currentRoute.value.path.match(/space/) != null) {
-            setTimeout(() => {
-                location.reload();
-            }, 100);
+            router.push("/");
         }
+        setTimeout(() => {
+            router.push({
+                path: "/user/space/userMessage",
+                query: {
+                    uid: uid.value,
+                    muid: muid,
+                },
+            });
+        }, 200);
     } else {
         router.push("/login");
     }

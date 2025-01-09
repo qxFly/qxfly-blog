@@ -1,10 +1,10 @@
 package fun.qxfly.controller.User;
 
-import fun.qxfly.common.utils.JwtUtils;
 import fun.qxfly.common.domain.entity.Message;
 import fun.qxfly.common.domain.po.Result;
-import fun.qxfly.service.User.MessageService;
 import fun.qxfly.common.domain.vo.MessageNavVO;
+import fun.qxfly.common.utils.JwtUtils;
+import fun.qxfly.service.User.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -76,11 +76,10 @@ public class MessageController {
     public Result sendMessage(@RequestBody Message message) {
         String b = messageService.sendMessage(message);
         log.info("发送消息结果：{}", b);
-        if (b != null && b.equals("error")) {
+        if (b == null) {
             return Result.error("发送失败");
         } else {
-            if (b == null) return Result.success();
-            else return Result.success(b);
+            return Result.success(b);
         }
     }
 
@@ -93,6 +92,7 @@ public class MessageController {
     @Operation(description = "用户读未读消息", summary = "用户读未读消息")
     @PostMapping("/readMessage")
     public Result readMessage(@RequestBody Message message) {
+        log.info("用户读未读消息：{}", message);
         boolean b = messageService.readMessage(message);
         if (b) {
             return Result.success();
@@ -110,14 +110,15 @@ public class MessageController {
     @GetMapping("/getNoReadMessageCount")
     public Result getNoReadMessageCount(HttpServletRequest request) {
         String token = request.getHeader("token");
-        Integer userId;
+        Integer uid;
         try {
-            userId = (Integer) JwtUtils.parseJWT(token).get("userId");
+            uid = (Integer) JwtUtils.parseJWT(token).get("uid");
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("获取失败");
         }
-        Integer f = messageService.getNoReadMessageCount(userId);
+        Integer f = messageService.getNoReadMessageCount(uid);
+        log.info("用户id为{}的用户有{}条未读消息", uid, f);
         return Result.success(f);
     }
 }

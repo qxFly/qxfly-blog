@@ -46,7 +46,7 @@ public class LoginController {
     /**
      * 登陆
      *
-     * @param user
+     * @param user 用户实体
      * @return
      */
     @Operation(description = "登陆", summary = "登陆")
@@ -68,10 +68,10 @@ public class LoginController {
         }
         user.setPassword(decodePassword);
         User u = loginService.login(user);
-        HashMap<String, String> resBody = new HashMap<>();
-        resBody.put("uid", u.getId().toString());
-        resBody.put("username", u.getUsername());
         if (u != null) {
+            HashMap<String, String> resBody = new HashMap<>();
+            resBody.put("uid", u.getId().toString());
+            resBody.put("username", u.getUsername());
             /*获取用户的token*/
             Token userToken = loginService.getTokenByUser(u);
             /*token不为空*/
@@ -80,7 +80,7 @@ public class LoginController {
                     /*验证Token是否有效*/
                     JwtUtils.parseJWT(userToken.getToken());
                     /* token有效，登录*/
-                    logoutService.deleteToken(userToken);
+                    logoutService.deleteToken(userToken.getToken());
                     resBody.put("token", userToken.getToken());
                     return Result.success(resBody);
                 } catch (Exception e) {
@@ -95,7 +95,8 @@ public class LoginController {
             String newToken = JwtUtils.createToken(u.getId(), u.getUsername(), nowdate, null);
             long createDate = nowdate.getTime();
             loginService.setToken(u.getUsername(), newToken, createDate);
-            logoutService.deleteToken(userToken);
+            if (userToken != null)
+                logoutService.deleteToken(userToken.getToken());
             resBody.put("token", newToken);
             return Result.success(resBody);
         }
@@ -105,8 +106,7 @@ public class LoginController {
     /**
      * 更新登录状态
      *
-     * @param token
-     * @return
+     * @param token token
      */
     @Operation(description = "每次进入站点检查更新登录状态", summary = "更新登录状态")
     @PostMapping("/updateLoginStatue")
@@ -114,34 +114,19 @@ public class LoginController {
         String requestToken = request.getHeader("token");
         String token1 = token.getToken();
         /*检测token一致性和是否为空*/
-        if (token1 != null && requestToken != null) {
-            if (!token1.equals(requestToken)) {
-                log.error("登录状态异常!");
-                return Result.error("登录状态异常");
-            }
-        } else {
-            return Result.error("未登录");
-        }
+        if (token1 == null || !token1.equals(requestToken))
+            return Result.noLoginError();
         /* 检查token有效性 */
-        Claims claims;
-        try {
-            claims = JwtUtils.parseJWT(token.getToken());
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.warn("登录状态失效");
-            return Result.error("登录状态失效");
-        }
-        if (claims == null) return Result.error("登录状态失效");
+        Claims claims = JwtUtils.parseJWT(token.getToken());
+        if (claims == null) return Result.noLoginError();
         String logoutStatus = logoutService.getLogoutStatus(token1);
         if (logoutStatus != null) {
-            return Result.error("");
+            return Result.noLoginError();
         }
         Integer uid = (Integer) claims.get("uid");
-        log.info("uid:{}", uid);
         User userInfoByToken = userInfoService.getUserInfo(uid);
         if (userInfoByToken == null) {
-            log.warn("awdawdawdawd");
-            return Result.error("登录状态异常");
+            return Result.noLoginError();
         }
         /* 有效则判断剩余时间 */
         long createTime = claims.getIssuedAt().getTime();
@@ -152,17 +137,17 @@ public class LoginController {
             log.info("剩余一周，续期");
             /*生成token*/
             try {
-                Integer userId = (Integer) claims.get("userId");
+                Integer userId = (Integer) claims.get("uid");
                 String username = (String) claims.get("username");
                 String newToken = JwtUtils.createToken(userId, username, nowTime, null);
                 loginService.updateToken(token.getUsername(), newToken, updateTime);
                 return Result.success(newToken);
             } catch (Exception e) {
                 e.printStackTrace();
-                return Result.error("token无效！");
+                return Result.noLoginError();
             }
         } else {
-            log.info("无需续期");
+//            log.info("无需续期");
             return Result.success("ok");
         }
     }

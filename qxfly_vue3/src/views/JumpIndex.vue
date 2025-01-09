@@ -5,7 +5,7 @@ import router from "@/router";
 import { onMounted } from "vue";
 
 onMounted(() => {
-  router.replace("/articleView?page=1");
+    router.replace(process.env.APP_VUE_INDEX_PATH + "?page=1");
 });
 </script>
 

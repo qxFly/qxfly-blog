@@ -6,21 +6,21 @@ public interface LogoutService {
     /**
      * 退出登入
      *
-     * @param token
+     * @param token token
      */
     void logout(Token token);
 
     /**
      * 删除token
      *
-     * @param jwt
+     * @param token token
      */
-    void deleteToken(Token jwt);
+    void deleteToken(String token);
 
     /**
      * 获取退出状态信息
      *
-     * @param token
+     * @param token token
      */
     String getLogoutStatus(String token);
 }
