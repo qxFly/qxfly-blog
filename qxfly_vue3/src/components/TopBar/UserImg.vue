@@ -19,11 +19,11 @@ var user = ref({
 // 获取用户名
 function getUsername() {
     let a = sessionStorage.getItem("useravatar");
-    let username = sessionStorage.getItem("username");
-    let uid = sessionStorage.getItem("uid");
+    let username = localStorage.getItem("username");
+    let uid = localStorage.getItem("uid");
     user.value.avatar = a != null ? a : require("@/assets/avatar.png");
-    user.value.username = username != null ? username : "未登入";
-    user.value.id = uid != null ? uid : null;
+    user.value.username = username;
+    user.value.id = uid;
 }
 // 跳转到用户空间
 function toUserSpace() {

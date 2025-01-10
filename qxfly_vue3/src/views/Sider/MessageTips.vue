@@ -52,7 +52,7 @@ onMounted(() => {
     socket.addSocketEventListener(listenSocket);
 });
 onUnmounted(() => {
-    socket.removeSocketEventListener(listenSocket);
+    if (socket != null) socket.removeSocketEventListener(listenSocket);
 });
 </script>
 <style scoped lang="less">

@@ -26,6 +26,14 @@ const routes = [
                 },
             },
             {
+                path: "/index/articleClassify",
+                name: "articleClassify",
+                component: () => import("@/views/Index/ArticlePage.vue"),
+                meta: {
+                    keepAlive: true,
+                },
+            },
+            {
                 path: "/index/leaveMessage",
                 name: "leaveMessage",
                 component: () => import("@/views/Index/LeaveMessage.vue"),

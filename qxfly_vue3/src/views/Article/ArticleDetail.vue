@@ -579,7 +579,7 @@ function changeHeader(flag) {
 function searchClassifyTag(item, type) {
     if (type == 0) {
         router.push({
-            path: "/articleView",
+            path: "/index/articleClassify",
             query: {
                 page: 1,
                 classify: item,
@@ -588,7 +588,7 @@ function searchClassifyTag(item, type) {
         });
     } else if (type == 1) {
         router.push({
-            path: "/articleView",
+            path: "/index/articleClassify",
             query: {
                 page: 1,
                 classify: "",

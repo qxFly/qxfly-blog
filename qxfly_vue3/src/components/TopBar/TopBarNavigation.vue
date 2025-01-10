@@ -12,17 +12,14 @@
             </div>
         </div>
 
-        <div class="nav-items" v-for="item in navigation" :key="item" :class="item.cssClass + '-1'">
-            <div :class="{ active: currRoute(item) }">
-                <router-link
-                    :class="item.cssClass"
-                    :id="item.cssClass"
-                    :to="item.path"
-                    @click="back(item)"
-                    active-class="menu-item-active">
-                    <i class="iconfont" v-html="item.icon"></i>
-                    <span v-text="item.name"></span>
-                </router-link>
+        <div class="nav-items">
+            <div class="nav-item" :class="{ active: currRoute(item) }" v-for="item in navigation" :key="item">
+                <div :class="isHeightLight(item.path) ? 'nav-item-heightlight' : ''">
+                    <div :class="item.cssClass" :id="item.cssClass" @click="toPath(item.path)">
+                        <i class="iconfont" v-html="item.icon"></i>
+                        <span v-text="item.name"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -98,31 +95,48 @@ function search() {
         });
     }
 }
-function back(item) {
-    if (item.path == "" && !router.currentRoute.value.fullPath.match(/articleView/)) router.go(-1);
+function toPath(path) {
+    if (path == "-1") {
+        router.back();
+    } else {
+        router.push(path);
+    }
 }
 /* 高亮当前导航 */
 function currRoute(item) {
     // 当前路由是否是首页,是则继续
     if (router.currentRoute.value.fullPath.match(/index/) == null) return false;
-    // 当前路由是否与文章相关
-    let isArticleView =
-        item.path.match(/articleView/) != null && router.currentRoute.value.fullPath.match(/articleView/) != null;
-    // 当前路由是否是分类
-    let currentRouteIsClassify = router.currentRoute.value.fullPath.match(/classify/) != null;
+    // // 当前路由是否与文章相关
+    // let isArticleView =
+    //     item.path.match(/articleView/) != null && router.currentRoute.value.fullPath.match(/articleView/) != null;
+    // // 当前路由是否是分类
+    // let currentRouteIsClassify = router.currentRoute.value.fullPath.match(/classify/) != null;
+    // let path = item.path.split("?")[0]; // 去除参数的路径
+    // if (path == router.currentRoute.value.path) {
+    //     // 当前路由是否是编辑文章
+    //     if (!path.includes("/article/editArticle")) {
+    //         console.log("高亮");
 
-    if (item.path == router.currentRoute.value.fullPath) {
-        // 当前路由是否是编辑文章
-        if (!item.path.includes("/article/editArticle")) return true;
-    } else if (isArticleView && item.path.match(/classify/) == null && !currentRouteIsClassify) {
-        // 当前路由是文章页面，单不是文章分类
-        return true;
-    } else if (isArticleView && item.path.match(/classify/) != null && currentRouteIsClassify) {
-        // 当前路由是文章分类页面
-        return true;
-    }
+    //         return true;
+    //     }
+    // } else if (isArticleView && item.path.match(/classify/) == null && !currentRouteIsClassify) {
+    //     // 当前路由是文章页面，单不是文章分类
+    //     return true;
+    // } else if (isArticleView && item.path.match(/classify/) != null && currentRouteIsClassify) {
+    //     // 当前路由是文章分类页面
+    //     return true;
+    // }
+
+    let path = item.path.split("?")[0]; // 去除参数的路径
+    if (path == router.currentRoute.value.path && !path.includes("/article/editArticle")) return true;
+    return false;
 }
 
+/* 触摸时是否高亮 */
+function isHeightLight(path) {
+    if (path.match(/editArticle/)) return false;
+    return true;
+}
 /* 判断首页，是否显示返回首页 */
 function isIndex(item) {
     if (item.path != "/") {
@@ -213,26 +227,31 @@ onMounted(() => {
     border: none;
 }
 /* 导航栏按钮 */
-.nav-items:hover {
-    .nav-item {
-        border-bottom: 2px solid #000000;
-    }
-}
-.active {
-    border-bottom: 2px solid #000000;
-}
-.nav-items {
+.nav-item {
+    color: #303030;
     display: block;
     margin: 0 8px;
     font-size: 16px;
-    font-weight: bold;
+    // font-weight: bold;
     border: none;
-    color: #3f3f3f;
     background-color: #00000000;
     height: min-content;
     cursor: pointer;
     transition: all 0.3s ease;
 }
+.nav-items {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.nav-item-heightlight:hover {
+    border-bottom: 1px solid #000000;
+}
+.active {
+    color: #000;
+    border-bottom: 1px solid #000000;
+}
+
 .iconfont {
     font-family: "iconfont" !important;
     font-style: normal;
@@ -253,6 +272,9 @@ onMounted(() => {
 }
 .nav-item-editArticle:hover {
     background-color: #ff6632;
+    .nav-item {
+        border-bottom: none;
+    }
 }
 .nav-item-editArticle::before {
     content: "";

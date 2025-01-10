@@ -37,10 +37,10 @@ function sendSocketMessage(msgId, data, toUid) {
 }
 
 function addSocketEventListener(callback) {
-    socket.addEventListener("message", callback);
+    if (socket != null) socket.addEventListener("message", callback);
 }
 function removeSocketEventListener(callback) {
-    socket.removeEventListener("message", callback);
+    if (socket != null) socket.removeEventListener("message", callback);
 }
 
 export { initWebsocket, getSocket, closeSocket, sendSocketMessage, addSocketEventListener, removeSocketEventListener };

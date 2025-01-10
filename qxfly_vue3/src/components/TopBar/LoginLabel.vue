@@ -96,7 +96,7 @@ function adjustWidth() {
     display: block;
     margin: 0 8px;
     font-size: 18px;
-    font-weight: bold;
+    /* font-weight: bold; */
     border: none;
     background-color: #00000000;
     height: min-content;
@@ -104,7 +104,7 @@ function adjustWidth() {
     color: #000000;
 }
 .nav-item:hover {
-    border-bottom: 2px solid #000000;
+    border-bottom: 1px solid #000000;
 }
 label {
     font-size: 18px;

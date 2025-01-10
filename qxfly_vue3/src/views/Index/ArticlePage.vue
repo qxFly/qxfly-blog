@@ -223,7 +223,7 @@ let tags = ref([]);
 function Classifys(value) {
     classify.value = value;
     router.push({
-        path: indexPath,
+        path: "/index/articleClassify",
         query: {
             page: 1,
             search: searchData.value,
@@ -237,7 +237,7 @@ function Classifys(value) {
 function Tags(value) {
     tags.value = value;
     router.push({
-        path: indexPath,
+        path: "/index/articleClassify",
         query: {
             page: 1,
             search: searchData.value,
@@ -266,13 +266,21 @@ function sort(value) {
         sort: sortValue.value,
         tag: tags.value.toString(),
     };
-    if (classify.value != "" || router.currentRoute.value.fullPath.includes("classify")) {
+    let currRouterIsClassify = router.currentRoute.value.path.includes("Classify");
+    if (classify.value != "" || currRouterIsClassify) {
         params.classify = classify.value;
     }
-    router.push({
-        path: indexPath,
-        query: params,
-    });
+    if (currRouterIsClassify) {
+        router.push({
+            path: "/index/articleClassify",
+            query: params,
+        });
+    } else {
+        router.push({
+            path: indexPath,
+            query: params,
+        });
+    }
 }
 /* 换页操作 */
 function changePage(page = 0) {
@@ -286,13 +294,21 @@ function changePage(page = 0) {
             sort: sortValue.value,
             tag: tags.value.toString(),
         };
-        if (classify.value != "" || router.currentRoute.value.fullPath.includes("classify")) {
+        let currRouterIsClassify = router.currentRoute.value.path.includes("Classify");
+        if (classify.value != "" || currRouterIsClassify) {
             params.classify = classify.value;
         }
-        router.push({
-            path: indexPath,
-            query: params,
-        });
+        if (currRouterIsClassify) {
+            router.push({
+                path: "/index/articleClassify",
+                query: params,
+            });
+        } else {
+            router.push({
+                path: indexPath,
+                query: params,
+            });
+        }
     }
 }
 /* 路由后恢复分页等数据 */
@@ -331,7 +347,7 @@ watch(
 );
 /* 是否显示分类 */
 function showClassify() {
-    if (router.currentRoute.value.fullPath.includes("classify")) {
+    if (router.currentRoute.value.path.includes("Classify")) {
         isClassify.value = true;
     } else {
         isClassify.value = false;
