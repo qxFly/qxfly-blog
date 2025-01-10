@@ -12,10 +12,13 @@
                 and uid = #{uid}
             </if>
             <if test="username != null">
-                and username = #{username}
+                and username like concat('%',#{username},'%')
             </if>
             <if test="content != null">
                 and content like concat('%',#{content},'%')
+            </if>
+            <if test="dateTimeStart != null">
+                and date between #{dateTimeStart} and #{dateTimeEnd}
             </if>
         </where>
     </select>

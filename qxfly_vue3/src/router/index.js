@@ -88,6 +88,10 @@ const routes = [
                 path: "/manage/navigation",
                 component: () => import("@/views/AdminPage/Navigation"),
             },
+            {
+                path: "/manage/leaveMessage",
+                component: () => import("@/views/AdminPage/LeaveMessage"),
+            },
         ],
     },
     {

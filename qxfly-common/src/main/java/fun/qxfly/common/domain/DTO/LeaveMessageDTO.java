@@ -30,6 +30,14 @@ public class LeaveMessageDTO {
     @Schema(description = "发送时间")
     private Date date;
 
+    @Schema(description = "发送时间范围-开始")
+    private Date dateTimeStart;
+
+    @Schema(description = "发送时间范围-结束")
+    private Date dateTimeEnd;
+
     @Schema(description = "内容")
     private String content;
+
+
 }

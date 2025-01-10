@@ -183,6 +183,6 @@ export function deleteLeaveMessage(id) {
     return request({
         url: "/index/deleteLeaveMessage",
         method: "get",
-        params: id,
+        params: { id: id },
     });
 }
