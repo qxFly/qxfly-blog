@@ -1,7 +1,7 @@
 <template>
     <div class="user_login">
         <div v-if="islogin() == md5('false') || islogin() == null">
-            <a class="nav-item login" href="/login">登入</a>
+            <a class="nav-item login" href="/login">登录</a>
         </div>
         <div v-if="islogin() == md5('false') || islogin() == null">
             <a class="nav-item register" href="/register">注册</a>

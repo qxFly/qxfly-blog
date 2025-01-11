@@ -74,7 +74,7 @@ onMounted(() => {
     transition: all 0.3s ease;
     border: 1px solid #90ccff;
     border-radius: 0 4px 4px 0;
-    background-color: #fff;
+    background-color: #ffffff50;
 }
 .item-col:hover {
     background-color: rgba(185, 222, 255, 0.5);

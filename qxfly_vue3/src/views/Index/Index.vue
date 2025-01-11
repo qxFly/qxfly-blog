@@ -42,8 +42,8 @@ import CentreContent from "@/views/Index/CentreContent";
 import RightSidebar from "@/views/Sider/RightSidebar";
 import BackTop from "@/components/BackTop.vue";
 import ChangeBackgroundImage from "./ChangeBackgroundImage.vue";
-import { onMounted, onUnmounted } from "vue";
-
+import { onMounted, onUnmounted, ref } from "vue";
+import { getImage } from "@/api/index";
 import router from "@/router";
 // 判断是否是手机端，如果是，返回true
 function isMobile() {
@@ -63,7 +63,28 @@ function Listener() {
         rightSidebarMain[1].style.top = "90px";
     }
 }
+/* 设置背景 */
+async function setBackgroundImage() {
+    let bgimgs = [];
+    let bg = document.getElementById("index_bg");
+    let bgUrl = localStorage.getItem("bgUrls");
+    if (bgUrl) {
+        JSON.parse(bgUrl).forEach((item) => {
+            bgimgs.push(item);
+        });
+        let randomIndex = Math.floor(Math.random() * bgimgs.length);
+        bg.style.backgroundImage = "url(" + bgimgs[randomIndex].url + ")";
+    } else {
+        await getImage(1, 10).then((res) => {
+            if (res.data.code != 1) return;
+            bgimgs = res.data.data;
+            localStorage.setItem("bgUrls", JSON.stringify(bgimgs));
+        });
+        bg.style.backgroundImage = "url(" + bgimgs[0].url + ")";
+    }
+}
 onMounted(() => {
+    setBackgroundImage();
     window.addEventListener("scroll", Listener);
     // 根据不同路由跳转不同页面
     if (sessionStorage.getItem("userAgent") == null) {

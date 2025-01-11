@@ -397,7 +397,7 @@ onMounted(() => {
     overflow: hidden;
     border-radius: 4px;
     border: 1px solid #000;
-    background-color: #fff;
+    background-color: #ffffff50;
     z-index: 9;
     transition: all 0.2s ease;
 }
@@ -443,7 +443,7 @@ onMounted(() => {
     padding: 0;
     overflow: hidden;
     border-radius: 8px 4px 4px 8px;
-    background-color: rgb(255, 255, 255);
+    background-color: #ffffff50;
     box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.08);
     transition: all ease 0.2s;
 }

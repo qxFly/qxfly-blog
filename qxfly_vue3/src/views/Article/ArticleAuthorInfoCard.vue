@@ -42,7 +42,7 @@
                 详 &emsp;细 &emsp;信 &emsp;息
             </div>
             <div class="user-info-btn" @click="toLogin()" v-if="props.btnType == 'login' && !islogin()">
-                登 &emsp;入
+                登 &emsp;录
             </div>
             <div
                 class="user-info-btn"
