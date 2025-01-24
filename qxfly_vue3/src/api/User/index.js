@@ -168,3 +168,41 @@ export function listUserSpaceNav() {
         method: "get",
     });
 }
+
+/**
+ * 获取用户设置
+ * @returns
+ */
+export function getUserSettings(uid) {
+    return request({
+        url: "/user/setting/getUserSettings",
+        method: "get",
+        params: {
+            uid: uid,
+        },
+    });
+}
+
+/**
+ * 更新用户设置
+ * @returns
+ */
+export function updateUserSettings(data) {
+    return request({
+        url: "/user/setting/updateUserSettings",
+        method: "post",
+        data: data,
+    });
+}
+/**
+ * 上传背景图片
+ * @returns
+ */
+export function uploadBgImg(file) {
+    return request({
+        url: "/user/setting/uploadBgImg",
+        method: "post",
+        data: file,
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+}

@@ -6,19 +6,17 @@
                 <div class="roleLabel">
                     登入身份：<span>{{ roleName }}</span>
                 </div>
-                <!-- <div class="nav-items">
-                    <div
-                        class="nav-item"
-                        :class="{ active: isCurrNav(item.path) }"
-                        v-for="item in activeNav"
-                        :key="item">
-                        <router-link :to="item.path" active-class="router-link-active" class="router-link">
-                            <i class="iconfont" v-html="item.icon"></i>
-                            <div class="nav-item-span">{{ item.name }}</div>
-                        </router-link>
-                        <div class="nav-children-item"></div>
-                    </div>
-                </div> -->
+                <div class="bg-switch">
+                    <el-radio-group
+                        v-model="isOpenBg"
+                        @change="switchChange"
+                        style="margin: 0 auto"
+                        size="small"
+                        :disabled="isAbleBg">
+                        <el-radio-button label="关闭背景" :value="false" />
+                        <el-radio-button label="打开背景" :value="true" />
+                    </el-radio-group>
+                </div>
 
                 <el-menu
                     :default-active="selectNav"
@@ -79,7 +77,7 @@
 
 <script setup>
 import router from "@/router";
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, onUnmounted } from "vue";
 import { check, listAdminNavigations } from "@/api/Admin";
 import { onBeforeRouteUpdate } from "vue-router";
 import { ElMessage } from "element-plus";
@@ -144,7 +142,20 @@ function handleClose(e) {
 function handleSelect(e) {
     selectNav.value = e;
 }
-
+/* 隐藏顶栏 */
+function hideTopBar() {
+    let topBar = document.getElementById("top-bar-1");
+    if (topBar != null) {
+        topBar.style.top = "-70px";
+    }
+}
+/* 显示顶栏 */
+function showTopBar() {
+    let topBar = document.getElementById("top-bar-1");
+    if (topBar != null) {
+        topBar.style.top = "0px";
+    }
+}
 /* 路由后恢复激活的导航栏 */
 let routePage = ref(useRouter);
 function setRoutePage() {
@@ -153,6 +164,28 @@ function setRoutePage() {
         selectNav.value = routePage.value.path;
     }
 }
+/* 背景开关 */
+let isOpenBg = ref(true);
+let isAbleBg = ref(false);
+function switchChange(event) {
+    isOpenBg.value = event;
+}
+function checkBg() {
+    let bg = document.getElementById("index_bg");
+    if (bg.style.backgroundImage == null || bg.style.backgroundImage == "" || bg.style.backgroundImage == "none") {
+        isOpenBg.value = false;
+        isAbleBg.value = true;
+    }
+}
+watch(isOpenBg, (newVal, oldVal) => {
+    let bg = document.getElementById("index_bg");
+    if (newVal) {
+        bg.style.display = "block";
+    } else {
+        bg.style.display = "none";
+    }
+});
+
 watch(
     routePage.value,
     (newVal, oldVal) => {
@@ -170,8 +203,14 @@ onMounted(async () => {
         else if (role.value == 3) roleName.value = "评论审核员";
         else if (role.value == 4) roleName.value = "用户审核员";
     });
+
     listNav();
     setRoutePage();
+    hideTopBar();
+    checkBg();
+});
+onUnmounted(() => {
+    showTopBar();
 });
 </script>
 
@@ -196,12 +235,19 @@ onMounted(async () => {
 .roleLabel span {
     font-weight: 700;
 }
+.bg-switch {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+}
 .main {
     display: flex;
     justify-content: center;
 }
 .nav-items {
-    margin-top: 70px;
+    margin-top: 50px;
 }
 .nav-item {
     transition: all 0.3s ease;
@@ -306,5 +352,14 @@ onMounted(async () => {
 <style>
 .el-menu-item:hover {
     background-color: #fff !important;
+}
+.el-menu {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+}
+.el-table {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+}
+tr.el-table__row--striped td.el-table__cell {
+    background-color: rgba(250, 250, 250, 0.7) !important;
 }
 </style>

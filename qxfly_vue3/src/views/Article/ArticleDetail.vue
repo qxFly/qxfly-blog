@@ -1,5 +1,5 @@
 <template>
-    <TopBar></TopBar>
+    <!-- <TopBar></TopBar> -->
     <div id="load" class="load" v-if="isload">
         <div class="load-content">{{ loadText }}</div>
     </div>
@@ -799,7 +799,7 @@ onUnmounted(() => {
     border-radius: 4px;
     padding: 40px 50px;
     margin: 0 20px;
-    background-color: rgb(255, 255, 255);
+    background-color: rgba(255, 255, 255, 0.7);
     box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.08);
     transition: all 0.5s ease;
     overflow: hidden;

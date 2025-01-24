@@ -1,9 +1,9 @@
 <template>
     <div>
         <!-- 背景主体 -->
-        <div id="index_bg" class="theme-bg"></div>
+        <!-- <div id="index_bg" class="theme-bg"></div> -->
         <!-- 顶栏 -->
-        <TopBar></TopBar>
+        <!-- <TopBar></TopBar> -->
 
         <div class="Main" id="Main">
             <!-- 左侧栏资源列表 -->
@@ -44,7 +44,9 @@ import BackTop from "@/components/BackTop.vue";
 import ChangeBackgroundImage from "./ChangeBackgroundImage.vue";
 import { onMounted, onUnmounted, ref } from "vue";
 import { getImage } from "@/api/index";
+import { getUserSettings } from "@/api/User";
 import router from "@/router";
+let uid = localStorage.getItem("uid");
 // 判断是否是手机端，如果是，返回true
 function isMobile() {
     let flag = navigator.userAgent.match(
@@ -63,28 +65,7 @@ function Listener() {
         rightSidebarMain[1].style.top = "90px";
     }
 }
-/* 设置背景 */
-async function setBackgroundImage() {
-    let bgimgs = [];
-    let bg = document.getElementById("index_bg");
-    let bgUrl = localStorage.getItem("bgUrls");
-    if (bgUrl) {
-        JSON.parse(bgUrl).forEach((item) => {
-            bgimgs.push(item);
-        });
-        let randomIndex = Math.floor(Math.random() * bgimgs.length);
-        bg.style.backgroundImage = "url(" + bgimgs[randomIndex].url + ")";
-    } else {
-        await getImage(1, 10).then((res) => {
-            if (res.data.code != 1) return;
-            bgimgs = res.data.data;
-            localStorage.setItem("bgUrls", JSON.stringify(bgimgs));
-        });
-        bg.style.backgroundImage = "url(" + bgimgs[0].url + ")";
-    }
-}
 onMounted(() => {
-    setBackgroundImage();
     window.addEventListener("scroll", Listener);
     // 根据不同路由跳转不同页面
     if (sessionStorage.getItem("userAgent") == null) {
@@ -109,29 +90,6 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* 主背景 */
-#index_bg {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    background-size: cover;
-    background-repeat: no-repeat;
-    z-index: -99999;
-}
-#index_bg::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
-    filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    background-size: cover;
-    background-repeat: no-repeat;
-}
 .Main {
     display: flex;
     justify-content: center;

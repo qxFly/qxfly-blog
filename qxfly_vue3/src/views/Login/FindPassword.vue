@@ -333,11 +333,27 @@ function keyDown(e) {
         findPwd(); // 需要执行的方法方法
     }
 }
+/* 隐藏顶栏 */
+function hideTopBar() {
+    let topBar = document.getElementById("top-bar-1");
+    if (topBar != null) {
+        topBar.style.top = "-70px";
+    }
+}
+/* 显示顶栏 */
+function showTopBar() {
+    let topBar = document.getElementById("top-bar-1");
+    if (topBar != null) {
+        topBar.style.top = "0px";
+    }
+}
 onMounted(() => {
     loadBackGround();
+    hideTopBar();
     window.addEventListener("keydown", keyDown);
 });
 onUnmounted(() => {
+    showTopBar();
     /* 移除监听按键事件 */
     window.removeEventListener("keydown", keyDown, false);
     clearTimeout(timer);

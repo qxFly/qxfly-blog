@@ -57,7 +57,7 @@ function search() {
     let query = router.currentRoute.value.query;
     if (router.currentRoute.value.path.match(/articleView/) != null) {
         router.push({
-            path: process.env.APP_VUE_INDEX_PATH,
+            path: process.env.VUE_APP_INDEX_PATH,
             query: {
                 page: 1,
                 search: searchData.value.trim(),
@@ -106,27 +106,6 @@ function toPath(path) {
 function currRoute(item) {
     // 当前路由是否是首页,是则继续
     if (router.currentRoute.value.fullPath.match(/index/) == null) return false;
-    // // 当前路由是否与文章相关
-    // let isArticleView =
-    //     item.path.match(/articleView/) != null && router.currentRoute.value.fullPath.match(/articleView/) != null;
-    // // 当前路由是否是分类
-    // let currentRouteIsClassify = router.currentRoute.value.fullPath.match(/classify/) != null;
-    // let path = item.path.split("?")[0]; // 去除参数的路径
-    // if (path == router.currentRoute.value.path) {
-    //     // 当前路由是否是编辑文章
-    //     if (!path.includes("/article/editArticle")) {
-    //         console.log("高亮");
-
-    //         return true;
-    //     }
-    // } else if (isArticleView && item.path.match(/classify/) == null && !currentRouteIsClassify) {
-    //     // 当前路由是文章页面，单不是文章分类
-    //     return true;
-    // } else if (isArticleView && item.path.match(/classify/) != null && currentRouteIsClassify) {
-    //     // 当前路由是文章分类页面
-    //     return true;
-    // }
-
     let path = item.path.split("?")[0]; // 去除参数的路径
     if (path == router.currentRoute.value.path && !path.includes("/article/editArticle")) return true;
     return false;
@@ -156,16 +135,16 @@ router.beforeEach((to) => {
         ele[0].style["content"] = "";
     }
 });
-onBeforeRouteUpdate((to) => {
-    if (to.fullPath === "/") {
-        router.push({
-            path: process.env.APP_VUE_INDEX_PATH,
-            query: {
-                page: 1,
-            },
-        });
-    }
-});
+// onBeforeRouteUpdate((to, from) => {
+//     if (to.fullPath === "/") {
+//         router.push({
+//             path: process.env.APP_VUE_INDEX_PATH,
+//             query: {
+//                 page: 1,
+//             },
+//         });
+//     }
+// });
 onMounted(() => {
     getNavigation();
     searchData.value = useRouter.query.search;
@@ -228,7 +207,7 @@ onMounted(() => {
 }
 /* 导航栏按钮 */
 .nav-item {
-    color: #303030;
+    color: #000000;
     display: block;
     margin: 0 8px;
     font-size: 16px;
@@ -238,6 +217,7 @@ onMounted(() => {
     height: min-content;
     cursor: pointer;
     transition: all 0.3s ease;
+    // white-space: nowrap;
 }
 .nav-items {
     display: flex;
@@ -284,29 +264,18 @@ onMounted(() => {
         margin: 0 0 0 10px;
     }
     .nav-items {
-        font-size: 14px;
         width: max-content;
         padding: 0;
         margin: 6px;
         min-width: 34px;
     }
-    .nav-item-home::before {
-        content: "";
+    .nav-item {
+        font-size: 14px;
     }
-    .nav-item-image::before {
-        content: "";
+    .iconfont {
+        display: none;
     }
-    .nav-item-article::before {
-        content: "";
-    }
-    .nav-item-word::before {
-        content: "";
-    }
-    .nav-item-back::before {
-        content: "";
-    }
-
-    .nav-item-editArticle {
+    .n .nav-item-editArticle {
         // font-size: 14px;
         padding: 0;
         width: max-content;
@@ -314,12 +283,6 @@ onMounted(() => {
         color: #ff6632;
         margin: 0;
         text-align: center;
-    }
-    .nav-item-editArticle::before {
-        content: "";
-    }
-    .nav-item-classify::before {
-        content: "";
     }
     .TopBarNavigation {
         margin: 0;
@@ -354,7 +317,7 @@ onMounted(() => {
         margin: 0;
     }
     .search-input {
-        margin: 2px;
+        margin: 0 0 0 2px;
     }
 }
 </style>

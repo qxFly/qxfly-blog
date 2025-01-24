@@ -108,6 +108,10 @@ function initMessageNav() {
     }
 }
 function setMainSize() {
+    let flag = navigator.userAgent.match(
+        /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
+    );
+
     let main = document.getElementById("main");
     let height = document.body.scrollHeight - 200;
     main.style.height = height + "px";
@@ -192,10 +196,10 @@ onUnmounted(() => {
     padding: 10px;
 }
 .user-nav-items:hover {
-    background-color: #e4e5e6;
+    background-color: rgb(177, 218, 255, 0.7);
 }
 .active {
-    background-color: #e4e5e6;
+    background-color: rgb(132, 198, 255, 0.7);
 }
 .user-nav-item {
     display: flex;

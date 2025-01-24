@@ -53,16 +53,14 @@ function ListenerTime() {
     if (topbar == null || topbarbg == null) return;
     topbar.addEventListener("mousemove", mousemove);
     topbar.addEventListener("mouseleave", mouseleave);
-    setTimeout(() => {
-        topbarbg.style.opacity = "0.4";
-    }, 3000);
+    mouseleave();
 }
 function mouseleave() {
     const topbarbg = document.getElementById("top-bar-bg");
     if (topbarbg == null) return;
     setTimeout(() => {
-        topbarbg.style.opacity = "0.4";
-    }, 3000);
+        topbarbg.style.opacity = "0.2";
+    }, 2000);
 }
 function mousemove() {
     const topbarbg = document.getElementById("top-bar-bg");

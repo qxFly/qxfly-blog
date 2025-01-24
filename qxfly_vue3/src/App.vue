@@ -1,4 +1,7 @@
 <template>
+    <!-- 背景主体 -->
+    <TopBar></TopBar>
+    <div id="index_bg" class="theme-bg index_bg"></div>
     <router-view></router-view>
 </template>
 
@@ -9,7 +12,8 @@ import { onBeforeMount, onMounted, onBeforeUnmount, onUnmounted, onRenderTracked
 import md5 from "js-md5";
 import { getUserInfo } from "@/api/User";
 import * as socketUtil from "@/utils/Socket";
-
+import { getUserSettings } from "@/api/User";
+import TopBar from "@/components/TopBar/TopBar.vue";
 let user = ref({
     id: getUUID(),
     username: "游客" + getUUID(),
@@ -110,6 +114,44 @@ function getUUID() {
     var crc = bin2hex(bin.slice(-16, -12));
     return crc;
 }
+
+/* 获取用户背景图片 */
+let bgimg = ref();
+let bgSwitch = ref(0);
+let settingObj = ref({});
+async function getUserBgImg() {
+    await getUserSettings(user.value.id).then((res) => {
+        if (res.data.code != 1) return;
+        settingObj.value = res.data.data;
+    });
+}
+/* 设置背景 */
+async function setBackgroundImage() {
+    let bg = document.getElementById("index_bg");
+    let localbgimg = localStorage.getItem("bgimg");
+    // 获取用户背景图片
+    await getUserBgImg();
+    // 检查是否开启背景
+    if (settingObj.value.bgSwitch == 0) return;
+    // 检查是否设置背景图片
+    let onlineBg = settingObj.value.bgImgPath;
+    if (localbgimg == null && onlineBg != null) {
+        localStorage.setItem("bgimg", onlineBg);
+    }
+    // 检查本地背景是否和云端一致
+    if (localbgimg != onlineBg) {
+        localbgimg = onlineBg;
+        localStorage.setItem("bgimg", onlineBg);
+    }
+    if (localbgimg == null) {
+        return;
+    }
+    localbgimg = localbgimg.replace(/\\/g, "/");
+    bg.style.backgroundImage = "url(" + localbgimg + ")";
+    bg.style.filter = "blur(" + settingObj.value.bgBlur + "px)";
+    bg.style.backdropFilter = "blur(" + settingObj.value.bgBlur + "px)";
+    // bg.style.webkitBackdropFilter = "blur(" + settingObj.value.bgBlur + "px)";
+}
 onBeforeMount(() => {
     let log = localStorage.getItem("autologin");
     let ses = sessionStorage.getItem("a");
@@ -119,9 +161,8 @@ onBeforeMount(() => {
         clearLoginStatue();
     }
 });
-onMounted(() => {
+onMounted(async () => {
     /* 初次访问设置初始状态 */
-
     if (localStorage.getItem("username") == null) {
         console.log("用户未登录");
         setInitStatue();
@@ -132,11 +173,37 @@ onMounted(() => {
         // 初始化socket
         socketUtil.initWebsocket();
         /* 检查用户登录状态 */
-        checkStatus();
-        setUsernameAndAvatar();
-        setInterval(() => {
-            checkStatus();
+        await checkStatus();
+        await setUsernameAndAvatar();
+        setBackgroundImage();
+        setInterval(async () => {
+            await checkStatus();
         }, 10000);
     }
 });
 </script>
+<style scoped>
+/* 主背景 */
+.index_bg {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    z-index: -99999;
+}
+.index_bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    /* filter: var(--bg-blur);
+    -webkit-backdrop-filter: var(--bg-blur);
+    backdrop-filter: var(--bg-blur); */
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+</style>

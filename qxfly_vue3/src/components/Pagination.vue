@@ -120,7 +120,7 @@ watchEffect(GetPage);
     box-shadow: 0 1px 6px 4px rgba(7, 17, 27, 0.08);
     padding: 20px 0;
     transition: all ease 0.2s;
-    background-color: #fff;
+    background-color: transparent;
 }
 .pages:hover {
     box-shadow: 0 1px 6px 4px rgba(7, 17, 27, 0.14);
@@ -146,7 +146,7 @@ watchEffect(GetPage);
     height: 30px;
     width: 100%;
     border-radius: 4px;
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.5);
     box-shadow: 0 1px 6px 4px rgba(7, 17, 27, 0.2);
     transition: all ease 0.3s;
     border: none;

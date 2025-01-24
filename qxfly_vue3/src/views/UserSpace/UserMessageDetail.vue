@@ -168,7 +168,7 @@ onUnmounted(() => {
 .msg-window {
     font-family: "Microsoft YaHei", "Microsoft Sans Serif", "Microsoft SanSerf", "微软雅黑";
     width: 100%;
-    background-color: #f4f5f7;
+    background-color: rgba(218, 218, 218, 0.5);
 }
 .msg-list {
     padding: 20px;

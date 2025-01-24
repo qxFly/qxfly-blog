@@ -139,6 +139,13 @@ const routes = [
                 },
                 component: () => import("@/views/UserSpace/UserMessage.vue"),
             },
+            {
+                path: "/user/space/settings",
+                meta: {
+                    keepAlive: false,
+                },
+                component: () => import("@/views/UserSpace/Settings.vue"),
+            },
         ],
     },
     {

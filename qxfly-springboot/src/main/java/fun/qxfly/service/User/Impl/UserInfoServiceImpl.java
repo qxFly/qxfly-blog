@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     private final AdminService adminService;
 
-    @Value("${file.userImg.download.path}")
+    @Value("${qxfly.file.userImg.download.path}")
     private String userAvatarPath;
 
     public UserInfoServiceImpl(UserInfoMapper userInfoMapper, AliyunDysmsapi aliyunDysmsapi, AdminService adminService) {
@@ -171,6 +172,7 @@ public class UserInfoServiceImpl implements UserInfoService {
         Integer role = adminService.check(uid);
         if (role != 0) role = 5;
         navigations = userInfoMapper.listUserSpaceNav(role);
+        navigations.sort(Comparator.comparingInt(Navigation::getIndex));
         return navigations;
     }
 

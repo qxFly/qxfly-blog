@@ -1,5 +1,5 @@
 <template>
-    <TopBar></TopBar>
+    <!-- <TopBar></TopBar> -->
     <div class="Toolbar" id="Toolbar">
         <Toolbar style="border-bottom: 1px solid #ccc" :editor="editorRef" :defaultConfig="toolbarConfig" mode="mode" />
     </div>
@@ -888,7 +888,7 @@ onBeforeUnmount(() => {
 .Toolbar {
     width: 100%;
     position: fixed;
-    top: 74px;
+    top: 70px;
     margin: 0 auto;
     z-index: 99;
     transition: all 0.3s ease;

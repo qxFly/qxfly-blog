@@ -56,6 +56,7 @@
                     stripe
                     :highlight-current-row="true"
                     style="width: 100%"
+                    :row-style="rowStyle"
                     :max-height="setTableHeight()">
                     <el-table-column fixed prop="id" label="ID" width="80" align="center" />
                     <!-- <el-table-column prop="originName" label="原始名字" align="center" /> -->
@@ -323,6 +324,11 @@ function setTableHeight() {
     let height = document.body.scrollHeight - 250;
     return height;
 }
+const rowStyle = ({ row, rowIndex }) => {
+    return {
+        backgroundColor: "rgb(255, 255, 255,0.3)",
+    };
+};
 onMounted(() => {
     setSearchData();
     search();

@@ -1,5 +1,4 @@
 <template>
-    <TopBar></TopBar>
     <div id="load" class="load" v-if="isload">
         <div class="load-content">{{ loadText }}</div>
     </div>

@@ -143,7 +143,7 @@ onMounted(() => {
 <style scoped lang="less">
 .classify-main {
     border-radius: 4px;
-    background-color: rgb(255, 255, 255);
+    background-color: transparent;
     box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.08);
     transition: all 0.3s ease;
     padding: 6px;

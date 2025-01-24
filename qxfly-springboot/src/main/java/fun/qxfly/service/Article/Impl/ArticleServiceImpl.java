@@ -25,11 +25,11 @@ import java.util.List;
 @Slf4j
 @Service
 public class ArticleServiceImpl implements ArticleService {
-    @Value("${file.articleCover.download.path}")
+    @Value("${qxfly.file.articleCover.download.path}")
     private String articleCoverDownloadPath;
-    @Value("${file.articleImage.download.path}")
+    @Value("${qxfly.file.articleImage.download.path}")
     private String articleImageDownloadPath;
-    @Value("${file.articleAttachment.download.path}")
+    @Value("${qxfly.file.articleAttachment.download.path}")
     private String articleAttachmentDownloadPath;
     private final ArticleMapper articleMapper;
 

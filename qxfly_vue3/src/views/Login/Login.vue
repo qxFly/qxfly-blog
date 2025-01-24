@@ -208,6 +208,22 @@ function showPwd(flag) {
         ele.type = "password";
     }
 }
+/* 隐藏顶栏 */
+function hideTopBar() {
+    console.log("隐藏顶栏");
+
+    let topBar = document.getElementById("top-bar-1");
+    if (topBar != null) {
+        topBar.style.top = "-70px";
+    }
+}
+/* 显示顶栏 */
+function showTopBar() {
+    let topBar = document.getElementById("top-bar-1");
+    if (topBar != null) {
+        topBar.style.top = "0px";
+    }
+}
 onBeforeMount(() => {
     if (localStorage.getItem(md5("islogin")) == md5("true")) {
         router.push("/");
@@ -215,10 +231,12 @@ onBeforeMount(() => {
 });
 onMounted(() => {
     loadBackGround();
+    hideTopBar();
     /* 添加监听按键事件 */
     window.addEventListener("keydown", keyDown);
 });
 onUnmounted(() => {
+    showTopBar();
     /* 移除监听按键事件 */
     window.removeEventListener("keydown", keyDown, false);
 });

@@ -585,7 +585,7 @@ function SendCode() {
     var phonereg = /0?(13|14|15|17|18|19)[0-9]{9}/;
     let phone = originalPhone.value;
     console.log(phone);
-    
+
     if (!phonereg.test(phone)) {
         isTip.value = true;
         tip.value = "请输入正确的手机号";
@@ -667,7 +667,7 @@ onUnmounted(() => {
     padding: 6px 8px;
     border-radius: 6px;
     border: 2px solid #d0d7de;
-    background-color: #f6f8fa;
+    background-color: rgba(246, 248, 250, 0.5);
     font-size: 16px;
     max-height: 100px;
 }

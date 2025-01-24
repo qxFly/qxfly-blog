@@ -30,6 +30,7 @@
                     :border="true"
                     show-overflow-tooltip
                     stripe
+                    :row-style="rowStyle"
                     :highlight-current-row="true"
                     style="width: 100%"
                     :max-height="setTableHeight()">
@@ -233,6 +234,11 @@ watch(
         deep: true,
     }
 );
+const rowStyle = ({ row, rowIndex }) => {
+    return {
+        backgroundColor: "rgb(255, 255, 255,0.3)",
+    };
+};
 onMounted(() => {
     search();
 });
@@ -264,7 +270,7 @@ onMounted(() => {
 .main {
     padding-top: 0;
 }
-.user-info-content {
+.setting-items {
     // min-width: 400px;
     padding: 20px 20px 20px 0;
     width: 100%;

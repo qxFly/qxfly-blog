@@ -35,7 +35,7 @@ public class ArticleManageServiceImpl implements ArticleManageService {
         this.messageMapper = messageMapper;
     }
 
-    @Value("${file.articleCover.download.path}")
+    @Value("${qxfly.file.articleCover.download.path}")
     private String articleCoverDownloadPath;
 
     /**

@@ -27,21 +27,35 @@ public class FileUtils {
         return path;
     }
 
+    
+
+    /**
+     * 上传文件
+     * @param path 文件路径
+     * @param file 文件
+     * @return 文件名
+     * @throws IOException IO异常
+     */
     public static String upload(String path, MultipartFile file) throws IOException {
         if (file == null) return null;
         String fileName = genFileName(file);
         File filePath = new File(path + fileName);
+        log.info("文件:{}", filePath);
         if (!filePath.exists()) {
             if (!filePath.getParentFile().exists())
                 filePath.getParentFile().mkdirs();
         }
-        log.info("文件:{}", filePath);
         FileOutputStream fileOutputStream = new FileOutputStream(filePath);
         fileOutputStream.write(file.getBytes());
         fileOutputStream.close();
         return fileName;
     }
 
+    /**
+     * 生成文件名
+     * @param file file
+     * @return 文件名
+     */
     public static String genFileName(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
         log.info("originalFilename：{}", originalFilename);

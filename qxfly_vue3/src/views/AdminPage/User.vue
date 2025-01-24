@@ -53,6 +53,7 @@
                     stripe
                     :highlight-current-row="true"
                     style="width: 100%"
+                    :row-style="rowStyle"
                     :max-height="setTableHeight()">
                     <el-table-column fixed prop="id" label="ID" width="80" align="center" />
                     <el-table-column prop="username" label="用户名" width="160" align="center" />
@@ -228,7 +229,10 @@
         :lock-scroll="false"
         :destroy-on-close="true"
         :align-center="true">
-        <el-image :src="avatar" fit="contain" />
+        <div style="display: flex; justify-content: center; align-items: center">
+            <el-image :src="avatar" fit="contain" />
+        </div>
+
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="deleteAvatar(avatarId)">删除头像</el-button>
@@ -435,6 +439,11 @@ function setTableHeight() {
     let height = document.body.scrollHeight - 250;
     return height;
 }
+const rowStyle = ({ row, rowIndex }) => {
+    return {
+        backgroundColor: "rgb(255, 255, 255,0.3)",
+    };
+};
 onMounted(() => {
     search();
     testAuthority();

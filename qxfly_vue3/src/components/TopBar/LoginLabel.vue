@@ -1,10 +1,10 @@
 <template>
     <div class="user_login">
         <div v-if="islogin() == md5('false') || islogin() == null">
-            <a class="nav-item login" href="/login">登录</a>
+            <router-link class="nav-item login" to="/login">登录</router-link>
         </div>
         <div v-if="islogin() == md5('false') || islogin() == null">
-            <a class="nav-item register" href="/register">注册</a>
+            <router-link class="nav-item register" to="/register">注册</router-link>
         </div>
         <div v-if="islogin() == md5('true')">
             <a class="nav-item logout" @click="toLogout">退出</a>

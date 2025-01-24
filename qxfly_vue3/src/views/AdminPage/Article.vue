@@ -84,6 +84,7 @@
                     stripe
                     :highlight-current-row="true"
                     style="width: 100%"
+                    :row-style="rowStyle"
                     :max-height="setTableHeight()">
                     <el-table-column fixed prop="id" label="ID" width="80" align="center" />
                     <el-table-column prop="title" label="标题" width="240" align="center" />
@@ -377,6 +378,12 @@ function setSearchData() {
         updateTimeEnd.value = useRouter.query.updateTimeEnd;
     }
 }
+
+const rowStyle = ({ row, rowIndex }) => {
+    return {
+        backgroundColor: "rgb(255, 255, 255,0.3)",
+    };
+};
 /* 路由分页 */
 let routePage = ref(useRouter);
 watch(

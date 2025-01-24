@@ -1,13 +1,12 @@
 package fun.qxfly.admin.controller;
 
-import fun.qxfly.admin.service.ArticleManageService;
 import com.github.pagehelper.PageInfo;
-import fun.qxfly.common.domain.po.Result;
+import fun.qxfly.admin.service.ArticleManageService;
 import fun.qxfly.common.domain.entity.Article;
+import fun.qxfly.common.domain.po.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +21,11 @@ import java.util.Map;
 @Tag(name = "文章管理")
 @Tag(name = "管理员")
 public class ArticleManageController {
-    @Autowired
-    ArticleManageService articleManageService;
+    private final ArticleManageService articleManageService;
+
+    public ArticleManageController(ArticleManageService articleManageService) {
+        this.articleManageService = articleManageService;
+    }
 
     /**
      * @param map

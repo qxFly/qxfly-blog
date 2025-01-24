@@ -1,6 +1,6 @@
 <template>
     <div class="space-bg theme-bg" id="space-bg"></div>
-    <TopBar></TopBar>
+    <!-- <TopBar></TopBar> -->
     <div class="user-space-main">
         <div class="user-space-left-sider">
             <div class="user-space-nav user-space-sider">
@@ -83,8 +83,7 @@ async function setNav() {
 }
 // 设置路径参数
 function setNavPathParam(nav) {
-    if (nav.path.match(/manage/)) return;
-    nav.path = nav.path + uid.value;
+    if (nav.path.match(/uid/)) nav.path = nav.path + uid.value;
 }
 //检查是否为自己空间,是=uid，否=null
 let isSelfSpace = ref(null);
@@ -128,11 +127,11 @@ function hasNoReadMsg() {
 function clearTip(name) {
     if (name == "消息") noReadMsgCount.value = 0;
 }
-onMounted(() => {
+onMounted(async () => {
     if (useRouter.path == "/user/space")
         router.push({ path: "/user/space/userArticle", query: { page: 1, uid: uid.value } });
     window.addEventListener("scroll", Listener);
-    checkIsSelfSpace();
+    await checkIsSelfSpace();
     getUserSpaceNav();
     hasNoReadMsg();
 });
@@ -158,9 +157,9 @@ onUnmounted(() => {
     left: 0;
     right: 0;
     bottom: 0;
-    filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    // filter: blur(10px);
+    // -webkit-backdrop-filter: blur(10px);
+    // backdrop-filter: blur(10px);
 }
 .user-space-right-sider {
     margin-bottom: 10px;

@@ -22,7 +22,9 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        String[] excludePathPatterns = {"/gs",//获取公匙
+        String[] excludePathPatterns = {
+                "/favicon.ico", //网站图标
+                "/gs",//获取公匙
                 "/login", //登陆
                 "/logout", //退出
                 "/register", //注册
@@ -36,6 +38,7 @@ public class WebConfig implements WebMvcConfigurer {
                 "/doc.html/**",
                 "/webjars/**",
                 "/userAvatar/**", //用户头像
+                "/userBgImg/**", //用户背景图片
                 "/user/getUserInfo", //获取用户信息
                 "/user/getSuggestAuthor",// 获取推荐作者
                 "/user/findPassword",// 找回密码
@@ -108,6 +111,9 @@ public class WebConfig implements WebMvcConfigurer {
         /*用户头像*/
         registry.addResourceHandler("/userAvatar/**")
                 .addResourceLocations("file:///" + FilePaths.USER_AVATAR_PATH.getPath());
+        /*用户背景图片*/
+        registry.addResourceHandler("/userBgImg/**")
+                .addResourceLocations("file:///" + FilePaths.USER_BACKGROUND_IMAGE_PATH.getPath());
         /*文章封面*/
         registry.addResourceHandler("/articleCover/**")
                 .addResourceLocations("file:///" + FilePaths.ARTICLE_COVER_PATH.getPath());

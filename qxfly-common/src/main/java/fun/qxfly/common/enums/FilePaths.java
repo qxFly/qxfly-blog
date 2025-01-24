@@ -6,6 +6,7 @@ public enum FilePaths {
     APP_BASE_PATH(System.getProperty("user.dir")),
     USER_CONFIG_PATH(APP_BASE_PATH.getPath() + "\\data\\qxfly-conf\\"),
     USER_AVATAR_PATH(APP_BASE_PATH.getPath() + "\\data\\qxfly-userAvatar\\"),
+    USER_BACKGROUND_IMAGE_PATH(APP_BASE_PATH.getPath() + "\\data\\qxfly-userBgImg\\"),
     ARTICLE_COVER_PATH(APP_BASE_PATH.getPath() + "\\data\\qxfly-articleCover\\"),
     ARTICLE_IMAGE_PATH(APP_BASE_PATH.getPath() + "\\data\\qxfly-articleImage\\"),
     ARTICLE_ATTACHMENT_PATH(APP_BASE_PATH.getPath() + "\\data\\qxfly-articleAttachment\\"),
