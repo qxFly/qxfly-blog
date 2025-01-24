@@ -1,5 +1,9 @@
-### 个人web，springboot后端，学习中..
+### 毕业设计项目
 
+### 环境
+java17 + vue3 + mysql8
+
+### 配置文件
 第一次启动会在项目当前目录下生成配置文件 **qxfly-conf/config.json**
 
 "aliyun_AccessKeyId": "",\
