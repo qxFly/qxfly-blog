@@ -20,4 +20,21 @@
             </if>
         </where>
     </select>
+    <select id="getGithubImagesByPage" resultType="fun.qxfly.common.domain.entity.Image">
+        select * from github_image
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and name like concat('%', #{name},'%')
+            </if>
+            <if test="originName != null &amp;&amp; originName != ''">
+                and originName like concat('%', #{originName},'%')
+            </if>
+            <if test="createTimeStart != null">
+                and createTime between #{createTimeStart} and #{createTimeEnd}
+            </if>
+        </where>
+    </select>
 </mapper>

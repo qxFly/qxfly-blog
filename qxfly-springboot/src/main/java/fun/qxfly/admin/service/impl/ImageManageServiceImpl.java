@@ -1,12 +1,13 @@
 package fun.qxfly.admin.service.impl;
 
-import fun.qxfly.admin.service.ImageManageService;
-import fun.qxfly.admin.mapper.ImageManageMapper;
 import com.alibaba.fastjson2.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import fun.qxfly.common.domain.po.Result;
+import fun.qxfly.admin.mapper.ImageManageMapper;
+import fun.qxfly.admin.service.ImageManageService;
+import fun.qxfly.common.domain.DTO.ImageDTO;
 import fun.qxfly.common.domain.entity.Image;
+import fun.qxfly.common.domain.po.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,31 +61,21 @@ public class ImageManageServiceImpl implements ImageManageService {
             if ((line = bufferedReader.readLine()) != null) {
                 Map map = (Map) JSON.parse(line);
                 List tree = (List) map.get("tree");
+                String sha = (String) map.get("sha");// commit的sha值
                 List<String> names = new ArrayList<>();
                 int iflag = 0;
                 int df = imageManageMapper.deleteAllGithubImage();
                 for (int i = 2; i < tree.size(); i++) {
                     Map map1 = (Map) tree.get(i);
                     String a = (String) map1.get("path");
-                    if (a.equals("run.bat")) continue;
+                    if (a.equals("run.bat") || a.equals("README.md")) continue;
                     String name = a.split("/")[1];
-                    String url = "https://fastly.jsdelivr.net/gh/qxFly/qxfly-image/api/" + name;
+                    String url = "https://fastly.jsdelivr.net/gh/qxFly/qxfly-image@"+ sha + "/api/" + name;
                     boolean flag = imageManageMapper.addImage(name, url);
                     if (flag) {
                         iflag++;
                         names.add(url);
                     }
-//                    /* 查询数据库是否有相同名字的图片 */
-//                    Integer imgId = imageManageMapper.getIdByName(name);
-//                    /* 没有则添加新图片 */
-//                    if (imgId == null) {
-//                        String url = "https://fastly.jsdelivr.net/gh/qxFly/qxfly-image/api/" + name;
-//                        int flag = imageManageMapper.addImage(name, url);
-//                        if (flag == 0) {
-//                            iflag++;
-//                            names.add(url);
-//                        }
-//                    }
                 }
                 return Result.success("共添加了" + iflag + "张", names);
             } else {
@@ -99,17 +90,24 @@ public class ImageManageServiceImpl implements ImageManageService {
     /**
      * 分页查询图库
      *
-     * @param currPage
-     * @param pageSize
+     * @param imageDTO
      * @return
      */
     @Override
-    public PageInfo<Image> getImagesByPage(int currPage, int pageSize, Integer aid, String originName, String createTimeStart, String createTimeEnd, Integer verify) {
-        PageHelper.startPage(currPage, pageSize);
-        List<Image> imageList = imageManageMapper.getImagesByPage(aid, originName, createTimeStart, createTimeEnd, verify);
-        for (Image image : imageList) {
-            image.setUrl(articleImageDownloadPath + image.getName());
+    public PageInfo<Image> getImagesByPage(ImageDTO imageDTO) {
+        log.info("分页查询图库，参数：{}", imageDTO);
+        String galleryType = System.getProperty("galleryType");
+        if (galleryType != null && galleryType.equals("2d")) {
+            PageHelper.startPage(imageDTO.getCurrPage(), imageDTO.getPageSize());
+            List<Image> imageList =  imageManageMapper.getGithubImagesByPage(imageDTO);
+            return new PageInfo<>(imageList);
+        }else{
+            PageHelper.startPage(imageDTO.getCurrPage(), imageDTO.getPageSize());
+            List<Image> imageList = imageManageMapper.getImagesByPage(imageDTO);
+            for (Image image : imageList) {
+                image.setUrl(articleImageDownloadPath + image.getName());
+            }
+            return new PageInfo<>(imageList);
         }
-        return new PageInfo<>(imageList);
     }
 }

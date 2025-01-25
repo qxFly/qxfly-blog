@@ -1,7 +1,8 @@
 package fun.qxfly.controller;
 
-import fun.qxfly.common.domain.po.Result;
+import com.github.pagehelper.PageInfo;
 import fun.qxfly.common.domain.entity.Image;
+import fun.qxfly.common.domain.po.Result;
 import fun.qxfly.service.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,39 +46,29 @@ public class ImageController {
     @Operation(description = "获取图片，可传入数量", summary = "获取图片")
     @GetMapping("/getImage")
     public Result getImage(@RequestParam(defaultValue = "1") int currPage, @RequestParam int pageSize, @RequestParam(defaultValue = "new") String sort) {
-//        if (!sort.equals("random")) {
-//            PageInfo<Image> pageInfo = imageService.getImageByPage(currPage, pageSize, sort);
-//            return Result.success(pageInfo.getList());
-//        } else {
-//            List<Image> imageList;
-//            /* 查看是否有缓存，如果缓存使用次数大于1000次更新图库 */
-//            if (listCache == null || listCache.isEmpty() || cacheUsage > 1000) {
-//                imageList = imageService.getAllImage();
-//                cacheUsage = 0;
-//                listCache = imageList;
-//            }
-//            Random random = new Random();
-//            List<Image> images = new ArrayList<>();
-//            for (int i = 0; i < pageSize; i++) {
-//                Image image = listCache.get(random.nextInt(listCache.size()));
-//                image.setUrl(articleImageDownloadPath + image.getName());
-//                images.add(image);
-//
-//            }
-//            return Result.success(images);
-//        }
-//        /* 查看是否有缓存，如果缓存使用次数大于1000次更新图库 */
-//        if (listCache == null || listCache.isEmpty() || cacheUsage > 100) {
-//            imageList = imageService.getAllGithubImage();
-//            cacheUsage = 0;
-//            listCache = imageList;
-//        }
-//        cacheUsage++;
-        List<Image> imageList;
-        imageList = imageService.getAllGithubImage();
+        String galleryType = System.getProperty("galleryType");
         List<Image> images = new ArrayList<>();
-        for (int i = 0; i < pageSize; i++) {
-            images.add(imageList.get(new Random().nextInt(imageList.size())));
+        // 获取自己的二次元图库 galleryType == "2d"
+        if (galleryType != null && galleryType.equals("2d")) {
+            List<Image> allGithubImage = imageService.getAllGithubImage();
+            for (int i = 0; i < pageSize; i++) {
+                images.add(allGithubImage.get(new Random().nextInt(allGithubImage.size())));
+            }
+        } else {
+            // 获取博客图库 galleryType == "blog"
+            if (!sort.equals("random")) {
+                PageInfo<Image> pageInfo = imageService.getImageByPage(currPage, pageSize, sort);
+                return Result.success(pageInfo.getList());
+            } else {
+                List<Image> imageList = imageService.getAllImage();
+                Random random = new Random();
+                for (int i = 0; i < pageSize; i++) {
+                    Image image = imageList.get(random.nextInt(imageList.size()));
+                    image.setUrl(articleImageDownloadPath + image.getName());
+                    images.add(image);
+                }
+                return Result.success(images);
+            }
         }
         return Result.success(images);
     }

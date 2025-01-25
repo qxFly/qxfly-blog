@@ -5,20 +5,28 @@
                 <div class="search-items">
                     <el-input
                         class="search-item"
-                        v-model="articleId"
+                        v-model="image.aid"
                         placeholder="文章ID"
                         clearable
                         style="width: 160px"></el-input>
-                    <!-- <el-input
+                    <el-input
                         class="search-item"
-                        v-model="originName"
+                        v-model="image.name"
+                        placeholder="名称"
+                        v-if="galleryType == '2d'"
+                        clearable
+                        style="width: 160px"></el-input>
+                    <el-input
+                        class="search-item"
+                        v-model="image.originName"
                         placeholder="原始名称"
                         clearable
-                        style="width: 160px"></el-input> -->
+                        v-if="galleryType == '2d'"
+                        style="width: 160px"></el-input>
                     <el-date-picker
                         :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
                         value-format="YYYY-MM-DD[T]HH:mm:ss.sss[Z]"
-                        v-model="createTime"
+                        v-model="image.createTime"
                         start-placeholder="起始创建日期"
                         end-placeholder="截止创建日期"
                         type="daterange"
@@ -31,6 +39,10 @@
                     <el-radio-group v-model="isPreviewImage">
                         <el-radio-button label="展示预览" :value="true" />
                         <el-radio-button label="关闭预览" :value="false" />
+                    </el-radio-group>
+                    <el-radio-group v-model="galleryType">
+                        <el-radio-button label="博客图片" value="blog" @click="ChangeGallery('blog')" />
+                        <el-radio-button label="二次元" value="2d" @click="ChangeGallery('2d')" />
                     </el-radio-group>
                 </div>
             </div>
@@ -134,7 +146,7 @@
     </el-dialog>
 </template>
 <script setup>
-import { listImages, deleteImage, updateImage } from "@/api/Admin";
+import { listImages, deleteImage, updateImage, changeGallery, getGalleryType } from "@/api/Admin";
 import { ref, onMounted, watch } from "vue";
 import router from "@/router";
 import { useRoute } from "vue-router";
@@ -146,6 +158,8 @@ const activeIndex = ref("1");
 const handleSelect = (key, keyPath) => {
     activeIndex.value = key;
 };
+let isPreviewImage = ref(false);
+
 let images = ref([]);
 /* 分页查询 */
 let total = ref(1); //总页数
@@ -161,19 +175,22 @@ function toListImage(verify) {
             activeIndex: activeIndex.value,
             verify: VERIFY.value,
             page: currPage.value,
-            originName: originName.value,
-            articleId: articleId.value != null && articleId.value != "" ? parseInt(articleId.value) : null,
-            createTimeStart: createTimeStart.value,
-            createTimeEnd: createTimeEnd.value,
+            originName: image.value.originName,
+            aid: image.value.aid != null && image.value.aid != "" ? parseInt(image.value.aid) : null,
+            createTimeStart: image.value.createTimeStart,
+            createTimeEnd: image.value.createTimeEnd,
         },
     });
 }
 /* 搜索 */
-let articleId = ref(null);
-let originName = ref(null);
-let createTime = ref(null);
-let createTimeStart = ref(null);
-let createTimeEnd = ref(null);
+let image = ref({
+    aid: null,
+    name: null,
+    originName: null,
+    createTime: null,
+    createTimeStart: null,
+    createTimeEnd: null,
+});
 let isSearch = ref(false);
 let VERIFY = ref(0);
 let previewList = ref([]);
@@ -186,21 +203,22 @@ function search() {
     loading.value = true;
     if (isSearch.value == false) currPage.value = 1;
     isSearch.value = true;
-    if (createTime.value != null) {
-        createTimeStart.value = new Date(createTime.value[0]);
-        createTimeEnd.value = new Date(createTime.value[1]);
+    if (image.value.createTime != null) {
+        image.value.createTimeStart = new Date(image.value.createTime[0]);
+        image.value.createTimeEnd = new Date(image.value.createTime[1]);
     } else {
-        createTimeStart.value = null;
-        createTimeEnd.value = null;
+        image.value.createTimeStart = null;
+        image.value.createTimeEnd = null;
     }
     listImages({
         verify: VERIFY.value,
         currPage: currPage.value,
         pageSize: pageSize.value,
-        aid: parseInt(articleId.value),
-        originName: originName.value,
-        createTimeStart: createTimeStart.value,
-        createTimeEnd: createTimeEnd.value,
+        aid: parseInt(image.value.aid),
+        originName: image.value.originName,
+        name: image.value.name,
+        createTimeStart: image.value.createTimeStart,
+        createTimeEnd: image.value.createTimeEnd,
     }).then((res) => {
         if (res.data.code == 1) {
             loading.value = false;
@@ -238,6 +256,28 @@ async function DeleteImage(article) {
         })
         .catch(() => {});
 }
+/* 获取图库类型 2d:自己的二次元图片，blog:博客图片 */
+let galleryType = ref("blog"); //是否开启自己的二次元图库
+function GetGalleryType() {
+    getGalleryType().then((res) => {
+        if (res.data.code == 1) {
+            galleryType.value = res.data.data;
+        } else {
+            ElMessage.error(res.data.msg);
+        }
+    });
+}
+/* 切换图库 */
+function ChangeGallery(type) {
+    changeGallery(type).then((res) => {
+        if (res.data.code == 1) {
+            ElMessage.success("切换成功");
+            search();
+        } else {
+            ElMessage.error("切换失败");
+        }
+    });
+}
 /* 审核文章 */
 function verifyArticle(article) {
     if (article.aid == null) return;
@@ -248,7 +288,7 @@ function verifyArticle(article) {
         },
     });
 }
-let isPreviewImage = ref(false);
+
 /* 换页操作 */
 let currentChange = (page) => {
     currPage.value = page;
@@ -258,20 +298,21 @@ let currentChange = (page) => {
             activeIndex: activeIndex.value,
             VERIFY: VERIFY.value,
             page: page,
-            originName: originName.value,
-            articleId: articleId.value != null && articleId.value != "" ? parseInt(articleId.value) : null,
-            createTimeStart: createTimeStart.value,
-            createTimeEnd: createTimeEnd.value,
+            originName: image.value.originName,
+            aid: image.value.aid != null && image.value.aid != "" ? parseInt(image.value.aid) : null,
+            createTimeStart: image.value.createTimeStart,
+            createTimeEnd: image.value.createTimeEnd,
         },
     });
 };
 /* 清空搜索 */
 function clearAll() {
-    articleId.value = null;
-    originName.value = null;
-    createTime.value = null;
-    createTimeStart.value = null;
-    createTimeEnd.value = null;
+    image.value.aid = null;
+    image.value.originName = null;
+    image.value.createTime = null;
+    image.value.name = null;
+    image.value.createTimeStart = null;
+    image.value.createTimeEnd = null;
     currPage.value = 1;
     search();
 }
@@ -295,17 +336,17 @@ function setSearchData() {
     if (useRouter.query.page != null) {
         currPage.value = parseInt(useRouter.query.page);
     }
-    if (useRouter.query.articleId != null) {
-        articleId.value = parseInt(useRouter.query.articleId);
+    if (useRouter.query.aid != null) {
+        image.value.aid = parseInt(useRouter.query.aid);
     }
     if (useRouter.query.createTimeStart != null) {
-        createTimeStart.value = useRouter.query.createTimeStart;
+        image.value.createTimeStart = useRouter.query.createTimeStart;
     }
     if (useRouter.query.createTimeEnd != null) {
-        createTimeEnd.value = useRouter.query.createTimeEnd;
+        image.value.createTimeEnd = useRouter.query.createTimeEnd;
     }
     if (useRouter.query.originName != null) {
-        originName.value = useRouter.query.originName;
+        image.value.originName = useRouter.query.originName;
     }
 }
 /* 路由分页 */
@@ -331,6 +372,7 @@ const rowStyle = ({ row, rowIndex }) => {
 };
 onMounted(() => {
     setSearchData();
+    GetGalleryType();
     search();
 });
 </script>

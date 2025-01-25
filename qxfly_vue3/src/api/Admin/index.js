@@ -209,6 +209,30 @@ export function deleteImage(id) {
 }
 
 /**
+ * 获取图库类型 2d:自己的二次元图片，blog:博客图片
+ * @returns
+ */
+export function getGalleryType() {
+    return request({
+        url: "/getGalleryType",
+        method: "get",
+    });
+}
+/**
+ * 更换图库
+ * @returns
+ */
+export function changeGallery(type) {
+    return request({
+        url: "/changeGallery",
+        method: "get",
+        params: {
+            type: type,
+        },
+    });
+}
+
+/**
  * 列出管理员导航栏
  * @returns
  */
