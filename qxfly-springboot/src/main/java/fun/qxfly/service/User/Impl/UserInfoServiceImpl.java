@@ -33,7 +33,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     private final AdminService adminService;
 
-    @Value("${qxfly.file.userImg.download.path}")
+    @Value("${qxfly.file.path.userImg}")
     private String userAvatarPath;
 
     public UserInfoServiceImpl(UserInfoMapper userInfoMapper, AliyunDysmsapi aliyunDysmsapi, AdminService adminService) {

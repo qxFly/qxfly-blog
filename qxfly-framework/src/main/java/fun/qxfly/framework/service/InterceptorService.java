@@ -15,11 +15,4 @@ public interface InterceptorService {
      * @return
      */
     boolean isAdmin(String username);
-
-    /**
-     * 判断是否需要拦截
-     * @param path
-     * @return
-     */
-    boolean pathBypass(String path);
 }

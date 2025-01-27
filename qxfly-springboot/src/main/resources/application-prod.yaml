@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    username: root
+    password: FLY334955ffh
+  application:
+    name: qxfly-prod
+logging:
+  level:
+    root: info
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      max-file-size: 1MB
+      file-name-pattern: ${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz
+qxfly:
+  file:
+    uploadPath: /qxfly/web/data/upload/
+    path:
+      download: https://qxfly.fun/fly/download/
+      VirtualPath: file:///www/qxfly/data/upload/
+      userImg: https://qxfly.fun/fly/userAvatar/
+      userBgImg: https://qxfly.fun/fly/userBgImg/
+      articleCover: https://qxfly.fun/fly/articleCover/
+      articleImage: https://qxfly.fun/fly/articleImage/
+      articleAttachment: https://qxfly.fun/fly/articleAttachment/

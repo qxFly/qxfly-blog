@@ -34,20 +34,4 @@ public class InterceptorServiceImpl implements InterceptorService {
     public boolean isAdmin(String username) {
        return interceptorMapper.isAdmin(username) != 0;
     }
-
-    /**
-     * 判断是否需要拦截
-     * @param path
-     * @return
-     */
-    @Override
-    public boolean pathBypass(String path) {
-        String[] urlList = {"download", "swagger"};
-        for (String s : urlList) {
-            if (path.contains(s)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

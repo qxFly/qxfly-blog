@@ -28,7 +28,6 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object handler) throws Exception {
         if (HttpMethod.OPTIONS.toString().equals(req.getMethod())) {
-            log.info("OPTIONS请求，放行");
             return true;
         }
         // 错误信息
@@ -39,11 +38,6 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         //获取请求的url
         String url = req.getRequestURI();
         log.info("请求的url:{}", url);
-        //判断是否为 download,如果是放行
-//        if (interceptorService.pathBypass(url)) {
-//            log.info("该url无需验证：{}", url);
-//            return true;
-//        }
 
         //获取证书token
         String token = req.getHeader("token");

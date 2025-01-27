@@ -29,7 +29,7 @@ public class ImageController {
         this.imageService = imageService;
     }
 
-    @Value("${qxfly.file.articleImage.download.path}")
+    @Value("${qxfly.file.path.articleImage}")
     private String articleImageDownloadPath;
 
     /**

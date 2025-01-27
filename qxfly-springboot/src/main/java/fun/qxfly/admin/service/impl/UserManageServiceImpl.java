@@ -19,7 +19,7 @@ public class UserManageServiceImpl implements UserManageService {
         this.userManageMapper = userManageMapper;
     }
 
-    @Value("${qxfly.file.userImg.download.path}")
+    @Value("${qxfly.file.path.userImg}")
     private String userAvatarDownloadPath;
 
     /**

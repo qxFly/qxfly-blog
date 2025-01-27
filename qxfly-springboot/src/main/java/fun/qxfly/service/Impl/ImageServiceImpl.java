@@ -20,7 +20,7 @@ public class ImageServiceImpl implements ImageService {
         this.imageMapper = imageMapper;
     }
 
-    @Value("${qxfly.file.articleImage.download.path}")
+    @Value("${qxfly.file.path.articleImage}")
     private String articleImageDownloadPath;
 
     /**

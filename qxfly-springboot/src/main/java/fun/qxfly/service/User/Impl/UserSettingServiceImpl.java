@@ -17,7 +17,7 @@ import java.io.IOException;
 @Service
 public class UserSettingServiceImpl implements UserSettingService {
 
-    @Value("${qxfly.file.userBgImg.download.path}")
+    @Value("${qxfly.file.path.userBgImg}")
     String bgImgDownloadPath;
 
     private final UserSettingMapper userSettingMapper;

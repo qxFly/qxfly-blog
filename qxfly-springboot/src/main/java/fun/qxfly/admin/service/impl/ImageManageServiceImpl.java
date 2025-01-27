@@ -27,7 +27,7 @@ import java.util.Map;
 public class ImageManageServiceImpl implements ImageManageService {
     @Autowired
     private ImageManageMapper imageManageMapper;
-    @Value("${qxfly.file.articleImage.download.path}")
+    @Value("${qxfly.file.path.articleImage}")
     private String articleImageDownloadPath;
 
     /**

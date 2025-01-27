@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 @Service
 public class ArticleCommentServiceImpl implements ArticleCommentService {
-    @Value("${qxfly.file.userImg.download.path}")
+    @Value("${qxfly.file.path.userImg}")
     private String userAvatarPath;
     private final ArticleCommentMapper articleCommentMapper;
 

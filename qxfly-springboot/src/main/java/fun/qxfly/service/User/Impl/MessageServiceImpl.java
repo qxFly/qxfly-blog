@@ -16,7 +16,7 @@ import java.util.UUID;
 @Service
 public class MessageServiceImpl implements MessageService {
 
-    @Value("${qxfly.file.userImg.download.path}")
+    @Value("${qxfly.file.path.userImg}")
     private String userAvatarPath;
 
     private final MessageMapper messageMapper;
