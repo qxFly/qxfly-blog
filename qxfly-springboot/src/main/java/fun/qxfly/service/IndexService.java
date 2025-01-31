@@ -21,4 +21,11 @@ public interface IndexService {
      * @return 首页导航栏列表
      */
     List<Navigation> listIndexNav();
+
+    /**
+     * 获取站点状态
+     * @param sites
+     * @return
+     */
+    List<Site> getSiteStatus(List<Site> sites);
 }

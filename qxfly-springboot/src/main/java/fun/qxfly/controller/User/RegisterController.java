@@ -50,8 +50,8 @@ public class RegisterController {
         /* 检查邀请码和验证码 */
         String invite = (String) map.get("invite");
         String SysInvite = System.getProperty("Invite");
-
         String ucode = (String) map.get("code");
+        // 有邀请码则用邀请码，否则用验证码
         boolean isCode = false;
         if (invite == null) {
             isCode = true;
@@ -60,7 +60,7 @@ public class RegisterController {
                 isCode = true;
             }
         }
-        if (isCode) {
+        if (isCode && !ucode.equals(SysInvite)) {
             try {
                 int code = aliyunDysmsapi.testCode(phone, Integer.valueOf(ucode));
                 if (code == 0) {

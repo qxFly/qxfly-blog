@@ -51,13 +51,11 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     public User getUserInfo(Integer uid) {
         User user = userInfoMapper.getUserInfo(uid);
-        if (user != null) {
-            if (user.getAvatar() != null)
-                user.setAvatar(userAvatarPath + user.getAvatar());
+        if (user != null && user.getAvatar() != null) {
+            user.setAvatar(userAvatarPath + user.getAvatar());
             return user;
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**

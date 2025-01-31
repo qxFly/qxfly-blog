@@ -40,7 +40,7 @@
 <script setup>
 import BackTop from "@/components/BackTop.vue";
 import TopBar from "@/components/TopBar/TopBar.vue";
-import ArticleAuthorInfoCard from "@/views/Article/ArticleAuthorInfoCard.vue";
+import ArticleAuthorInfoCard from "@/components/ArticleAuthorInfoCard.vue";
 import { onMounted, onUnmounted, ref } from "vue";
 import md5 from "js-md5";
 import { useRoute } from "vue-router";

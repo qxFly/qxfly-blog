@@ -2,8 +2,9 @@ import axios from "axios";
 import md5 from "js-md5";
 // import request from "@/utils/request";
 let token = localStorage.getItem(md5("token"));
+let domain = window.location.hostname;
 const request = axios.create({
-    baseURL: process.env.VUE_APP_ADMIN_BASE_URL,
+    baseURL: domain == "38.55.199.233" ? process.env.VUE_APP_IP_ADMIN_BASE_URL : process.env.VUE_APP_ADMIN_BASE_URL,
     // baseURL: "https://qxfly.fun/fly",
     // baseURL: "http://120.24.195.4:8081",
     headers: {

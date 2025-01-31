@@ -17,19 +17,14 @@ import Date from "@/views/Sider/Date.vue";
 import MessageTips from "@/views/Sider/MessageTips.vue";
 import Site from "@/views/Sider/Site.vue";
 import SuggestAuthor from "@/views/Sider/SuggestAuthor.vue";
-import ArticleAuthorInfoCard from "@/views/Article/ArticleAuthorInfoCard.vue";
+import ArticleAuthorInfoCard from "@/components/ArticleAuthorInfoCard.vue";
 import { onMounted, onUnmounted, ref } from "vue";
+import md5 from "js-md5";
 let uid = ref(0);
-let timer = ref();
 let btnType = ref("none");
-function getUid() {
-    if (
-        sessionStorage.getItem("uid") != "null" &&
-        sessionStorage.getItem("uid") != null &&
-        sessionStorage.getItem("uid") != "undefined"
-    ) {
-        uid.value = parseInt(sessionStorage.getItem("uid"));
-        clearInterval(timer.value);
+function setBtnType() {
+    if (localStorage.getItem(md5("token")) != null) {
+        uid.value = parseInt(localStorage.getItem("uid"));
         btnType.value = "detail";
     } else {
         btnType.value = "login";
@@ -38,10 +33,10 @@ function getUid() {
 
 onMounted(() => {
     setTimeout(() => {
-        getUid();
+        setBtnType();
     }, 200);
     setTimeout(() => {
-        getUid();
+        setBtnType();
     }, 1000);
 });
 onUnmounted(() => {});

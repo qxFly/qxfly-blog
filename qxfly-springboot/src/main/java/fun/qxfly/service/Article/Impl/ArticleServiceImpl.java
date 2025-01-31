@@ -46,7 +46,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Integer releaseArticle(Article article, String image) {
         /*封面以文件名方式保存至数据库*/
-        String[] split1 = article.getCover().split("/");
+        String[] split1 = article.getCover().split("articleCover/");
         article.setCover(split1[split1.length - 1]);
         articleMapper.releaseArticle(article);
         /*保存文章中的图片*/
@@ -85,7 +85,7 @@ public class ArticleServiceImpl implements ArticleService {
             ;
         }
         /*以文件名方式保存至数据库*/
-        String[] split1 = article.getCover().split("/");
+        String[] split1 = article.getCover().split("articleCover/");
         article.setCover(split1[split1.length - 1]);
         /*保存文章中的图片*/
         String[] imageArr = article.getAuthor().split(",");

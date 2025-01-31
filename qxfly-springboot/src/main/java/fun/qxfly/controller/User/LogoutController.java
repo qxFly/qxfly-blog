@@ -35,7 +35,7 @@ public class LogoutController {
         Claims claims = JwtUtils.parseJWT(reqToken);
         if (claims == null) {
             log.info("退出操作，但是token失效");
-            logoutService.deleteToken(reqToken);
+            logoutService.deleteToken(new Token(reqToken));
             return Result.error("验证失败");
         }
         String username = (String) claims.get("username");

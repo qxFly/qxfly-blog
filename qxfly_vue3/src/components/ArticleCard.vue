@@ -78,6 +78,7 @@
 <script setup>
 import router from "@/router";
 import mymd5 from "@/utils/md5.js";
+import { ref } from "vue";
 
 const props = defineProps({
     article: {
@@ -92,15 +93,26 @@ const props = defineProps({
     },
 });
 /* 查看文章 */
+let isEditMode = ref(false);
 function ArticleDetail(article) {
     var id = article.id;
     if (id == null) return;
     document.getElementById("article-detail-load-" + id).style.display = "block";
     document.getElementById("item-cover-" + id).style.display = "none";
     document.getElementById("item-info-" + id).style.display = "none";
+    let uid = localStorage.getItem("uid");
+    if (uid == article.authorId) {
+        isEditMode.value = true;
+    }
+    article.cover = article.cover.replace(/\\/g, "/");
     router.push({
         name: "ArticleDetail",
-        params: { id: id, editMode: mymd5.generateMD5BySalt(false), salt: mymd5.getSalt(), cover: article.cover },
+        params: {
+            id: id,
+            editMode: mymd5.generateMD5BySalt(isEditMode.value),
+            salt: mymd5.getSalt(),
+            cover: article.cover,
+        },
     });
 }
 /* 跳转用户空间 */

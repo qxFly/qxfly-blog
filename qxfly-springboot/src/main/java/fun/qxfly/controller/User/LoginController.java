@@ -68,86 +68,73 @@ public class LoginController {
         }
         user.setPassword(decodePassword);
         User u = loginService.login(user);
-        if (u != null) {
-            HashMap<String, String> resBody = new HashMap<>();
-            resBody.put("uid", u.getId().toString());
-            resBody.put("username", u.getUsername());
-            /*获取用户的token*/
-            Token userToken = loginService.getTokenByUser(u);
-            /*token不为空*/
-            if (userToken != null && userToken.getToken() != null) {
-                try {
-                    /*验证Token是否有效*/
-                    JwtUtils.parseJWT(userToken.getToken());
-                    /* token有效，登录*/
-                    logoutService.deleteToken(userToken.getToken());
-                    resBody.put("token", userToken.getToken());
-                    return Result.success(resBody);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    loginService.deleteToken(userToken);
-                    log.info("登录证书过期或错误！");
-                }
+        /* 用户不存在 */
+        if (u == null) return Result.error("用户名或密码错误");
+        /* 用户存在 */
+        HashMap<String, String> resBody = new HashMap<>();
+        resBody.put("uid", u.getId().toString());
+        resBody.put("username", u.getUsername());
+        /*获取用户的token*/
+        Token userToken = loginService.getTokenByUser(u);
+        /*token不为空*/
+        if (userToken != null && userToken.getToken() != null) {
+            /*验证Token是否有效*/
+            Claims claims = JwtUtils.parseJWT(userToken.getToken());
+            /* token有效，登录*/
+            if (claims != null) {
+                logoutService.deleteToken(userToken);
+                resBody.put("token", userToken.getToken());
+                return Result.success(resBody);
             }
-            /* 用户无token生成token */
-            /* 获取现在的时间，转化为毫秒 */
-            Date nowdate = new Date();
-            String newToken = JwtUtils.createToken(u.getId(), u.getUsername(), nowdate, null);
-            long createDate = nowdate.getTime();
-            loginService.setToken(u.getUsername(), newToken, createDate);
-            if (userToken != null)
-                logoutService.deleteToken(userToken.getToken());
-            resBody.put("token", newToken);
-            return Result.success(resBody);
+            loginService.deleteToken(userToken);
+            logoutService.deleteToken(userToken);
         }
-        return Result.error("用户名或密码错误");
+        /* 用户token失效或者无token，生成token */
+        /* 获取现在的时间，转化为毫秒 */
+        String newToken = JwtUtils.createToken(u.getId(), u.getUsername(), null);
+        long createDate = JwtUtils.parseJWT(newToken).getIssuedAt().getTime();
+        loginService.setToken(u.getUsername(), newToken, createDate);
+        resBody.put("token", newToken);
+        return Result.success(resBody);
     }
 
     /**
      * 更新登录状态
-     *
-     * @param token token
      */
     @Operation(description = "每次进入站点检查更新登录状态", summary = "更新登录状态")
     @PostMapping("/updateLoginStatue")
-    public Result updateLoginStatue(@RequestBody Token token, HttpServletRequest request) {
-        String requestToken = request.getHeader("token");
-        String token1 = token.getToken();
-        /*检测token一致性和是否为空*/
-        if (token1 == null || !token1.equals(requestToken))
-            return Result.noLoginError();
+    public Result updateLoginStatue(HttpServletRequest request) {
+        String token = request.getHeader("token");
+
         /* 检查token有效性 */
-        Claims claims = JwtUtils.parseJWT(token.getToken());
-        if (claims == null) return Result.noLoginError();
-        String logoutStatus = logoutService.getLogoutStatus(token1);
+        Claims claims = JwtUtils.parseJWT(token);
+        if (claims == null) {
+            return Result.noLoginError();
+        }
+        /* 检查用户是否退出 */
+        String logoutStatus = logoutService.getLogoutStatus(token);
         if (logoutStatus != null) {
             return Result.noLoginError();
         }
+        /* 检查用户信息是否异常 */
         Integer uid = (Integer) claims.get("uid");
-        User userInfoByToken = userInfoService.getUserInfo(uid);
-        if (userInfoByToken == null) {
+        String username = (String) claims.get("username");
+        User userInfo = userInfoService.getUserInfo(uid);
+        if (userInfo == null) {
             return Result.noLoginError();
         }
         /* 有效则判断剩余时间 */
         long createTime = claims.getIssuedAt().getTime();
-        Date nowTime = new Date();
-        long updateTime = nowTime.getTime();
+        long updateTime = new Date().getTime();
         /*判断证书剩余时间，小于1周则发放新证书*/
         if (updateTime - createTime >= 604800000) {
             log.info("剩余一周，续期");
             /*生成token*/
-            try {
-                Integer userId = (Integer) claims.get("uid");
-                String username = (String) claims.get("username");
-                String newToken = JwtUtils.createToken(userId, username, nowTime, null);
-                loginService.updateToken(token.getUsername(), newToken, updateTime);
-                return Result.success(newToken);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return Result.noLoginError();
-            }
+            String newToken = JwtUtils.updateToken(token);
+            if (newToken == null) return Result.noLoginError();
+            loginService.updateToken(username, newToken, updateTime);
+            return Result.success(newToken);
         } else {
-//            log.info("无需续期");
             return Result.success("ok");
         }
     }

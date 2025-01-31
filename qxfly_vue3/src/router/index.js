@@ -56,10 +56,10 @@ const routes = [
         path: "/findPassword",
         component: () => import("@/views/Login/FindPassword.vue"),
     },
-    // {
-    //     path: "/file",
-    //     component: () => import("@/views/FileIndex/FileIndex"),
-    // },
+    {
+        path: "/gallery",
+        component: () => import("@/views/Index/Gallery.vue"),
+    },
     {
         path: "/manage",
         component: () => import("@/views/AdminPage/AdminIndex"),

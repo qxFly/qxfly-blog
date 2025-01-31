@@ -11,11 +11,10 @@ import org.springframework.stereotype.Service;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 @Service
 @Slf4j
@@ -36,28 +35,6 @@ public class IndexServiceImpl implements IndexService {
     public PageInfo<Site> listSites(Integer currPage, Integer pageSize, String name) {
         PageHelper.startPage(currPage, pageSize);
         List<Site> sites = indexMapper.listSites(name);
-        // 检查网站是否可用
-
-        ExecutorService executorService = Executors.newFixedThreadPool(5);
-        for (Site site : sites) {
-            executorService.submit(() -> {
-                try {
-                    HttpURLConnection httpURLConnection;
-                    URL url = new URL(site.getUrl());
-                    httpURLConnection = (HttpURLConnection) url.openConnection();
-                    site.setStatus(httpURLConnection.getResponseCode());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    site.setStatus(404);
-                }
-            });
-        }
-        executorService.shutdown();
-        try {
-            executorService.awaitTermination(10, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         return new PageInfo<>(sites);
     }
 
@@ -71,5 +48,34 @@ public class IndexServiceImpl implements IndexService {
         List<Navigation> navigations = indexMapper.listIndexNav();
         navigations.sort(Comparator.comparingInt(Navigation::getIndex));
         return navigations;
+    }
+
+    @Override
+    public List<Site> getSiteStatus(List<Site> sites) {
+        // 检查网站是否可用
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        List<Site> status = new ArrayList<>();
+        for (Site site : sites) {
+            Future<Site> submit = executorService.submit(() -> {
+                HttpURLConnection httpURLConnection;
+                try {
+                    URL url = new URL(site.getUrl());
+                    httpURLConnection = (HttpURLConnection) url.openConnection();
+                    int responseCode = httpURLConnection.getResponseCode();
+                    site.setStatus(responseCode);
+                } catch (Exception e) {
+                    site.setStatus(404);
+                    e.printStackTrace();
+                }
+                return site;
+            });
+            try {
+                status.add(submit.get());
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+        }
+        executorService.shutdown();
+        return status;
     }
 }

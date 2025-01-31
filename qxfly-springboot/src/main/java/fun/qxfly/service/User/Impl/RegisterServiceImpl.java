@@ -21,8 +21,6 @@ public class RegisterServiceImpl implements RegisterService {
     @Override
     public void register(User user) {
         registerMapper.register(user);
-        Integer id = registerMapper.getUserId(user);
-        user.setId(id);
         registerMapper.createUserInfo(user);
     }
 

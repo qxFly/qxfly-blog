@@ -48,6 +48,7 @@ async function setUsernameAndAvatar() {
             }
         });
     }
+
     sessionStorage.setItem("username", user.value.username);
     sessionStorage.setItem("useravatar", user.value.avatar);
     sessionStorage.setItem("uid", user.value.id);
@@ -59,10 +60,7 @@ async function checkStatus() {
         clearLoginStatue();
         return;
     } else {
-        await updateLoginStatue({
-            username: localStorage.getItem("username"),
-            token: token,
-        }).then((ress) => {
+        await updateLoginStatue().then((ress) => {
             if (ress.data.code == 1) {
                 if (ress.data.data == null) {
                     clearLoginStatue();
@@ -74,6 +72,7 @@ async function checkStatus() {
                     console.log("登录！");
                 }
             } else {
+                console.log(" ress.data.msg:", ress.data.msg);
                 clearLoginStatue();
             }
         });
@@ -174,6 +173,7 @@ onMounted(async () => {
         socketUtil.initWebsocket();
         /* 检查用户登录状态 */
         await checkStatus();
+
         await setUsernameAndAvatar();
         setBackgroundImage();
         setInterval(async () => {

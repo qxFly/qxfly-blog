@@ -120,7 +120,7 @@ import { onMounted, onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router";
 import BackTop from "@/components/BackTop.vue";
-import ArticleAuthorInfoCard from "@/views/Article/ArticleAuthorInfoCard.vue";
+import ArticleAuthorInfoCard from "@/components/ArticleAuthorInfoCard.vue";
 import hljs from "highlight.js/lib/core";
 import "highlight.js/styles/github.css";
 window.hljs = hljs;

@@ -1,7 +1,7 @@
 spring:
   datasource:
     username: root
-    password: FLY334955ffh
+    password: FLY334955ffh.
   application:
     name: qxfly-prod
 logging:
@@ -17,10 +17,16 @@ qxfly:
   file:
     uploadPath: /qxfly/web/data/upload/
     path:
-      download: https://qxfly.fun/fly/download/
+#      download: https://qxfly.fun/fly/download/
+#      VirtualPath: file:///www/qxfly/data/upload/
+#      userImg: https://qxfly.fun/fly/userAvatar/
+#      userBgImg: https://qxfly.fun/fly/userBgImg/
+#      articleCover: https://qxfly.fun/fly/articleCover/
+#      articleImage: https://qxfly.fun/fly/articleImage/
+#      articleAttachment: https://qxfly.fun/fly/articleAttachment/
       VirtualPath: file:///www/qxfly/data/upload/
-      userImg: https://qxfly.fun/fly/userAvatar/
-      userBgImg: https://qxfly.fun/fly/userBgImg/
-      articleCover: https://qxfly.fun/fly/articleCover/
-      articleImage: https://qxfly.fun/fly/articleImage/
-      articleAttachment: https://qxfly.fun/fly/articleAttachment/
+      userImg: http://38.55.199.233:8081/userAvatar/
+      userBgImg: http://38.55.199.233:8081/userBgImg/
+      articleCover: http://38.55.199.233:8081/articleCover/
+      articleImage: http://38.55.199.233:8081/articleImage/
+      articleAttachment: http://38.55.199.233:8081/articleAttachment/

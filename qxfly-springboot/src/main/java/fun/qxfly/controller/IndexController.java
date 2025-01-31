@@ -8,12 +8,8 @@ import fun.qxfly.service.IndexService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -38,6 +34,19 @@ public class IndexController {
     public Result listSite(@RequestParam Integer currPage, @RequestParam Integer pageSize, @RequestParam String name) {
         PageInfo<Site> pageInfo = indexService.listSites(currPage, pageSize, name);
         return Result.success(pageInfo);
+    }
+
+    /**
+     * 获取站点状态
+     *
+     * @param sites
+     * @return
+     */
+    @Operation(description = "获取站点状态", summary = "获取站点状态")
+    @PostMapping("/getSiteStatus")
+    public Result getSiteStatus(@RequestBody List<Site> sites) {
+        List<Site> status = indexService.getSiteStatus(sites);
+        return Result.success(status);
     }
 
 

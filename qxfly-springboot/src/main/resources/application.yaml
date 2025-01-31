@@ -55,6 +55,7 @@ qxfly:
         - /index/listLeaveMessage   #列出留言
         - /index/sendLeaveMessage   #发送留言
         - /index/deleteLeaveMessage  #删除留言
+        - /index/getSiteStatus  #获取站点状态
         
 
 

@@ -15,7 +15,7 @@ public interface LogoutService {
      *
      * @param token token
      */
-    void deleteToken(String token);
+    void deleteToken(Token token);
 
     /**
      * 获取退出状态信息

@@ -6,7 +6,7 @@
                 <div class="site-item" @click="toSite(site)">
                     {{ site.name }}
                 </div>
-                <div class="site-status" :class="{ success: testSiteStatus(site) }"></div>
+                <div class="site-status" :class="GetSiteStatus(site)"></div>
             </div>
             <div v-if="sites.length == 0 && !loading" class="item-col">暂无站点</div>
             <div v-if="loading" class="item-col">努力获取站点状态 {{ second }}</div>
@@ -18,7 +18,7 @@
 </template>
 <script setup>
 import { onMounted, onUnmounted, ref } from "vue";
-import { listSite } from "@/api";
+import { listSite, getSiteStatus } from "@/api";
 var sites = ref([]);
 // 获取站点列表
 let currPage = ref(1);
@@ -36,12 +36,19 @@ async function ListSite() {
     loading.value = false;
     clearInterval(timer);
     sites.value = res.data.data.list;
+    /* 获取站点状态 */
+    getSiteStatus(sites.value).then((res) => {
+        if (res.data.code == 1) sites.value = res.data.data;
+    });
 }
-function testSiteStatus(site) {
+function GetSiteStatus(site) {
     if (site.status == 200) {
-        return true;
+        return "success";
+    } else if (site.status == 404) {
+        return "error";
+    } else {
+        return "wait";
     }
-    return false;
 }
 function toSite(site) {
     window.open(site.url);
@@ -85,7 +92,13 @@ onUnmounted(() => {});
     margin-right: 4px;
     font-size: 20px;
 }
-.site-status::before {
+.site-status.wait::before {
+    content: "\e713";
+    font-family: "iconfont";
+    margin-right: 4px;
+    font-size: 20px;
+}
+.site-status.error::before {
     content: "\e6bd";
     font-family: "iconfont";
     margin-right: 4px;

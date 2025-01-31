@@ -1,5 +1,4 @@
 <template>
-    <!-- <TopBar></TopBar> -->
     <div id="load" class="load" v-if="isload">
         <div class="load-content">{{ loadText }}</div>
     </div>
@@ -113,7 +112,6 @@
 </template>
 
 <script setup>
-import TopBar from "@/components/TopBar/TopBar.vue";
 import {
     getArticleById,
     deleteArticle,
@@ -125,7 +123,7 @@ import {
 import { onMounted, onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import BackTop from "@/components/BackTop.vue";
-import ArticleAuthorInfoCard from "@/views/Article/ArticleAuthorInfoCard.vue";
+import ArticleAuthorInfoCard from "@/components/ArticleAuthorInfoCard.vue";
 import ArticleComment from "@/views/Article/ArticleComment.vue";
 import hljs from "highlight.js/lib/core";
 import "highlight.js/styles/github.css";
@@ -184,6 +182,7 @@ async function getArticleDetail() {
                 tags.value.push({ name: temp[i] });
             }
         }
+        article.value.cover = article.value.cover.replace(/\\/g, "/");
         isLike.value = article.value.isLike;
         isCollection.value = article.value.isCollection;
         let content = document.getElementById("content");
@@ -638,15 +637,6 @@ function setThemeColor() {
             return colorCounts[b] - colorCounts[a];
         });
         let mainColor = sortedColors.slice(1, 4);
-        let rgb = mainColor[0].split(",");
-        let r = rgb[0] / 255;
-        let g = rgb[1] / 255;
-        let b = rgb[2] / 255;
-        let rgb2 = mainColor[1].split(",");
-        let r2 = rgb2[0] / 255;
-        let g2 = rgb2[1] / 255;
-        let b2 = rgb2[2] / 255;
-
         let rgbs = [];
         let lights = [];
         for (let i = 0; i < mainColor.length; i++) {
@@ -948,7 +938,7 @@ onUnmounted(() => {
 .article-actions-item {
     outline: none;
     border: none;
-    background-color: #fff;
+    background-color: transparent;
     padding: 4px;
     margin: 0 4px;
     cursor: pointer;

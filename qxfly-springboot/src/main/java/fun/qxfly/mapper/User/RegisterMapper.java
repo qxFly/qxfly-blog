@@ -1,10 +1,7 @@
 package fun.qxfly.mapper.User;
 
 import fun.qxfly.common.domain.entity.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectKey;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface RegisterMapper {
@@ -14,6 +11,7 @@ public interface RegisterMapper {
      *
      * @param user
      */
+    @Options(useGeneratedKeys = true, keyProperty = "id")
     @Insert("insert into user(username,password,phone)values(#{username},#{password},#{phone})")
     void register(User user);
 
@@ -47,8 +45,8 @@ public interface RegisterMapper {
     /**
      * 创建用户信息
      *
-     * @param user1
+     * @param user
      */
     @Insert("insert into user_card(id, username)VALUES (#{id},#{username})")
-    void createUserInfo(User user1);
+    void createUserInfo(User user);
 }

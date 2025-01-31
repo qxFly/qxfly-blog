@@ -4,8 +4,9 @@ import axios from "axios";
 import md5 from "js-md5";
 import { ref } from "vue";
 let token = localStorage.getItem(md5("token"));
+let domain = window.location.hostname;
 const service = axios.create({
-    baseURL: process.env.VUE_APP_BASE_URL,
+    baseURL: domain == "38.55.199.233" ? process.env.VUE_APP_IP_BASE_URL : process.env.VUE_APP_BASE_URL,
     // baseURL: "https://qxfly.fun/fly",
     // baseURL: "http://120.24.195.4:8081",
     headers: {
@@ -43,6 +44,7 @@ const passurl = [
     "/index/listLeaveMessage", //列出留言
     "/index/sendLeaveMessage", //发送留言
     "/index/deleteLeaveMessage", //删除留言
+    "/index/getSiteStatus", //获取站点状态
 ];
 /* 请求拦截器 */
 service.interceptors.request.use(async (config) => {

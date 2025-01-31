@@ -260,7 +260,6 @@ function changePage(page = 0) {
 let commentText = ref("");
 let itemCommentText = ref("");
 async function ReleaseComment(parentId = 0, toUserId = 0, toUsername = null, flag = 0) {
-    var articleId = parseInt(articleId);
     let content;
     if (flag == 0) {
         content = commentText.value;
@@ -272,7 +271,7 @@ async function ReleaseComment(parentId = 0, toUserId = 0, toUsername = null, fla
     }
     await releaseComment({
         content: content,
-        articleId: articleId,
+        articleId: parseInt(articleId),
         parentCommentId: parentId,
         toUserId: toUserId,
         toUsername: toUsername,

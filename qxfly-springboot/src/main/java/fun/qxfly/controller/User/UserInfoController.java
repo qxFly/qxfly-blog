@@ -98,7 +98,7 @@ public class UserInfoController {
             boolean flag = userInfoService.updateUserInfo(user);
             if (flag) {
                 if (!username.equals(user.getUsername())) {
-                    String newToken = JwtUtils.createToken(user.getId(), user.getUsername(), new Date(), null);
+                    String newToken = JwtUtils.createToken(user.getId(), user.getUsername(), null);
                     loginService.updateToken(user.getUsername(), newToken, new Date().getTime());
                 }
                 return Result.success();

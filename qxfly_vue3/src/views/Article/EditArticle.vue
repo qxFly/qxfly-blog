@@ -296,7 +296,7 @@ async function release() {
                         alert("发布成功");
                         localStorage.removeItem("saveArticle");
                         isrelease.value = true;
-                        router.replace("/articleView");
+                        router.replace("/index/articleView");
                     } else {
                         releaseBtn.value = "发布文章";
                         alert("发布失败,请重试。可能原因：" + res.data.msg);
@@ -615,7 +615,8 @@ function cropperCover() {
     cropperCoverDialog.value = false;
     cropper.value.getCropBlob((data) => {
         formData = new FormData();
-        formData.append("file", data);
+        let file = new File([data], coverFileName.split(".")[0] + ".webp");
+        formData.append("file", file);
         formData.append("token", localStorage.getItem(md5("token")));
         prePreviewCover.value = previewCover.value;
         previewCover.value = URL.createObjectURL(data);
@@ -713,7 +714,10 @@ const editorConfig = {
     MENU_CONF: {
         uploadImage: {
             // server: "http://localhost:8081/article/uploadArticleImage",
-            server: process.env.VUE_APP_BASE_URL + "/article/uploadArticleImage",
+            server:
+                window.location.hostname == "38.55.199.233"
+                    ? process.env.VUE_APP_IP_BASE_URL + "/article/uploadArticleImage"
+                    : process.env.VUE_APP_BASE_URL + "/article/uploadArticleImage",
             fieldName: "file",
             headers: { token: localStorage.getItem(md5("token")) },
             maxFileSize: 10 * 1024 * 1024,

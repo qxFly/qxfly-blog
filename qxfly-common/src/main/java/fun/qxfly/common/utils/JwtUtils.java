@@ -12,19 +12,44 @@ public class JwtUtils {
     private static final String SignKey = System.getProperty("JwtSignKey");
     private static final String defaultTimeout = System.getProperty("JwtTimeout");
 
-    public static String createToken(int userId, String username, Date date, Long timeout) {
+    /**
+     * 生成token
+     *
+     * @param uid      uid
+     * @param username 用户名
+     * @param timeout  过期时间
+     * @return token
+     */
+    public static String createToken(int uid, String username, Long timeout) {
         if (timeout == null) {
             timeout = Long.parseLong(defaultTimeout);
         }
         return Jwts.builder()
-                .claim("uid", userId)
+                .claim("uid", uid)
                 .claim("username", username)
-                .setIssuedAt(date) //设置jwt生成时间
+                .setIssuedAt(new Date()) //设置jwt生成时间
                 .signWith(SignatureAlgorithm.HS256, SignKey)
                 .setExpiration(new Date(System.currentTimeMillis() + timeout))
                 .compact();
     }
 
+    /**
+     * 更新token
+     * @param token 老token
+     * @return 新的token
+     */
+    public static String updateToken(String token) {
+        Claims claims = parseJWT(token);
+        if (claims == null) return null;
+        return createToken(claims.get("uid", Integer.class), claims.get("username", String.class), null);
+    }
+
+    /**
+     * 解析token
+     *
+     * @param token token
+     * @return Claims
+     */
     public static Claims parseJWT(String token) {
         if (token == null || token.isEmpty() || token.isBlank()) {
             return null;

@@ -26,7 +26,7 @@ export const Register = (userdata) =>
  * @param {username, token} params
  * @returns
  */
-export const updateLoginStatue = (params) => request.post("/updateLoginStatue", params);
+export const updateLoginStatue = () => request.post("/updateLoginStatue");
 
 /**
  * 退出登陆
@@ -89,6 +89,19 @@ export function listSite(data) {
         url: "/index/listSite",
         method: "get",
         params: data,
+    });
+}
+
+/**
+ * 获取网站状态
+ * @returns
+ */
+export function getSiteStatus(data) {
+    return request({
+        url: "/index/getSiteStatus",
+        method: "post",
+
+        data: data,
     });
 }
 
