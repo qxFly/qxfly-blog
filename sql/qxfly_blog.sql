@@ -5,13 +5,13 @@
  Source Server Type    : MySQL
  Source Server Version : 80031 (8.0.31)
  Source Host           : localhost:3306
- Source Schema         : qxfly-blog
+ Source Schema         : qxfly_blog
 
  Target Server Type    : MySQL
  Target Server Version : 80031 (8.0.31)
  File Encoding         : 65001
 
- Date: 24/01/2025 19:58:58
+ Date: 31/01/2025 17:09:32
 */
 
 SET NAMES utf8mb4;
@@ -43,7 +43,7 @@ CREATE TABLE `article`  (
   INDEX `article_author`(`author` ASC) USING BTREE,
   CONSTRAINT `article_author` FOREIGN KEY (`author`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `article_authorId` FOREIGN KEY (`authorId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 146 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 151 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of article
@@ -77,6 +77,7 @@ INSERT INTO `article` VALUES (124, 'C++：内存管理', '<h1>内存分布：</h
 INSERT INTO `article` VALUES (133, 'Mybatis 常用配置', '<h2 style=\"text-align: start;\">一、Mybatis 在 SpringBoot 中用 xml 配置文件实现</h2><h3 style=\"text-align: start;\">1、在 application.properties 配置文件中新增如下配置</h3><h4 style=\"text-align: start;\">1.1、SpringBoot 框架下默认配置以下两个</h4><pre style=\"text-align: left;\"><code>mybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl\nmybatis.configuration.map-underscore-to-camel-case=true</code></pre><h4 style=\"text-align: start;\">1.2、新增以下两条</h4><pre style=\"text-align: left;\"><code># 无需使用，配置后报错，目前不懂为什么，只需配置 mybatis.mapper-locations\n# mybatis.config-location=classpath:mybatis-config.xml\n\n# *.xml 为目录mappers下全部 .xml 文件\nmybatis.mapper-locations=classpath:mappers/*.xml</code></pre><h2 style=\"text-align: start;\">二、mybatis 的 xml 模板</h2><h3 style=\"text-align: start;\">1、mybatis-config.xml 模板</h3><pre style=\"text-align: left;\"><code class=\"language-xml\">&lt;?xml version=\"1.0\" encoding=\"UTF-8\" ?&gt;\n&lt;!DOCTYPE configuration\n        PUBLIC \"-//mybatis.org//DTD Config 3.0//EN\"\n        \"http://mybatis.org/dtd/mybatis-3-config.dtd\"&gt;\n&lt;configuration&gt;\n\n    &lt;!-- environments表示配置Mybatis的开发环境，可以配置多个环境，在众多具体环境中，使用default属性指定实际运行时使用的环境。default属性的取值是environment标签的id属性的值。 --&gt;\n    &lt;environments default=\"development\"&gt;\n        &lt;!-- environment表示配置Mybatis的一个具体的环境 --&gt;\n        &lt;environment id=\"development\"&gt;\n            &lt;!-- Mybatis的内置的事务管理器 --&gt;\n            &lt;transactionManager type=\"JDBC\"/&gt;\n            &lt;!-- 配置数据源 --&gt;\n            &lt;dataSource type=\"POOLED\"&gt;\n                &lt;!-- 建立数据库连接的具体信息 --&gt;\n                &lt;property name=\"driver\" value=\"com.mysql.cj.jdbc.Driver\"/&gt;\n                &lt;property name=\"url\" value=\"jdbc:mysql://localhost:3306/qxfly\"/&gt;\n                &lt;property name=\"username\" value=\"root\"/&gt;\n                &lt;property name=\"password\" value=\"123456\"/&gt;\n            &lt;/dataSource&gt;\n        &lt;/environment&gt;\n    &lt;/environments&gt;\n\n    &lt;!-- Mapper注册：指定Mybatis映射文件的具体位置 --&gt;\n        &lt;!-- mapper标签：配置一个具体的Mapper映射文件 --&gt;\n        &lt;!-- resource属性：指定Mapper映射文件的实际存储位置，这里需要使用一个以类路径根目录为基准的相对路径 --&gt;\n        &lt;!--    对Maven工程的目录结构来说，resources目录下的内容会直接放入类路径，所以这里我们可以以resources目录为基准 --&gt;\n    &lt;mappers&gt;\n        &lt;mapper resource=\"mappers/LoginMapper.xml\"/&gt;\n    &lt;/mappers&gt;\n\n&lt;/configuration&gt;</code></pre><h3 style=\"text-align: start;\">2、mapper.xml 模板</h3><pre style=\"text-align: left;\"><code class=\"language-xml\">&lt;?xml version=\"1.0\" encoding=\"UTF-8\" ?&gt;\n&lt;!DOCTYPE mapper\n        PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\"\n        \"https://mybatis.org/dtd/mybatis-3-mapper.dtd\"&gt;\n&lt;!-- namespace等于mapper接口类的全限定名,这样实现对应 --&gt;\n&lt;mapper namespace=\"top.qxfly.mapper.LoginMapper\"&gt;\n    &lt;select id=\"login\" resultType=\"top.qxfly.pojo.User\"&gt;\n        select * from user where username = #{username} and password = #{password}\n    &lt;/select&gt;\n&lt;/mapper&gt;</code></pre><p><br></p>', '一、Mybatis 在 SpringBoot 中用 xml 配置文件实现\n1、在 application.properties 配置文件中新增如下配置\n1.1、SpringBoot 框架下默认配置以下两个\nmybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl\r\nmybatis.configuration.map-underscore-to-camel-case=true\n1.2、新增以下两条\n# 无需', 'a384a8db-e5fb-49d2-92ea-ee68717c7c4d.webp', 2, 'test', '2024-04-27 20:56:28', '2024-04-27 20:56:28', 2, 1, 8, 'Java,SpringBoot', 3, '编程', 11);
 INSERT INTO `article` VALUES (134, '基础算法：矩阵相乘 ', '<p><br></p><h3 style=\"text-align: start;\">概念：</h3><blockquote style=\"text-align: start;\">矩阵相乘 例如： {{1,1},{1,4}}; {{2,2},{1,1}}; 得：{{3,3},{6,6}};</blockquote><h3 style=\"text-align: start;\"> 示例：</h3><p> &nbsp;java：</p><pre><code class=\"language-java\">public class ju_zheng {\r\n    public static void main(String[] args){\r\n        int[][] num1 = {{1,1},{1,4}};//  1   1     2  1\r\n        int[][] num2 = {{2,2},{1,1}};//  1   1     1  1\r\n        int[][] num = new int[2][2];\r\n        int temp = 0;\r\n        for(int i = 0; i &lt; 2; i++){\r\n            for(int j = 0; j &lt; 2; j++){\r\n                for(int k = 0; k &lt; 2; k++){\r\n                    num[i][k] +=  num1[i][j] * num2[j][k];\r\n                }\r\n            }\r\n        }\r\n        for(int i = 0; i &lt; 2; i++){\r\n            for(int j = 0; j &lt; 2; j++){\r\n                System.out.print(num[i][j] + \" \");\r\n            }\r\n            System.out.println();\r\n        }\r\n    }\r\n}</code></pre><p><br></p>', '\n概念：\n矩阵相乘 例如： {{1,1},{1,4}}; {{2,2},{1,1}}; 得：{{3,3},{6,6}};\n 示例：\n  java：\npublic class ju_zheng {\r\n    public static void main(String[] args){\r\n        int[][] num1 = {{1,1},{1,4}};//  1   1     2  1\r\n        int[][] num2 = {{2,2},{1,1}};//  1   1   ', '060d2abe-586a-4248-8312-e533205d8df2.webp', 2, 'test', '2024-04-27 20:58:44', '2024-04-27 20:58:44', 3, 1, 1, 'Java,数据结构,数据结构与算法,算法', 3, '编程', 11);
 INSERT INTO `article` VALUES (135, 'postgresql数据库常用命令', '<h3>启动、重启、停止 PostgreSQL 服务</h3><blockquote>sudo systemctl start postgresql<br>sudo systemctl stop postgresql<br>sudo systemctl restart postgresql</blockquote><p><br></p><h3>设置开机自动启动服务</h3><blockquote>chkconfig postgresql on</blockquote><h3>登录</h3><blockquote>sudo -u postgres psql</blockquote><h3>控制台命令</h3><blockquote>\\h：查看 SQL 命令的解释，比如\\h select。<br>\\?：查看 psql 命令列表。<br>\\l：列出所有数据库。<br>\\c [database_name]：连接其他数据库。<br>\\d：列出当前数据库的所有表格。<br>\\d [table_name]：列出某一张表格的结构。<br>\\du：列出所有用户。<br>\\e：打开文本编辑器。<br>\\conninfo：列出当前数据库和连接的信息。</blockquote>', '启动、重启、停止 PostgreSQL 服务\nsudo systemctl start postgresql\nsudo systemctl stop postgresql\nsudo systemctl restart postgresql\n\n设置开机自动启动服务\nchkconfig postgresql on\n登录\nsudo -u postgres psql\n控制台命令\n\\h：查看 SQL 命令的解释，比如\\h select。\n\\?：查看 psql 命令列表。\n\\l：列出所有数据库。\n\\c [d', '32240a0a-d852-4769-8a93-2c00c37f481c.webp', 2, 'test', '2024-04-27 21:07:08', '2024-04-27 21:07:08', 5, 4, 3, '数据库', 3, '数据库', 11);
+INSERT INTO `article` VALUES (146, 'awdaw', '<p>wsd</p>', 'wsd', '2025\\01\\31\\f3e32776-7b19-45c0-91c8-21c80ac4c83e.webp', 1, 'qxfly', '2025-01-28 15:24:21', '2025-01-31 16:24:36', 1, 0, 1, '', 3, NULL, 11);
 
 -- ----------------------------
 -- Table structure for article_attachment
@@ -191,7 +192,7 @@ CREATE TABLE `comment`  (
   CONSTRAINT `comment_articleId` FOREIGN KEY (`articleId`) REFERENCES `article` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `comment_userId` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `comment_username` FOREIGN KEY (`username`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 117 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 121 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of comment
@@ -245,6 +246,10 @@ INSERT INTO `comment` VALUES (113, 135, 'awdawd', 0, 0, 2, 'test', '2025-01-01 1
 INSERT INTO `comment` VALUES (114, 135, 'awdawd', 0, 0, 2, 'test', '2025-01-01 16:35:57', NULL, 0, 3);
 INSERT INTO `comment` VALUES (115, 135, 'dawdawd', 0, 0, 2, 'test', '2025-01-01 16:35:58', NULL, 0, 3);
 INSERT INTO `comment` VALUES (116, 135, 'awdawdada', 0, 1, 2, 'test', '2025-01-01 16:36:00', NULL, 0, 3);
+INSERT INTO `comment` VALUES (117, 146, 'awd', 0, 1, 1, 'qxfly', '2025-01-31 16:23:26', NULL, 0, 3);
+INSERT INTO `comment` VALUES (118, 146, 'awd', 117, 0, 1, 'qxfly', '2025-01-31 16:23:33', 'qxfly', 1, 3);
+INSERT INTO `comment` VALUES (119, 146, 'awd', 117, 0, 1, 'qxfly', '2025-01-31 16:23:36', 'qxfly', 1, 3);
+INSERT INTO `comment` VALUES (120, 146, 'awd', 0, 0, 1, 'qxfly', '2025-01-31 16:23:54', NULL, 0, 3);
 
 -- ----------------------------
 -- Table structure for daily_view
@@ -276,18 +281,19 @@ INSERT INTO `daily_view` VALUES (18, 0, 0, 0);
 INSERT INTO `daily_view` VALUES (19, 0, 0, 1);
 INSERT INTO `daily_view` VALUES (20, 0, 0, 2);
 INSERT INTO `daily_view` VALUES (23, 0, 0, 1);
-INSERT INTO `daily_view` VALUES (98, 1, 1, 2);
-INSERT INTO `daily_view` VALUES (99, 1, 1, 2);
+INSERT INTO `daily_view` VALUES (98, 0, 1, 2);
+INSERT INTO `daily_view` VALUES (99, 0, 1, 2);
 INSERT INTO `daily_view` VALUES (104, 0, 0, 1);
 INSERT INTO `daily_view` VALUES (105, 0, 0, 2);
 INSERT INTO `daily_view` VALUES (115, 0, 0, 11);
 INSERT INTO `daily_view` VALUES (116, 0, 0, 4);
 INSERT INTO `daily_view` VALUES (117, 0, 0, 1);
-INSERT INTO `daily_view` VALUES (118, 1, 1, 3);
-INSERT INTO `daily_view` VALUES (124, 1, 1, 2);
-INSERT INTO `daily_view` VALUES (133, 2, 2, 2);
-INSERT INTO `daily_view` VALUES (134, 2, 2, 3);
-INSERT INTO `daily_view` VALUES (135, 4, 4, 5);
+INSERT INTO `daily_view` VALUES (118, 0, 1, 3);
+INSERT INTO `daily_view` VALUES (124, 0, 1, 2);
+INSERT INTO `daily_view` VALUES (133, 0, 2, 2);
+INSERT INTO `daily_view` VALUES (134, 0, 2, 3);
+INSERT INTO `daily_view` VALUES (135, 0, 4, 5);
+INSERT INTO `daily_view` VALUES (146, 1, 1, 1);
 
 -- ----------------------------
 -- Table structure for github_image
@@ -2528,7 +2534,7 @@ CREATE TABLE `leave_message`  (
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户',
   `uid` int NULL DEFAULT NULL COMMENT '用户id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 36 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 36 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of leave_message
@@ -2576,7 +2582,6 @@ CREATE TABLE `logout_users`  (
 -- ----------------------------
 -- Records of logout_users
 -- ----------------------------
-INSERT INTO `logout_users` VALUES ('qxfly', 'eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjEsInVzZXJuYW1lIjoicXhmbHkiLCJpYXQiOjE3Mzc2MTg4MTgsImV4cCI6MTc0MDIxMDgxOH0.PGqaMrlrEw8FYkrkjaBSVKJQ0-5OmDpIB9DLwcEt4Zo');
 
 -- ----------------------------
 -- Table structure for message
@@ -2701,7 +2706,7 @@ CREATE TABLE `navigation`  (
   INDEX `admin_page_nav_parent`(`parent` ASC) USING BTREE,
   CONSTRAINT `admin_page_nav_parent` FOREIGN KEY (`parent`) REFERENCES `navigation` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `admin_page_nav_role` FOREIGN KEY (`role`) REFERENCES `role` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 34 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 34 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of navigation
@@ -2959,12 +2964,12 @@ CREATE TABLE `user`  (
   UNIQUE INDEX `username`(`username` ASC) USING BTREE COMMENT '用户名唯一',
   INDEX `user_role`(`role` ASC) USING BTREE,
   CONSTRAINT `user_role` FOREIGN KEY (`role`) REFERENCES `role` (`Id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 41 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 42 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'qxfly', 'asd123', '2541536499@qq.com', '18159773829', '这是一条非常nb的简介', '北京', '2025\\01\\03\\081f1b56-2d29-455d-91e4-2d1577dc09aa.webp', '2024-01-27', 1, NULL);
+INSERT INTO `user` VALUES (1, 'qxfly', 'asd123', '2541536499@qq.com', '18159773829', '这是一条非常nb的简介', '北京', '2025\\01\\31\\499ec772-ce22-4401-b05f-cd54fb44a9ff.webp', '2024-01-27', 1, NULL);
 INSERT INTO `user` VALUES (2, 'test', 'test', '123456789@qq.com', '15671613022', '简介', '中国', '3194f2d7-74f1-4d44-b63a-56acbf1e881c.webp', '2024-01-12', 1, NULL);
 INSERT INTO `user` VALUES (3, 'a123', 'a12345', '159156', '123456789', 'wdawd', '我的爱我的', NULL, '2024-01-25', 0, NULL);
 INSERT INTO `user` VALUES (4, '系统消息', 'asd123', NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL);
@@ -2977,6 +2982,7 @@ INSERT INTO `user` VALUES (37, 'awdawda', 'asd123', NULL, '18159548914', NULL, N
 INSERT INTO `user` VALUES (38, 'asdasd', 'asd123', NULL, '15819159161', NULL, NULL, NULL, NULL, 0, NULL);
 INSERT INTO `user` VALUES (39, '123451a', 'asd123', NULL, '18515615616', NULL, NULL, NULL, NULL, 0, NULL);
 INSERT INTO `user` VALUES (40, 'awdawd', 'asd123', NULL, '15156156165', NULL, NULL, NULL, NULL, 0, NULL);
+INSERT INTO `user` VALUES (41, '阿瓦达我打我的', 'asd123', NULL, '15184189191', NULL, NULL, NULL, NULL, 0, NULL);
 
 -- ----------------------------
 -- Table structure for user_article_daily_like
@@ -2994,11 +3000,6 @@ CREATE TABLE `user_article_daily_like`  (
 -- ----------------------------
 -- Records of user_article_daily_like
 -- ----------------------------
-INSERT INTO `user_article_daily_like` VALUES (1, 133);
-INSERT INTO `user_article_daily_like` VALUES (1, 99);
-INSERT INTO `user_article_daily_like` VALUES (1, 135);
-INSERT INTO `user_article_daily_like` VALUES (1, 134);
-INSERT INTO `user_article_daily_like` VALUES (2, 135);
 
 -- ----------------------------
 -- Table structure for user_article_daily_view
@@ -3017,18 +3018,7 @@ CREATE TABLE `user_article_daily_view`  (
 -- ----------------------------
 -- Records of user_article_daily_view
 -- ----------------------------
-INSERT INTO `user_article_daily_view` VALUES (1, 98, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.97 Safari/537.36 Core/1.116.438.400 QQBrowser/13.0.6071.400');
-INSERT INTO `user_article_daily_view` VALUES (NULL, 135, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.97 Safari/537.36 Core/1.116.460.400 QQBrowser/13.3.6167.400');
-INSERT INTO `user_article_daily_view` VALUES (NULL, 134, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.97 Safari/537.36 Core/1.116.462.400 QQBrowser/13.3.6197.400');
-INSERT INTO `user_article_daily_view` VALUES (NULL, 124, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.97 Safari/537.36 Core/1.116.462.400 QQBrowser/13.3.6197.400');
-INSERT INTO `user_article_daily_view` VALUES (NULL, 133, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0');
-INSERT INTO `user_article_daily_view` VALUES (NULL, 99, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0');
-INSERT INTO `user_article_daily_view` VALUES (NULL, 135, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.97 Safari/537.36 Core/1.116.462.400 QQBrowser/13.3.6197.400');
-INSERT INTO `user_article_daily_view` VALUES (1, 134, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.97 Safari/537.36 Core/1.116.457.400 QQBrowser/13.4.6233.400');
-INSERT INTO `user_article_daily_view` VALUES (2, 135, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.97 Safari/537.36 Core/1.116.457.400 QQBrowser/13.4.6233.400');
-INSERT INTO `user_article_daily_view` VALUES (1, 133, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.97 Safari/537.36 Core/1.116.457.400 QQBrowser/13.4.6233.400');
-INSERT INTO `user_article_daily_view` VALUES (1, 118, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.97 Safari/537.36 Core/1.116.475.400 QQBrowser/13.5.6267.400');
-INSERT INTO `user_article_daily_view` VALUES (1, 135, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.97 Safari/537.36 Core/1.116.475.400 QQBrowser/13.5.6267.400');
+INSERT INTO `user_article_daily_view` VALUES (1, 146, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.97 Safari/537.36 Core/1.116.475.400 QQBrowser/13.5.6267.400');
 
 -- ----------------------------
 -- Table structure for user_card
@@ -3051,7 +3041,7 @@ CREATE TABLE `user_card`  (
 -- ----------------------------
 -- Records of user_card
 -- ----------------------------
-INSERT INTO `user_card` VALUES (1, 'qxfly', 14, 0, 21, 13, 253);
+INSERT INTO `user_card` VALUES (1, 'qxfly', 15, 0, 21, 13, 254);
 INSERT INTO `user_card` VALUES (2, 'test', 5, 0, 21, 8, 174);
 INSERT INTO `user_card` VALUES (3, 'a123', 0, 0, 0, 0, 0);
 INSERT INTO `user_card` VALUES (5, 'asdad112', 0, 0, 0, 0, 0);
@@ -3063,6 +3053,7 @@ INSERT INTO `user_card` VALUES (37, 'awdawda', 0, 0, 0, 0, 0);
 INSERT INTO `user_card` VALUES (38, 'asdasd', 0, 0, 0, 0, 0);
 INSERT INTO `user_card` VALUES (39, '123451a', 0, 0, 0, 0, 0);
 INSERT INTO `user_card` VALUES (40, 'awdawd', 0, 0, 0, 0, 0);
+INSERT INTO `user_card` VALUES (41, '阿瓦达我打我的', 0, 0, 0, 0, 0);
 
 -- ----------------------------
 -- Table structure for user_collection
@@ -3078,7 +3069,7 @@ CREATE TABLE `user_collection`  (
   INDEX `user_collection_articleId`(`articleId` ASC) USING BTREE,
   CONSTRAINT `user_collection_articleId` FOREIGN KEY (`articleId`) REFERENCES `article` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `user_collection_uid` FOREIGN KEY (`uid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 127 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 128 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user_collection
@@ -3170,6 +3161,7 @@ INSERT INTO `user_comment_daily_like` VALUES (2, 116);
 INSERT INTO `user_comment_daily_like` VALUES (2, 116);
 INSERT INTO `user_comment_daily_like` VALUES (2, 116);
 INSERT INTO `user_comment_daily_like` VALUES (2, 116);
+INSERT INTO `user_comment_daily_like` VALUES (1, 117);
 
 -- ----------------------------
 -- Table structure for user_like_article
@@ -3224,6 +3216,7 @@ INSERT INTO `user_like_comment` VALUES (2, 108, 135);
 INSERT INTO `user_like_comment` VALUES (2, 101, 135);
 INSERT INTO `user_like_comment` VALUES (2, 98, 135);
 INSERT INTO `user_like_comment` VALUES (2, 116, 135);
+INSERT INTO `user_like_comment` VALUES (1, 117, 146);
 
 -- ----------------------------
 -- Table structure for user_settings
@@ -3238,7 +3231,7 @@ CREATE TABLE `user_settings`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `user_settings_uid`(`uid` ASC) USING BTREE,
   CONSTRAINT `user_settings_uid` FOREIGN KEY (`uid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user_settings
@@ -3266,7 +3259,7 @@ CREATE TABLE `user_token`  (
 -- Records of user_token
 -- ----------------------------
 INSERT INTO `user_token` VALUES ('asd123', 'eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjEwLCJ1c2VybmFtZSI6ImFzZDEyMyIsImlhdCI6MTczNTYzMTg3MSwiZXhwIjoxNzM4MjIzODcxfQ.8mqXTd6asp-bcQ4MJUOR_ilCBP-z3_Ex3V3Cdi48J5g', '1735631871958', NULL);
-INSERT INTO `user_token` VALUES ('qxfly', 'eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjEsInVzZXJuYW1lIjoicXhmbHkiLCJpYXQiOjE3Mzc2MTg4MTgsImV4cCI6MTc0MDIxMDgxOH0.PGqaMrlrEw8FYkrkjaBSVKJQ0-5OmDpIB9DLwcEt4Zo', '1737618818089', NULL);
+INSERT INTO `user_token` VALUES ('qxfly', 'eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjEsInVzZXJuYW1lIjoicXhmbHkiLCJpYXQiOjE3MzgyMjczNzIsImV4cCI6MTc0MDgxOTM3Mn0.MI7nXptxFriA3l3sfk5szMP93roPQD8QLJAhH5jnL_k', '1738227372956', NULL);
 INSERT INTO `user_token` VALUES ('test', 'eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjIsInVzZXJuYW1lIjoidGVzdCIsImlhdCI6MTczNTU1MjIzNiwiZXhwIjoxNzM4MTQ0MjM2fQ.0ifYAQ_vzmUk2E3L-TYkW8ls8M4zM0-ZcYBPB6kJM_s', '1735552236794', NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;
