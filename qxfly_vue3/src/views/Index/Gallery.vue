@@ -56,6 +56,8 @@ function upload() {
     let i = 0;
     let interval = setInterval(() => {
         if (i > fileList.value.length) {
+            console.log("共上传:", i, "张图片");
+
             clearInterval(interval);
             return;
         }
@@ -72,14 +74,20 @@ function upload() {
                 file: file.raw,
                 strategy_id: 1,
             },
-        }).then((res) => {
-            if (res.data.status) {
-                ElMessage.success("上传成功:" + res.data.data.origin_name);
-            } else {
+        })
+            .then((res) => {
+                if (res.data.status) {
+                    ElMessage.success("上传成功:" + res.data.data.origin_name);
+                    fileList.value.splice(fileList.value.indexOf(file), 1);
+                } else {
+                    uploadFair.value.push(file);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
                 uploadFair.value.push(file);
-            }
-        });
-    }, 1500);
+            });
+    }, 1000);
 }
 
 /* 获取上传失败列表 */

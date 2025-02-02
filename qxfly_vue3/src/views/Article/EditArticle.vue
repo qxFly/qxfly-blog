@@ -617,7 +617,7 @@ function cropperCover() {
         formData = new FormData();
         let file = new File([data], coverFileName.split(".")[0] + ".webp");
         formData.append("file", file);
-        formData.append("token", localStorage.getItem(md5("token")));
+        // formData.append("token", localStorage.getItem(md5("token")));
         prePreviewCover.value = previewCover.value;
         previewCover.value = URL.createObjectURL(data);
     });

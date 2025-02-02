@@ -116,10 +116,8 @@ async function login() {
         localStorage.setItem(md5("islogin"), md5("true"));
         if (remember.value) {
             localStorage.setItem("autologin", true);
-            sessionStorage.setItem("a", "a");
         } else {
             localStorage.setItem("autologin", false);
-            sessionStorage.setItem("a", "a");
         }
         setTimeout(() => {
             location.reload();

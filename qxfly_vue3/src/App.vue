@@ -48,7 +48,6 @@ async function setUsernameAndAvatar() {
             }
         });
     }
-
     sessionStorage.setItem("username", user.value.username);
     sessionStorage.setItem("useravatar", user.value.avatar);
     sessionStorage.setItem("uid", user.value.id);
@@ -169,16 +168,15 @@ onMounted(async () => {
     }
     if (localStorage.getItem(md5("islogin")) == md5("true")) {
         console.log("用户登录。检查登录状态");
-        // 初始化socket
-        socketUtil.initWebsocket();
         /* 检查用户登录状态 */
         await checkStatus();
-
         await setUsernameAndAvatar();
         setBackgroundImage();
         setInterval(async () => {
             await checkStatus();
         }, 10000);
+        // 初始化socket
+        socketUtil.initWebsocket();
     }
 });
 </script>

@@ -61,53 +61,53 @@ public interface ArticleMapper {
     /**
      * 增加文章总访问量
      *
-     * @param articleId
+     * @param aid
      */
-    @Update("update article set views = views + 1 where id = #{articleId}")
-    boolean addArticleTotalViews(int articleId);
+    @Update("update article set views = views + 1 where id = #{aid}")
+    boolean addArticleTotalViews(int aid);
 
     /**
      * 获取文章浏览量
      *
-     * @param articleId
+     * @param aid
      * @return
      */
-    @Select("select * from daily_view where articleId = #{articleId}")
-    DailyView getDailyViewByArticleId(int articleId);
+    @Select("select * from daily_view where aid = #{aid}")
+    DailyView getDailyViewByArticleId(int aid);
 
     /**
      * 向表中插入文章日浏览量
      *
-     * @param articleId
+     * @param aid
      */
-    @Insert("insert into daily_view(articleId) VALUES (#{articleId})")
-    void addDailyView(int articleId);
+    @Insert("insert into daily_view(aid) VALUES (#{aid})")
+    void addDailyView(int aid);
 
     /**
      * 增加文章日浏览量
      *
-     * @param articleId
+     * @param aid
      */
-    @Update("update daily_view set daily_views = daily_views + 1, Weekly_views = Weekly_views + 1, Monthly_views = Monthly_views + 1 where articleId = #{articleId}")
-    void updateDailyView(int articleId);
+    @Update("update daily_view set daily_views = daily_views + 1, Weekly_views = Weekly_views + 1, Monthly_views = Monthly_views + 1 where aid = #{aid}")
+    void updateDailyView(int aid);
 
     /**
      * 文章点赞
      *
-     * @param articleId
+     * @param aid
      * @return
      */
-    @Update("update article set likes = likes + 1 where id = #{articleId};")
-    boolean articleLike(Integer articleId);
+    @Update("update article set likes = likes + 1 where id = #{aid};")
+    boolean articleLike(Integer aid);
 
     /**
      * 文章收藏
      *
-     * @param articleId
+     * @param aid
      * @return
      */
-    @Update("update article set collection = article.collection + 1 where id = #{articleId};")
-    boolean addarticleCollectionCount(Integer articleId);
+    @Update("update article set collection = article.collection + 1 where id = #{aid};")
+    boolean addarticleCollectionCount(Integer aid);
 
     /**
      * 获取用户点赞收藏的文章
@@ -123,7 +123,7 @@ public interface ArticleMapper {
      *
      * @param userLikes
      */
-    @Insert("insert into user_like_article(userId, likeArticles)values(#{userId},#{likeArticles})")
+    @Insert("insert into user_like_article(uid, likeArticles)values(#{uid},#{likeArticles})")
     void addUserLikes(UserLikesAndCollection userLikes);
 
     /**
@@ -147,7 +147,7 @@ public interface ArticleMapper {
      *
      * @return
      */
-    @Select("select * from article a, daily_view dv where dv.articleId = a.id and a.verify = 3 and dv.daily_views != 0 order by dv.daily_views desc")
+    @Select("select * from article a, daily_view dv where dv.aid = a.id and a.verify = 3 and dv.daily_views != 0 order by dv.daily_views desc")
     List<ArticleVO> getDailyArticlesByPage();
 
     /**
@@ -163,69 +163,69 @@ public interface ArticleMapper {
     /**
      * 收藏文章
      *
-     * @param articleId
+     * @param aid
      * @param uid
      * @param date
      */
-    @Insert("insert into user_collection(uid, articleId, collectionTime)values(#{uid},#{articleId},#{date}) ")
-    void updateUserCollection(@Param("articleId") Integer articleId, @Param("uid") Integer uid, @Param("date") Date date);
+    @Insert("insert into user_collection(uid, aid, collectionTime)values(#{uid},#{aid},#{date}) ")
+    void updateUserCollection(@Param("aid") Integer aid, @Param("uid") Integer uid, @Param("date") Date date);
 
     /**
      * 取消文章收藏
      *
-     * @param articleId
+     * @param aid
      * @param uid
      */
-    @Delete("delete from user_collection where uid = #{uid} and articleId = #{articleId}")
-    boolean deleteUserCollection(@Param("articleId") Integer articleId, @Param("uid") Integer uid);
+    @Delete("delete from user_collection where uid = #{uid} and aid = #{aid}")
+    boolean deleteUserCollection(@Param("aid") Integer aid, @Param("uid") Integer uid);
 
     /**
      * 判断用户是否收藏文章
      *
-     * @param articleId
+     * @param aid
      * @param uid
      * @return
      */
-    @Select("select * from user_collection where articleId = #{articleId} and uid = #{uid}")
-    Integer userIsCollArt(@Param("articleId") Integer articleId, @Param("uid") Integer uid);
+    @Select("select * from user_collection where aid = #{aid} and uid = #{uid}")
+    Integer userIsCollArt(@Param("aid") Integer aid, @Param("uid") Integer uid);
 
     /**
      * 获取用户今日是否浏览该文章
      *
-     * @param articleId
+     * @param aid
      * @param uid
      * @return
      */
-    @Select("select count(*) from user_article_daily_view where (articleId = #{articleId} and uid = #{uid}) or (articleId = #{articleId} and UserAgent = #{UA})")
-    Integer getUserArticleView(@Param("articleId") Integer articleId, @Param("uid") Integer uid, @Param("UA") String UA);
+    @Select("select count(*) from user_article_daily_view where (aid = #{aid} and uid = #{uid}) or (aid = #{aid} and UserAgent = #{UA})")
+    Integer getUserArticleView(@Param("aid") Integer aid, @Param("uid") Integer uid, @Param("UA") String UA);
 
     /**
      * 添加用户每日浏览记录
      *
-     * @param articleId
+     * @param aid
      * @param uid
      */
-    @Insert("insert into user_article_daily_view(articleId, uid, UserAgent)values(#{articleId},#{uid},#{UA}) ")
-    void addUserArticleView(@Param("articleId") Integer articleId, @Param("uid") Integer uid, @Param("UA") String UA);
+    @Insert("insert into user_article_daily_view(aid, uid, UserAgent)values(#{aid},#{uid},#{UA}) ")
+    void addUserArticleView(@Param("aid") Integer aid, @Param("uid") Integer uid, @Param("UA") String UA);
 
     /**
      * 获取用户对文章的点赞状态
      *
-     * @param articleId
+     * @param aid
      * @param uid
      * @return
      */
-    @Select("select * from user_article_daily_like where uid = #{uid} and articleId = #{articleId}")
-    Integer getUserArticleLike(@Param("articleId") Integer articleId, @Param("uid") Integer uid);
+    @Select("select * from user_article_daily_like where uid = #{uid} and aid = #{aid}")
+    Integer getUserArticleLike(@Param("aid") Integer aid, @Param("uid") Integer uid);
 
     /**
      * 添加用户每日点赞记录
      *
-     * @param articleId
+     * @param aid
      * @param uid
      */
-    @Insert("insert into user_article_daily_like(uid, articleId)values(#{uid},#{articleId})")
-    void addUserArticleLike(@Param("articleId") Integer articleId, @Param("uid") Integer uid);
+    @Insert("insert into user_article_daily_like(uid, aid)values(#{uid},#{aid})")
+    void addUserArticleLike(@Param("aid") Integer aid, @Param("uid") Integer uid);
 
     /**
      * 分页获取所有分类
@@ -342,7 +342,7 @@ public interface ArticleMapper {
      * @param id
      */
     @Delete("delete from article_attachment where aid = #{id}")
-    void deleteAllArticleAttachmentByAid(@Param("id") Integer id);
+    void deleteAllArticleAttachmentByAid(Integer id);
 
     /**
      * 如果文章公开图片，则单独保存
@@ -359,7 +359,7 @@ public interface ArticleMapper {
      * @param id
      */
     @Delete("delete from image where aid = #{id}")
-    void removePubImage(@Param("id") Integer id);
+    void removePubImage(Integer id);
 
     /**
      * 如果文章不公开图片 删除文章公开图片,根据图片名称差异删除
@@ -367,7 +367,7 @@ public interface ArticleMapper {
      * @param item
      */
     @Delete("delete from image where name = #{item}")
-    void removePubImageByImageName(@Param("item") String item);
+    void removePubImageByImageName( String item);
 
     /**
      * 检查文章公开图片是否重复
@@ -377,5 +377,5 @@ public interface ArticleMapper {
      * @return
      */
     @Select("select count(*) from image where aid = #{id} and name = #{imageName}")
-    Integer checkSamePubImage(Integer id, String imageName);
+    Integer checkSamePubImage(@Param("id") Integer id, @Param("imageName") String imageName);
 }

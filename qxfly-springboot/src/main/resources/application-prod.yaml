@@ -14,19 +14,20 @@ logging:
       max-file-size: 1MB
       file-name-pattern: ${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz
 qxfly:
+  domain: https://qxfly.xyz/fly
   file:
     uploadPath: /qxfly/web/data/upload/
     path:
-#      download: https://qxfly.fun/fly/download/
+#      download: ${qxfly.domain}/fly/download/
 #      VirtualPath: file:///www/qxfly/data/upload/
-#      userImg: https://qxfly.fun/fly/userAvatar/
-#      userBgImg: https://qxfly.fun/fly/userBgImg/
-#      articleCover: https://qxfly.fun/fly/articleCover/
-#      articleImage: https://qxfly.fun/fly/articleImage/
-#      articleAttachment: https://qxfly.fun/fly/articleAttachment/
+#      userImg: ${qxfly.domain}/fly/userAvatar/
+#      userBgImg: ${qxfly.domain}/fly/userBgImg/
+#      articleCover: ${qxfly.domain}/fly/articleCover/
+#      articleImage: ${qxfly.domain}/fly/articleImage/
+#      articleAttachment: ${qxfly.domain}/fly/articleAttachment/
       VirtualPath: file:///www/qxfly/data/upload/
-      userImg: http://38.55.199.233:8081/userAvatar/
-      userBgImg: http://38.55.199.233:8081/userBgImg/
-      articleCover: http://38.55.199.233:8081/articleCover/
-      articleImage: http://38.55.199.233:8081/articleImage/
-      articleAttachment: http://38.55.199.233:8081/articleAttachment/
+      userImg: ${qxfly.domain}/userAvatar/
+      userBgImg: ${qxfly.domain}/userBgImg/
+      articleCover: ${qxfly.domain}/articleCover/
+      articleImage: ${qxfly.domain}/articleImage/
+      articleAttachment: ${qxfly.domain}/articleAttachment/

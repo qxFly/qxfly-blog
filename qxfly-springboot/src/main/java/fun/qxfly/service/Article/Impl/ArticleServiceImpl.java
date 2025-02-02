@@ -82,7 +82,6 @@ public class ArticleServiceImpl implements ArticleService {
             if (!deletePreviousCover(article1.getCover())) {
                 return false;
             }
-            ;
         }
         /*以文件名方式保存至数据库*/
         String[] split1 = article.getCover().split("articleCover/");
@@ -91,11 +90,11 @@ public class ArticleServiceImpl implements ArticleService {
         String[] imageArr = article.getAuthor().split(",");
         String[] imageUrl = new String[imageArr.length];
         for (int i = 0; i < imageArr.length; i++) {
-            String[] split = imageArr[i].split("/");
+            String[] split = imageArr[i].split("articleImage/");
             String imageName = split[split.length - 1];
             /*如果文章公开图片，则单独保存*/
             if (article.getPub() % 10 == 1) {
-                if (!imageName.equals("")) {
+                if (!imageName.isEmpty()) {
                     Integer c = articleMapper.checkSamePubImage(article.getId(), imageName);
                     if (c == 0)
                         articleMapper.savePubImage(article.getId(), imageName, new Date());
@@ -453,7 +452,6 @@ public class ArticleServiceImpl implements ArticleService {
      */
     @Override
     public void addArticleView(Integer aid, Integer uid, String UA) {
-
         Integer view = articleMapper.getUserArticleView(aid, uid, UA);
         if (view == null || view == 0) {
             articleMapper.addUserArticleView(aid, uid, UA);
