@@ -3,7 +3,6 @@ package fun.qxfly.controller.Article;
 import com.alibaba.fastjson2.JSONArray;
 import com.github.pagehelper.PageInfo;
 import fun.qxfly.common.domain.entity.*;
-import fun.qxfly.common.domain.po.PageBean;
 import fun.qxfly.common.domain.po.Result;
 import fun.qxfly.common.domain.vo.ArticleVO;
 import fun.qxfly.common.utils.JwtUtils;
@@ -116,7 +115,9 @@ public class ArticleController {
     @Operation(description = "封面上传", summary = "封面上传")
     @PostMapping("/updateArticleCover")
     public Result updateArticleCover(MultipartFile file) {
-        return articleService.updateArticleCover(file);
+        String cover = articleService.updateArticleCover(file);
+        if (cover != null) return Result.success(cover);
+        return Result.error("上传失败");
     }
 
     /**
@@ -358,6 +359,7 @@ public class ArticleController {
     /**
      * 上传文章附件
      *  todo 文件，文章附件上传
+     *
      * @param file
      * @return
      */
@@ -375,6 +377,7 @@ public class ArticleController {
     /**
      * 删除文章附件
      * todo 文件，文章附件删除
+     *
      * @param fileName
      * @return
      */

@@ -50,11 +50,11 @@ public class ArticleServiceImpl implements ArticleService {
         article.setCover(split1[split1.length - 1]);
         articleMapper.releaseArticle(article);
         /*保存文章中的图片*/
-        if (image != null && !image.equals("")) {
+        if (image != null && !image.isEmpty()) {
             String[] imageArr = image.split(",");
             String[] imageUrl = new String[imageArr.length];
             for (int i = 0; i < imageArr.length; i++) {
-                String[] split = imageArr[i].split("/");
+                String[] split = imageArr[i].split("articleImage/");
                 String imageName = split[split.length - 1];
                 /*如果文章公开图片，则单独保存*/
                 if (article.getPub() % 10 == 1)
@@ -110,16 +110,17 @@ public class ArticleServiceImpl implements ArticleService {
 
     /**
      * 分页获取文章
-     * @param currPage 当前页
-     * @param pageSize 每页大小
+     *
+     * @param currPage   当前页
+     * @param pageSize   每页大小
      * @param searchData 搜索条件
-     * @param sort 排序条件
-     * @param daily 是否为每日推荐
-     * @param authorId 作者id
-     * @param verify 审核状态
-     * @param classify 分类
-     * @param tagArr 标签
-     * @param pub 公开状态
+     * @param sort       排序条件
+     * @param daily      是否为每日推荐
+     * @param authorId   作者id
+     * @param verify     审核状态
+     * @param classify   分类
+     * @param tagArr     标签
+     * @param pub        公开状态
      * @return 分页文章
      */
     @Override
@@ -141,11 +142,11 @@ public class ArticleServiceImpl implements ArticleService {
     /**
      * 分页获取收藏文章
      *
-     * @param currPage 当前页
-     * @param pageSize 每页大小
+     * @param currPage   当前页
+     * @param pageSize   每页大小
      * @param searchData 搜索条件
-     * @param sort 排序条件
-     * @param uid 用户id
+     * @param sort       排序条件
+     * @param uid        用户id
      * @return 分页文章
      */
     @Override
@@ -166,9 +167,10 @@ public class ArticleServiceImpl implements ArticleService {
      */
     @Override
     public boolean deleteArticleImage(String[] imageList) {
-        String path = System.getProperty("user.dir") + "/data/qxfly-articleImage/";
+        String path = FilePaths.ARTICLE_IMAGE_PATH.getPath();
         for (String item : imageList) {
-            File file = new File(path + item);
+            path = FileUtils.toSystemSeparator(path + item);
+            File file = new File(path);
             if (file.exists()) {
                 articleMapper.removePubImageByImageName(item);
                 if (!file.delete()) return false;
@@ -205,17 +207,18 @@ public class ArticleServiceImpl implements ArticleService {
      * @return
      */
     @Override
-    public Result updateArticleCover(MultipartFile file) {
+    public String updateArticleCover(MultipartFile file) {
         //todo 文章封面上传 返回文件名字，而非地址（暂定）
         String path = FilePaths.ARTICLE_COVER_PATH.getPath();
         try {
             String fileName = FileUtils.upload(path, file);
-            return Result.success(articleCoverDownloadPath + fileName);
+            return FileUtils.toUrlSeparator(articleCoverDownloadPath + fileName);
         } catch (IOException e) {
             e.printStackTrace();
-            return Result.error("上传失败");
+            return null;
         }
     }
+
 
     /**
      * 文章内容图片上传
@@ -228,8 +231,9 @@ public class ArticleServiceImpl implements ArticleService {
         String path = FilePaths.ARTICLE_IMAGE_PATH.getPath();
         try {
             String fileName = FileUtils.upload(path, file);
+            String url = FileUtils.toUrlSeparator(articleImageDownloadPath + fileName);
             String[] fileOriginName = file.getOriginalFilename().split("\\.");
-            return Result.success(fileOriginName[0], articleImageDownloadPath + fileName);
+            return Result.success(fileOriginName[0], url);
         } catch (IOException e) {
             e.printStackTrace();
             return Result.error("上传失败");
@@ -246,16 +250,18 @@ public class ArticleServiceImpl implements ArticleService {
     public boolean deleteArticleById(Integer aid) {
         Article articleById = articleMapper.getArticleById(aid);
         /* 删除封面 */
-        String s = articleById.getCover().split("/")[articleById.getCover().split("/").length - 1];
-        File cover = new File(System.getProperty("user.dir") + "/data/qxfly-articleCover/" + s);
+        String path = FilePaths.ARTICLE_COVER_PATH.getPath() + articleById.getCover();
+        path = FileUtils.toSystemSeparator(path);
+        File cover = new File(path);
         if (cover.exists()) cover.delete();
         /* 删除内容图片 */
         String images = articleMapper.getArticleImage(articleById);
         if (images != null) {
             ArrayList<String> arrayList = JSONObject.parseObject(images, ArrayList.class);
-            String path = System.getProperty("user.dir") + "/data/qxfly-articleImage/";
+            path = FilePaths.ARTICLE_IMAGE_PATH.getPath();
             for (String image : arrayList) {
-                File file = new File(path + image);
+                path = FileUtils.toSystemSeparator(path + image);
+                File file = new File(path);
                 if (file.exists()) {
                     file.delete();
                 }
@@ -264,7 +270,8 @@ public class ArticleServiceImpl implements ArticleService {
         /* 删除附件 */
         List<Attachment> attachmentList = articleMapper.getArticleAttachmentByAid(articleById.getId());
         for (Attachment attachment : attachmentList) {
-            File file = new File(System.getProperty("user.dir") + "/data/qxfly-articleAttachment/" + attachment.getFileName());
+            path = FilePaths.ARTICLE_ATTACHMENT_PATH.getPath() + attachment.getFileName();
+            File file = new File(path);
             if (file.exists()) {
                 file.delete();
             }
@@ -276,15 +283,14 @@ public class ArticleServiceImpl implements ArticleService {
     /**
      * 删除之前的封面
      *
-     * @param coverUrl
+     * @param coverPath
      * @return
      */
     @Override
-    public boolean deletePreviousCover(String coverUrl) {
-        String[] split = coverUrl.split("/");
-        String coverName = split[split.length - 1];
-        String path = System.getProperty("user.dir") + "/data/qxfly-articleCover/";
-        File cover = new File(path + coverName);
+    public boolean deletePreviousCover(String coverPath) {
+        String path = FilePaths.ARTICLE_COVER_PATH.getPath();
+        path = FileUtils.toSystemSeparator(path + coverPath);
+        File cover = new File(path);
         if (cover.exists()) {
             return cover.delete();
         } else {

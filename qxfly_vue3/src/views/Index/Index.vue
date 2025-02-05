@@ -36,15 +36,11 @@
 </template>
 
 <script setup>
-import TopBar from "@/components/TopBar/TopBar.vue";
 import LeftSidebar from "@/views/Sider/LeftSidebar.vue";
 import CentreContent from "@/views/Index/CentreContent";
 import RightSidebar from "@/views/Sider/RightSidebar";
 import BackTop from "@/components/BackTop.vue";
-import ChangeBackgroundImage from "./ChangeBackgroundImage.vue";
-import { onMounted, onUnmounted, ref } from "vue";
-import { getImage } from "@/api/index";
-import { getUserSettings } from "@/api/User";
+import { onMounted, onUnmounted } from "vue";
 import router from "@/router";
 let uid = localStorage.getItem("uid");
 // 判断是否是手机端，如果是，返回true

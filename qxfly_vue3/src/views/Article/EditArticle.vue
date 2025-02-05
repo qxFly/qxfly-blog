@@ -256,7 +256,6 @@ async function release() {
     }
     if (formData.get("file") != null) {
         /* 先上传封面 */
-
         await updateArticleCover(formData).then((res) => {
             if (res.data.code == 1) {
                 article.value.cover = res.data.data;
@@ -537,7 +536,7 @@ function delimg() {
             }
         }
         if (flag == 0) {
-            let splits = imageUrl[i].split("/");
+            let splits = imageUrl[i].split("articleImage/");
             let name = splits[splits.length - 1];
             imageList.push(name);
         }

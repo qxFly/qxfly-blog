@@ -21,9 +21,20 @@ public class FileUtils {
      * @param path 文件路径
      * @return 调整后的文件路径
      */
-    public static String adjustFileSeparator(String path) {
+    public static String toSystemSeparator(String path) {
         String separator = File.separator;
         path = path.replace("\\", separator).replace("/", separator);
+        return path;
+    }
+
+    /**
+     * 根据操作系统调整文件路径的分隔符
+     *
+     * @param path 文件路径
+     * @return 调整后的文件路径
+     */
+    public static String toUrlSeparator(String path) {
+        path = path.replace("\\", "/");
         return path;
     }
 
@@ -71,7 +82,7 @@ public class FileUtils {
 
         String date = DateUtils.format(new Date(), "yyyy/MM/dd");
         String fileName = date + "/" + UUID.randomUUID() + "." + extension;
-        return adjustFileSeparator(fileName);
+        return toSystemSeparator(fileName);
     }
 
 }

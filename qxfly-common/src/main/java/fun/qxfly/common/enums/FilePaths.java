@@ -19,6 +19,6 @@ public enum FilePaths {
     }
 
     public String getPath() {
-        return FileUtils.adjustFileSeparator(this.path);
+        return FileUtils.toSystemSeparator(this.path);
     }
 }

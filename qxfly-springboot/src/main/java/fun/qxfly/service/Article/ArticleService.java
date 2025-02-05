@@ -45,7 +45,7 @@ public interface ArticleService {
      * @param file
      * @return
      */
-    Result updateArticleCover(MultipartFile file);
+    String updateArticleCover(MultipartFile file);
 
     /**
      * 删除之前的封面
