@@ -6,11 +6,11 @@
     <parent>
         <groupId>fun.qxfly</groupId>
         <artifactId>qxfly-blog</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>qxfly-common</artifactId>
-
+    <version>1.0.0</version>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -34,4 +34,9 @@
             <version>2.18.0</version>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+
+        </plugins>
+    </build>
 </project>

@@ -5,11 +5,11 @@
     <parent>
         <groupId>fun.qxfly</groupId>
         <artifactId>qxfly-blog</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
     <packaging>jar</packaging>
     <artifactId>qxfly-springboot</artifactId>
-    <version>v2.1</version>
+    <version>1.0.0</version>
     <name>qxfly-springboot</name>
     <description>qxfly-springboot</description>
     <properties>
@@ -19,19 +19,19 @@
         <dependency>
             <groupId>fun.qxfly</groupId>
             <artifactId>qxfly-framework</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <!-- 定时任务 -->
         <dependency>
             <groupId>fun.qxfly</groupId>
             <artifactId>qxfly-quartz</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <!-- 通用 -->
         <dependency>
             <groupId>fun.qxfly</groupId>
             <artifactId>qxfly-common</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>

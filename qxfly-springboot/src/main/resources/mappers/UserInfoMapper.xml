@@ -36,8 +36,6 @@
     <!--根据uid获取用户信息-->
     <select id="getUserInfo" resultType="fun.qxfly.common.domain.entity.User">
         SELECT u.* ,uc.Articles, uc.Tags, uc.Likes, uc.Collection FROM user u join user_card uc on uc.id = u.id WHERE u.id = #{uid}
-
-
     </select>
     <!--获取文章、点赞、收藏、浏览数-->
     <select id="getArticleCount" resultType="java.lang.Integer">

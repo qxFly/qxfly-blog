@@ -128,6 +128,15 @@
                                         class="input-attachment-list-item-remove">
                                         删除
                                     </el-button>
+                                    <el-button
+                                        type="danger"
+                                        size="small"
+                                        plain
+                                        @click="cancelUpload(file)"
+                                        class="input-attachment-list-item-cancelUpload"
+                                        :id="'input-attachment-list-item-cancelUpload-' + file.index">
+                                        取消
+                                    </el-button>
                                 </div>
                                 <div class="input-attachment-list-item-process">
                                     <div
@@ -640,6 +649,7 @@ let editNewAttachmentList = ref([]); //编辑模式下附件队列
 let uploadList = ref([]); //附件上传队列
 let attachmentIndex = ref(0); //附件队列索引
 let uploadingList = ref([]); //上传中的附件的索引
+let uploadControllerList = ref([]); // 上传时的控制器，取消上传
 function getAttachment(e) {
     if (attachmentList.value.length + 1 > 10) {
         alert("只能上传10个附件");
@@ -654,6 +664,9 @@ function getAttachment(e) {
     if (editMode.value) {
         editNewAttachmentList.value.push({ index: index.value, fileName: "", fileOriginName: file.name });
     }
+    let uploadController = new AbortController(); // 上传时的控制器，取消上传
+    uploadControllerList.value.push({ index: index.value, controller: uploadController });
+
     uploadList.value.push({
         index: index.value,
         req: request
@@ -661,6 +674,7 @@ function getAttachment(e) {
                 onUploadProgress: (e) => {
                     onProcess(e, index.value);
                 },
+                signal: uploadController.signal,
             })
             .then((res) => {
                 const processEle = document.getElementById("input-attachment-process-" + index.value);
@@ -673,12 +687,29 @@ function getAttachment(e) {
                     uploadingList.value = uploadingList.value.filter((item) => item != index.value);
                 } else {
                     ElMessage.error({ message: res.data.msg, offset: 120 });
+                    attachmentIndex.value--; // 回退索引
                     processEle.style.width = "0%";
                     attachmentList.value = attachmentList.value.filter((item) => item.index == index.value);
                     uploadingList.value = uploadingList.value.filter((item) => item != index.value);
                 }
+                /* 隐藏取消上传按钮 */
+                const cancelUploadEle = document.getElementById(
+                    "input-attachment-list-item-cancelUpload-" + index.value
+                );
+                if (cancelUploadEle) cancelUploadEle.style.display = "none";
+            })
+            .catch((err) => {
+                ElMessage.error({ message: "取消上传", offset: 120 });
             }),
     });
+}
+/* 取消上传 */
+function cancelUpload(file) {
+    let con = uploadControllerList.value.find((item) => item.index == file.index);
+    con.controller.abort();
+    attachmentIndex.value--; // 回退索引
+    uploadingList.value = uploadingList.value.filter((item) => item != file.index);
+    attachmentList.value = attachmentList.value.filter((item) => item.index != file.index);
 }
 /* 上传进度条 */
 function onProcess(e, index) {
@@ -1082,6 +1113,9 @@ onBeforeUnmount(() => {
 .input-attachment-list-item-name::-webkit-scrollbar {
     display: none;
 }
+/* .input-attachment-list-item-cancelUpload {
+    display: none;
+} */
 .input-attachment-process {
     height: 2px;
     width: 0%;

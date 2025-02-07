@@ -71,7 +71,6 @@ async function checkStatus() {
                     console.log("登录！");
                 }
             } else {
-                console.log(" ress.data.msg:", ress.data.msg);
                 clearLoginStatue();
             }
         });
@@ -118,7 +117,8 @@ let bgimg = ref();
 let bgSwitch = ref(0);
 let settingObj = ref({});
 async function getUserBgImg() {
-    await getUserSettings(user.value.id).then((res) => {
+    let uid = ref(localStorage.getItem("uid"));
+    await getUserSettings(uid.value).then((res) => {
         if (res.data.code != 1) return;
         settingObj.value = res.data.data;
     });

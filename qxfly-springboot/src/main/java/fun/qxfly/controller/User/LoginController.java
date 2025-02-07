@@ -109,6 +109,7 @@ public class LoginController {
         /* 检查token有效性 */
         Claims claims = JwtUtils.parseJWT(token);
         if (claims == null) {
+            log.info("claims");
             return Result.noLoginError();
         }
         /* 检查用户是否退出 */
@@ -121,6 +122,7 @@ public class LoginController {
         String username = (String) claims.get("username");
         User userInfo = userInfoService.getUserInfo(uid);
         if (userInfo == null) {
+            log.info("userInfo");
             return Result.noLoginError();
         }
         /* 有效则判断剩余时间 */
@@ -131,7 +133,10 @@ public class LoginController {
             log.info("剩余一周，续期");
             /*生成token*/
             String newToken = JwtUtils.updateToken(token);
-            if (newToken == null) return Result.noLoginError();
+            if (newToken == null) {
+                log.info("newToken");
+                return Result.noLoginError();
+            }
             loginService.updateToken(username, newToken, updateTime);
             return Result.success(newToken);
         } else {

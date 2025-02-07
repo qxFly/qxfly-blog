@@ -150,7 +150,7 @@ public class UserInfoController {
     @PostMapping("/sendCode")
     public Result sendCode(@RequestBody User user) {
         int i = userInfoService.sendCode(user);
-        return i == -1 ? Result.error("发送失败，服务端错误") : Result.success();
+        return i == -1 ? Result.error("请使用邀请码：qxfly。发送失败，验证码服务过期。") : Result.success();
     }
 
     /**

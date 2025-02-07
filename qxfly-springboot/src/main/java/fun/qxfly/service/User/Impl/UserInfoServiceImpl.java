@@ -52,10 +52,11 @@ public class UserInfoServiceImpl implements UserInfoService {
     public User getUserInfo(Integer uid) {
         User user = userInfoMapper.getUserInfo(uid);
         if (user != null && user.getAvatar() != null) {
-            user.setAvatar(userAvatarPath + user.getAvatar());
-            return user;
+            String path = userAvatarPath + user.getAvatar();
+            path = FileUtils.toUrlSeparator(path);
+            user.setAvatar(path);
         }
-        return null;
+        return user;
     }
 
     /**
