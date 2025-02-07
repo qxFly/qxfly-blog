@@ -666,7 +666,6 @@ function getAttachment(e) {
     }
     let uploadController = new AbortController(); // 上传时的控制器，取消上传
     uploadControllerList.value.push({ index: index.value, controller: uploadController });
-
     uploadList.value.push({
         index: index.value,
         req: request
@@ -714,7 +713,9 @@ function cancelUpload(file) {
 /* 上传进度条 */
 function onProcess(e, index) {
     const processEle = document.getElementById("input-attachment-process-" + index);
-    processEle.style.width = e.progress * 100 + "%";
+    if (processEle) processEle.style.width = e.progress * 100 + "%";
+    const cancelUploadEle = document.getElementById("input-attachment-list-item-cancelUpload-" + index);
+    if (cancelUploadEle) cancelUploadEle.style.display = "block";
 }
 /* 删除附件 */
 let removeAttachmentList = ref([]);
@@ -1113,9 +1114,9 @@ onBeforeUnmount(() => {
 .input-attachment-list-item-name::-webkit-scrollbar {
     display: none;
 }
-/* .input-attachment-list-item-cancelUpload {
+.input-attachment-list-item-cancelUpload {
     display: none;
-} */
+}
 .input-attachment-process {
     height: 2px;
     width: 0%;

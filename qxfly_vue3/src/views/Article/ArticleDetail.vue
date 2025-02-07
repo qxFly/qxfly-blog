@@ -76,22 +76,28 @@
                         <div v-if="showAttachmens(1)">
                             <div
                                 class="attachment"
-                                v-for="(a, index) in attachments"
+                                v-for="(file, index) in attachments"
                                 :key="index"
-                                @click="downloadAttachment(a)">
+                                @click="downloadAttachment(index, file)">
                                 <div class="input-attachment-list-item-content">
                                     <div style="display: flex; width: 100%">
                                         <div class="span-number">{{ index + 1 }}</div>
-                                        <div class="input-attachment-list-item-name">{{ a.fileOriginName }}</div>
+                                        <div class="input-attachment-list-item-name">{{ file.fileOriginName }}</div>
+                                    </div>
+                                    <div
+                                        @click="cancelDownload(index, file)"
+                                        class="input-attachment-cancelDownload"
+                                        :id="'input-attachment-cancelDownload-' + index">
+                                        取消
                                     </div>
                                     <div
                                         class="input-attachment-process-number"
-                                        :id="'input-attachment-process-number-' + a.fileName"></div>
+                                        :id="'input-attachment-process-number-' + file.fileName"></div>
                                 </div>
                                 <div class="input-attachment-list-item-process">
                                     <div
                                         class="input-attachment-process"
-                                        :id="'input-attachment-process-' + a.fileName"></div>
+                                        :id="'input-attachment-process-' + file.fileName"></div>
                                 </div>
                             </div>
                         </div>
@@ -223,41 +229,69 @@ function showAttachmens(flag) {
     }
 }
 /* 下载附件 */
-function downloadAttachment(file) {
+let downloadControllerList = ref([]); // 下载控制器，取消下载
+function downloadAttachment(index, file) {
     if ((token = null || isLogin == null)) {
         alert("请登入后再尝试下载");
         router.push("/login");
         return;
     }
+    let controller = new AbortController();
+    downloadControllerList.value.push({ index: index, controller: controller });
+    let cancelDownloadEle = document.getElementById("input-attachment-cancelDownload-" + index);
+    cancelDownloadEle.style.display = "flex";
     request({
         url: file.downloadUrl, // 请求地址
         method: "get",
         responseType: "blob", // 表明返回服务器返回的数据类型
         onDownloadProgress: (e) => {
-            onProcess(e, file);
+            onProcess(e, file, index);
         },
-    }).then((res) => {
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(res.data);
-        link.download = file.fileOriginName;
-        link.target = "_blank";
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-    });
+        signal: controller.signal,
+    })
+        .then((res) => {
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(res.data);
+            link.download = file.fileOriginName;
+            link.target = "_blank";
+            document.body.appendChild(link);
+            link.click();
+            ElMessage.success({ message: "下载成功", offset: 120 });
+            ElMessage.success({
+                message: "如果没有弹出下载框，可能为兼容性问题，请刷新或更换浏览器",
+                offset: 120,
+                duration: 5000,
+            });
+            link.remove();
+        })
+        .catch((err) => {
+            ElMessage.error({ message: "取消下载", offset: 120 });
+        });
+}
+/* 取消下载 */
+function cancelDownload(index, file) {
+    downloadControllerList.value.find((item) => item.index == index).controller.abort();
 }
 /* 下载进度条 */
-function onProcess(e, file) {
+function onProcess(e, file, index) {
     const processEle = document.getElementById("input-attachment-process-" + file.fileName);
     const processnumber = document.getElementById("input-attachment-process-number-" + file.fileName);
-    processEle.style.display = "block";
+    processEle.style.display = "flex";
     processEle.style.width = e.progress * 100 + "%";
-    processnumber.style.display = "block";
+    processnumber.style.display = "flex";
     processnumber.innerText = Math.floor(e.progress * 100) + "%";
     if (e.progress == 1) {
-        processEle.style.display = "none";
-        processEle.style.width = 0 + "%";
-        processnumber.style.display = "none";
+        if (processEle != null) {
+            processEle.style.display = "none";
+            processEle.style.width = 0 + "%";
+        }
+        if (processnumber != null) {
+            processnumber.style.display = "none";
+        }
+        let cancelDownloadEle = document.getElementById("input-attachment-cancelDownload-" + index);
+        if (cancelDownloadEle != null) {
+            cancelDownloadEle.style.display = "none";
+        }
     }
 }
 /* 前往编辑文章 */
@@ -902,10 +936,10 @@ onUnmounted(() => {
     transition: all 0.3s ease;
     // margin-top: 4px;
 }
-.input-attachment-process-number {
+.input-attachment-cancelDownload {
     display: none;
     width: max-content;
-    min-width: 24px;
+    min-width: 50px;
     background-color: #ff8e68;
     text-align: center;
     font-weight: 700;
@@ -913,6 +947,23 @@ onUnmounted(() => {
     padding: 2px 0;
     color: #fff;
     font-size: 15px;
+    margin-right: 4px;
+    align-items: center;
+    justify-content: center;
+}
+.input-attachment-process-number {
+    display: none;
+    width: max-content;
+    min-width: 36px;
+    background-color: #ff8e68;
+    text-align: center;
+    font-weight: 700;
+    border-radius: 4px 0 0 4px;
+    padding: 2px 0;
+    color: #fff;
+    font-size: 15px;
+    align-items: center;
+    justify-content: center;
 }
 
 .sider-edit-Btns {
