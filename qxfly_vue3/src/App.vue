@@ -174,7 +174,7 @@ onMounted(async () => {
         setBackgroundImage();
         setInterval(async () => {
             await checkStatus();
-        }, 10000);
+        }, 100000);
         // 初始化socket
         socketUtil.initWebsocket();
     }

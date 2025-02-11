@@ -5,11 +5,11 @@
     <parent>
         <groupId>fun.qxfly</groupId>
         <artifactId>qxfly-blog</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
     <packaging>jar</packaging>
     <artifactId>qxfly-springboot</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>qxfly-springboot</name>
     <description>qxfly-springboot</description>
     <properties>

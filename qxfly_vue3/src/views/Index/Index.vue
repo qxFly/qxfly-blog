@@ -20,7 +20,7 @@
         <BackTop></BackTop>
         <!-- <ChangeBackgroundImage class="changebg"></ChangeBackgroundImage> -->
     </div>
-    <div class="Footer">
+    <!-- <div class="Footer">
         <div class="footer">
             <a class="IPCbeian" href="https://beian.miit.gov.cn" target="_blank">闽ICP备2024032632号</a>
             <a
@@ -30,9 +30,9 @@
                 target="_blank">
                 闽公网安备35080202351433
             </a>
-            <!-- <a class="github" href="https://github.com/qxFly" target="_blank">qxFly</a> -->
+            <a class="github" href="https://github.com/qxFly" target="_blank">qxFly</a>
         </div>
-    </div>
+    </div> -->
 </template>
 
 <script setup>

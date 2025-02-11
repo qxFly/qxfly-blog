@@ -45,8 +45,7 @@ public class MessageServiceImpl implements MessageService {
         }
         message.setSendTime(new Date());
         boolean b = messageMapper.sendMessage(message);
-        if (b) return msgId;
-        else return null;
+        return b ? msgId : null;
     }
 
     /**

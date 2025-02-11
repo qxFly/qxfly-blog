@@ -44,6 +44,7 @@ public class WebSocketServer {
 
     @OnMessage
     public void onMessage(String message, Session session, @PathParam("uid") Integer uid) throws Exception {
+        log.info("message:{}", message);
         JSONObject json = JSON.parseObject(message);
         String msg = (String) json.get("message");
         Integer toUid = (Integer) json.get("toUid");

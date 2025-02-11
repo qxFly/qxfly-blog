@@ -3,7 +3,7 @@
         <div class="sider-hot-article-label">消息</div>
         <div class="main">
             <div class="items">
-                <div class="item" v-for="(msg, index) in messageList" :key="item" @click="toUserMeaasge(msg)">
+                <div class="item" v-for="(msg, index) in messageList" :key="index" @click="toUserMeaasge(msg)">
                     <div class="item-col">
                         <div class="item-col-username">{{ msg.username }}：</div>
                         <div class="item-col-msg">{{ msg.content }}</div>

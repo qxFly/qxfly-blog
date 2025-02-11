@@ -170,6 +170,7 @@ onMounted(() => {
     if (localStorage.getItem(md5("token")) != null) {
         listUserAsNav(); //获取给当前用户发送消息的用户,初始化消息导航
         setMainSize(); //设置消息窗口大小
+
         socketUtil.addSocketEventListener(socketEventListener); //添加socket监听器
     }
 });

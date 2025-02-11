@@ -88,6 +88,11 @@ function toBottom() {
 /* 发送消息 */
 let msg = ref("");
 function sendMessageToUser() {
+    let status = socketUtil.getStatus();
+    if (status == WebSocket.CLOSED) {
+        ElMessage.error({ message: "发送失败", offset: 120 });
+        return;
+    }
     //发送消息后重新聚焦输入框
     let input = document.getElementById("msg-input-textarea");
     input.focus();
@@ -95,7 +100,7 @@ function sendMessageToUser() {
     if (msg.value.trim() == "") {
         return;
     }
-    //判断是否有两天对象
+    //判断是否有聊天对象
     if (toUid == null) {
         ElMessage.warning({ message: "进入文章详情，与作者进行聊天吧", offset: 120 });
         return;
@@ -149,6 +154,7 @@ function setMainSize() {
 }
 onMounted(() => {
     setMainSize();
+
     if (localStorage.getItem(md5("token")) != null) socketUtil.addSocketEventListener(receiveMessage);
 });
 onUnmounted(() => {
