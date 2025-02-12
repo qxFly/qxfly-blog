@@ -78,7 +78,8 @@ public class ArticleServiceImpl implements ArticleService {
     public boolean editArticle(Article article) {
         /* 如果更换封面则删除之前的封面 */
         Article article1 = articleMapper.getArticleById(article.getId());
-        if (!article.getCover().equals(article1.getCover())) {
+        boolean contains = article.getCover().contains(article1.getCover());
+        if (!contains) {
             if (!deletePreviousCover(article1.getCover())) {
                 return false;
             }

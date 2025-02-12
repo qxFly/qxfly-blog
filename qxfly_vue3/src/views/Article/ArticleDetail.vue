@@ -456,10 +456,8 @@ function authorCardLoadFun(flag) {
 /* 加载完显示内容 */
 function showConten() {
     loadBlur();
-
     if (authorCardLoad.value) {
         loadBlur();
-
         let Main = document.getElementById("Main");
         let title = document.getElementById("article-title");
         let load = document.getElementById("load");
@@ -473,10 +471,11 @@ function showConten() {
                 title.style.top = "0";
                 header.style.opacity = 1;
                 header.style.height = "370px";
+                let t = document.getElementById("top-bar-1");
+                t.style.top = "0px";
                 // header.style.marginTop = "50px";
             }, 100)
         );
-
         timers.push(
             setTimeout(() => {
                 isload.value = false;

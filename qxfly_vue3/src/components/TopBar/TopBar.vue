@@ -16,6 +16,7 @@ import TopBarNavigation from "./TopBarNavigation.vue";
 import LoginLabel from "./LoginLabel.vue";
 import UserImg from "./UserImg.vue";
 import { onMounted, onUnmounted } from "vue";
+import router from "@/router";
 const props = defineProps({
     hide: {
         type: Boolean,
@@ -28,6 +29,7 @@ function Listener() {
     if (scrollTop > 600) {
         topbar.style.top = "-70px";
     } else {
+        if (router.currentRoute.value.path.match(/ArticleDetail/)) return;
         topbar.style.top = "0";
     }
 }
