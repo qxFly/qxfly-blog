@@ -153,7 +153,7 @@ onMounted(() => {
     getImgTips.value = "加载中";
     setTimeout(() => {
         getImg(6);
-    }, 1000);
+    }, 500);
 });
 onUnmounted(() => {
     clearTimeout(timeout);

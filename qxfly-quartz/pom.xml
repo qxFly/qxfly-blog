@@ -20,7 +20,6 @@
     <dependency>
         <groupId>fun.qxfly</groupId>
         <artifactId>qxfly-common</artifactId>
-
     </dependency>
 </dependencies>
     <build>

@@ -1,16 +1,16 @@
 <template>
     <div class="imgContent">
-        <div class="Col">
-            <div v-for="(col, item1) in colData" :key="item1" class="colImg">
-                <div class="Img" v-for="(url, item2) in col" :key="item2">
-                    <div class="image-mask" :id="'mask-data-' + url.id">
+        <div class="Lists">
+            <div v-for="(col, index) in colData" :key="index" class="colImg" :id="'col-' + index">
+                <div class="Img" v-for="(item, index2) in col" :key="index2" :id="'colItems' + index">
+                    <div class="image-mask" :id="'mask-data-' + item.id">
                         <img
-                            :src="url.url"
-                            :id="'data-' + url.id"
-                            :alt="url.name"
-                            @load="loadImageSuccess(url)"
-                            @error="loadImageSuccess(url)"
-                            @click="preImg(item1, item2)" />
+                            :src="item.url"
+                            :id="'data-' + item.id"
+                            :alt="item.name"
+                            @load="loadImageSuccess(item, index)"
+                            @error="loadImageSuccess(item, index)"
+                            @click="preImg(index, index2)" />
                     </div>
                 </div>
             </div>
@@ -87,10 +87,13 @@ function addImg() {
         colData.value.push(data);
     }
 }
+
 /* 图片加载完成 执行 */
 var count = 0; // 记录当前加载图片数量
 let loaded = [];
-function loadImageSuccess(item) {
+let loadedIndex = 0;
+function loadImageSuccess(item, col) {
+    if (item == null) return;
     count = count + 1;
     if (count === imgs.value.length) {
         emit("load", true); // 图片全部加载完成向父组件发送完成事件
@@ -98,9 +101,12 @@ function loadImageSuccess(item) {
     loaded.push(item);
     if (router.currentRoute.value.path == "/index/imageView") showLoadedImage();
 }
+
 function showLoadedImage() {
-    for (let i = 0; i < loaded.length; i++) {
-        const ele = document.getElementById("data-" + loaded[i].id);
+    for (; loadedIndex < loaded.length; loadedIndex++) {
+        let eleID = "data-" + loaded[loadedIndex].id;
+        const ele = document.getElementById(eleID);
+        if (ele == null) continue;
         ele.style.opacity = 1;
     }
 }
@@ -137,7 +143,7 @@ onActivated(() => {
 .Img {
     margin-bottom: 14px;
 }
-.Col {
+.Lists {
     display: flex;
     justify-content: space-between;
 }
@@ -151,3 +157,4 @@ onActivated(() => {
     /* background-color: aliceblue; */
 }
 </style>
+<style></style>

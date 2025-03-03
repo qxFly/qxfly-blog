@@ -108,7 +108,7 @@ let role = ref(0);
 let roleName = ref(""); // 角色名
 let activeNav = ref([]); // 激活展示的导航栏
 let selectNav = ref(""); // 当前选中的导航栏
-let openedNav = ref(["/manage/article"]);
+let openedNav = ref([]);
 function checkNav() {
     navItems.value.forEach((item) => {
         if (item.role == role.value || role.value == 1 || item.role == 0) {
@@ -118,6 +118,7 @@ function checkNav() {
     if (router.currentRoute.value.path == "/manage") {
         router.push(activeNav.value[1].path);
     }
+    openedNav.value.push(router.currentRoute.value.path);
 }
 /* 高亮当前导航， f:是否是二级菜单 */
 function isCurrNav(nav, f) {

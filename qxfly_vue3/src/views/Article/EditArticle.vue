@@ -869,11 +869,14 @@ onMounted(() => {
     } else {
         loadSaveArticle();
     }
-
+    let e = document.getElementById("nav-item-editArticle");
+    e.style.display = "none";
     window.addEventListener("scroll", Listener);
     window.addEventListener("beforeunload", onbeforeunloadHeadler);
 });
 onUnmounted(() => {
+    let e = document.getElementById("nav-item-editArticle");
+    e.style.display = "block";
     window.removeEventListener("scroll", Listener, false);
     window.removeEventListener("beforeunload", onbeforeunloadHeadler);
 });

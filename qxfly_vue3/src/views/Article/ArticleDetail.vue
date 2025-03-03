@@ -175,12 +175,10 @@ async function getArticleDetail() {
         loadBlur();
         article.value = res.data.data;
         if (article.value.updateTime != null) {
-            article.value.updateTime =
-                article.value.updateTime.split("T")[1].split(".")[0] + "-" + article.value.updateTime.split("T")[0];
+            article.value.updateTime = new Date(article.value.updateTime).toLocaleString();
         }
         if (article.value.createTime != null) {
-            article.value.createTime =
-                article.value.createTime.split("T")[1].split(".")[0] + "-" + article.value.createTime.split("T")[0];
+            article.value.createTime = new Date(article.value.createTime).toLocaleString();
         }
         if (article.value.tag != null && article.value.tag != "") {
             let temp = article.value.tag.split(",");
@@ -195,7 +193,15 @@ async function getArticleDetail() {
         if (content != null) {
             content.innerHTML = article.value.content;
         }
-
+        /* 处理链接域名，防止更换域名后图片无法访问 */
+        let imgEles = content.getElementsByTagName("img");
+        for (let i = 0; i < imgEles.length; i++) {
+            let imgsrc = imgEles[i].getAttribute("src");
+            let split = imgsrc.split("articleImage/");
+            imgsrc = process.env.VUE_APP_ARTICLE_IMG_PATH + "articleImage/" + split[1];
+            imgEles[i].setAttribute("src", imgsrc);
+            imgEles[i].setAttribute("data-href", imgsrc);
+        }
         hljs.highlightAll();
         hljs.initLineNumbersOnLoad();
         setTable();

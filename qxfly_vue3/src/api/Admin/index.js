@@ -68,6 +68,39 @@ export function listUser(data) {
     });
 }
 /**
+ * 列出用户设置
+ * @returns
+ */
+export function listUserSetting(data) {
+    return request({
+        url: "/listUserSetting",
+        method: "post",
+        data: data,
+    });
+}
+/**
+ * 编辑用户设置
+ * @returns
+ */
+export function editUserSetting(data) {
+    return request({
+        url: "/editUserSetting",
+        method: "post",
+        data: data,
+    });
+}
+/**
+ * 删除用户背景图
+ * @returns
+ */
+export function deleteUserBackground(data) {
+    return request({
+        url: "/deleteUserBackground",
+        method: "post",
+        data: data,
+    });
+}
+/**
  * 审核文章
  * @returns
  */

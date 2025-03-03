@@ -1,10 +1,13 @@
 package fun.qxfly.admin.service.impl;
 
-import fun.qxfly.admin.mapper.UserManageMapper;
-import fun.qxfly.admin.service.UserManageService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import fun.qxfly.admin.mapper.UserManageMapper;
+import fun.qxfly.admin.service.UserManageService;
 import fun.qxfly.common.domain.entity.User;
+import fun.qxfly.common.domain.entity.UserSetting;
+import fun.qxfly.common.domain.vo.UserSettingVO;
+import fun.qxfly.common.enums.FilePaths;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,8 @@ public class UserManageServiceImpl implements UserManageService {
 
     @Value("${qxfly.file.path.userImg}")
     private String userAvatarDownloadPath;
+    @Value("${qxfly.file.path.userBgImg}")
+    String bgImgDownloadPath;
 
     /**
      * 根据条件列出用户
@@ -59,6 +64,63 @@ public class UserManageServiceImpl implements UserManageService {
             return false;
         }
 
+    }
+
+    /**
+     * 列出用户设置
+     *
+     * @param currPage 当前页
+     * @param pageSize 页大小
+     * @param uid      用户id
+     * @param username 用户名
+     * @return 分页
+     */
+    @Override
+    public PageInfo<UserSettingVO> listUserSetting(Integer currPage, Integer pageSize, Integer uid, String username) {
+        PageHelper.startPage(currPage, pageSize);
+        List<UserSettingVO> userSettingList = userManageMapper.listUserSetting(uid, username);
+        for (UserSettingVO setting : userSettingList) {
+            if (setting.getBgImgPath() != null && !setting.getBgImgPath().isEmpty()) {
+                setting.setBgImgPath(bgImgDownloadPath + setting.getBgImgPath());
+            }
+        }
+        return new PageInfo<>(userSettingList);
+    }
+
+    /**
+     * 编辑用户设置信息
+     *
+     * @param userSetting 用户设置信息
+     * @return
+     */
+    @Override
+    public boolean editUserSetting(UserSetting userSetting) {
+        String bgImgPath = userSetting.getBgImgPath();
+        if (bgImgPath != null && !bgImgPath.isEmpty()) {
+            String[] split = bgImgPath.split("userBgImg/");
+            userSetting.setBgImgPath(split[1]);
+        }
+        return userManageMapper.editUserSetting(userSetting);
+    }
+
+    /**
+     * 删除用户背景
+     *
+     * @param uid    用户id
+     * @param bgPath 背景路径
+     */
+    @Override
+    public boolean deleteUserBackground(Integer uid, String bgPath) {
+        String[] split = bgPath.split("userBgImg/");
+        String path = FilePaths.USER_BACKGROUND_IMAGE_PATH.getPath() + split[1];
+        File file = new File(path);
+        if (file.isFile() && file.exists()) {
+            boolean delete = file.delete();
+            if (delete) {
+                return userManageMapper.deleteUserBackground(uid);
+            }
+        }
+        return false;
     }
 
     /**

@@ -69,6 +69,10 @@ const routes = [
                 component: () => import("@/views/AdminPage/User"),
             },
             {
+                path: "/manage/userSetting",
+                component: () => import("@/views/AdminPage/UserSetting.vue"),
+            },
+            {
                 path: "/manage/image",
                 component: () => import("@/views/AdminPage/ImagePage"),
             },

@@ -18,13 +18,6 @@ qxfly:
   file:
     uploadPath: /qxfly/web/data/upload/
     path:
-#      download: ${qxfly.domain}/fly/download/
-#      VirtualPath: file:///www/qxfly/data/upload/
-#      userImg: ${qxfly.domain}/fly/userAvatar/
-#      userBgImg: ${qxfly.domain}/fly/userBgImg/
-#      articleCover: ${qxfly.domain}/fly/articleCover/
-#      articleImage: ${qxfly.domain}/fly/articleImage/
-#      articleAttachment: ${qxfly.domain}/fly/articleAttachment/
       VirtualPath: file:///www/qxfly/data/upload/
       userImg: ${qxfly.domain}/userAvatar/
       userBgImg: ${qxfly.domain}/userBgImg/

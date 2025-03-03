@@ -7,13 +7,17 @@
                         <div class="user-info-item">
                             <div class="label">ID:</div>
                             <div class="edit-id">
-                                <input type="text" v-model="userInfo.id" disabled />
+                                <input type="text" class="user-info-item-input" v-model="userInfo.id" disabled />
                             </div>
                         </div>
                         <div class="user-info-item">
                             <div class="label">名称</div>
                             <div class="edit-name">
-                                <input type="text" v-model="userInfo.username" maxlength="20" />
+                                <input
+                                    type="text"
+                                    class="user-info-item-input"
+                                    v-model="userInfo.username"
+                                    maxlength="20" />
                             </div>
                         </div>
                         <div class="user-info-item">
@@ -21,6 +25,7 @@
                             <div class="edit-introduction">
                                 <textarea
                                     type="text"
+                                    class="user-info-item-input"
                                     v-model="userInfo.introduction"
                                     style="min-height: 18px; min-width: 160px"></textarea>
                             </div>
@@ -28,19 +33,23 @@
                         <div class="user-info-item">
                             <div class="label">邮箱</div>
                             <div class="edit-email">
-                                <input type="text" v-model="userInfo.email" maxlength="20" />
+                                <input
+                                    type="text"
+                                    class="user-info-item-input"
+                                    v-model="userInfo.email"
+                                    maxlength="20" />
                             </div>
                         </div>
                         <div class="user-info-item">
                             <div class="label">地址</div>
                             <div class="edit-location">
-                                <input type="text" v-model="userInfo.location" />
+                                <input type="text" class="user-info-item-input" v-model="userInfo.location" />
                             </div>
                         </div>
                         <div class="user-info-item">
                             <div class="label">生日</div>
                             <div class="edit-birthday">
-                                <input type="date" v-model="userInfo.birthday" />
+                                <input type="date" class="user-info-item-input" v-model="userInfo.birthday" />
                             </div>
                         </div>
                         <div class="user-info-item">
@@ -50,7 +59,11 @@
                         <div class="user-info-item">
                             <div class="label">手机</div>
                             <div class="edit-phone">
-                                <input type="text" v-model="userInfo.phone" maxlength="11" />
+                                <input
+                                    type="text"
+                                    class="user-info-item-input"
+                                    v-model="userInfo.phone"
+                                    maxlength="11" />
                             </div>
                         </div>
                     </div>
@@ -70,7 +83,12 @@
                         <div class="user-info-item">
                             <div class="label">密码</div>
                             <div class="edit-password">
-                                <input type="password" v-model="password" maxlength="20" id="password" />
+                                <input
+                                    type="password"
+                                    class="user-info-item-input"
+                                    v-model="password"
+                                    maxlength="20"
+                                    id="password" />
                                 <div class="pwd-btn" @click="showPwd('password')">
                                     <svg
                                         v-if="isPwdShow"
@@ -115,7 +133,12 @@
                         <div class="user-info-item">
                             <div class="label">重复密码</div>
                             <div class="edit-repassword">
-                                <input type="password" v-model="repassword" maxlength="20" id="repassword" />
+                                <input
+                                    type="password"
+                                    class="user-info-item-input"
+                                    v-model="repassword"
+                                    maxlength="20"
+                                    id="repassword" />
                                 <div class="pwd-btn" @click="showPwd('repassword')">
                                     <svg
                                         v-if="isRePwdShow"
@@ -160,7 +183,12 @@
                         <div class="user-info-item">
                             <div class="label">验证码</div>
                             <div class="edit-Verification">
-                                <input type="text" v-model="Verification" maxlength="20" id="Verification" />
+                                <input
+                                    type="text"
+                                    class="user-info-item-input"
+                                    v-model="Verification"
+                                    maxlength="20"
+                                    id="Verification" />
                                 <button @click="SendCode" id="btn-Verification">获取验证码</button>
                             </div>
                         </div>
@@ -373,8 +401,8 @@ let option = reactive({
     info: true, // 裁剪框的大小信息
     canScale: false, // 图片是否允许滚轮缩放
     autoCrop: true, // 是否默认生成截图框
-    autoCropWidth: 150, // 默认生成截图框宽度
-    autoCropHeight: 150, // 默认生成截图框高度
+    autoCropWidth: 1000, // 默认生成截图框宽度
+    autoCropHeight: 1000, // 默认生成截图框高度
     fixedBox: false, // 固定截图框大小 不允许改变
     fixed: true, // 是否开启截图框宽高固定比例，这个如果设置为true，截图框会是固定比例缩放的，如果设置为false，则截图框的狂宽高比例就不固定了
     fixedNumber: [1, 1], // 截图框的宽高比例 [ 宽度 , 高度 ]
@@ -616,8 +644,18 @@ function SendCode() {
         }, 2000);
     }
 }
+/* 设置输入框最大宽度 */
+function setStyle() {
+    let inputs = document.getElementsByClassName("user-info-item-input");
+    for (let i = 0; i < inputs.length; i++) {
+        inputs[i].style.maxWidth = inputs[i].offsetWidth + "px";
+    }
+}
 onMounted(() => {
     GetUserInfo();
+    setTimeout(() => {
+        setStyle();
+    }, 1000);
 });
 onUnmounted(() => {
     clearTimeout(timer);
@@ -642,7 +680,7 @@ onUnmounted(() => {
     display: flex;
     /* grid-template-columns: 1fr 1fr;
   justify-items: center; */
-    gap: 24px;
+    gap: 50px;
 }
 .col {
     /* margin: 0 20px 20px 0; */
@@ -662,7 +700,7 @@ onUnmounted(() => {
 }
 .user-info-item input,
 .user-info-item textarea {
-    max-width: 370px;
+    /* max-width: 100%; */
     width: 100%;
     padding: 6px 8px;
     border-radius: 6px;

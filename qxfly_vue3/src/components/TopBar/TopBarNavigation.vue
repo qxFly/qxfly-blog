@@ -86,7 +86,7 @@ function search() {
         });
     } else {
         router.push({
-            path: process.env.APP_VUE_INDEX_PATH,
+            path: "/index/articleClassify",
             query: {
                 page: 1,
                 search: searchData.value.trim(),
@@ -135,22 +135,11 @@ router.beforeEach((to) => {
         ele[0].style["content"] = "";
     }
 });
-// onBeforeRouteUpdate((to, from) => {
-//     if (to.fullPath === "/") {
-//         router.push({
-//             path: process.env.APP_VUE_INDEX_PATH,
-//             query: {
-//                 page: 1,
-//             },
-//         });
-//     }
-// });
 onMounted(() => {
     getNavigation();
     searchData.value = useRouter.query.search;
 });
 </script>
-<style></style>
 <style scoped lang="less">
 #navigation {
     display: flex;
@@ -223,6 +212,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
+    user-select: none;
 }
 .nav-item-heightlight:hover {
     border-bottom: 1px solid #000000;

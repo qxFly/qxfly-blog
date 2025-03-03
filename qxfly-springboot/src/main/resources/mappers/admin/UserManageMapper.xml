@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace等于mapper接口类的全限定名,这样实现对应 -->
 <mapper namespace="fun.qxfly.admin.mapper.UserManageMapper">
+    <!--列出用户-->
     <select id="listUser" resultType="fun.qxfly.common.domain.entity.User">
         select * from user
         <where>
@@ -25,6 +26,19 @@
             </if>
             <if test="role != null">
                 and role = #{role}
+            </if>
+        </where>
+    </select>
+    <!--列出用户设置-->
+    <select id="listUserSetting" resultType="fun.qxfly.common.domain.vo.UserSettingVO">
+        select us.*, u.username from user_settings us join user u on u.id = us.uid
+
+        <where>
+            <if test="uid != null">
+                and uid = #{uid}
+            </if>
+            <if test="username != null and username != ''">
+                and us.uid = any (SELECT id from `user` WHERE username like concat('%', #{username}, '%'))
             </if>
         </where>
     </select>

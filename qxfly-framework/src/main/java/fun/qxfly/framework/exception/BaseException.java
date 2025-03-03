@@ -1,4 +1,4 @@
-package fun.qxfly.common.exception;
+package fun.qxfly.framework.exception;
 
 public class BaseException extends RuntimeException {
 

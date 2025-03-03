@@ -229,8 +229,8 @@ let option = reactive({
     info: true, // 裁剪框的大小信息
     canScale: false, // 图片是否允许滚轮缩放
     autoCrop: true, // 是否默认生成截图框
-    autoCropWidth: 160, // 默认生成截图框宽度
-    autoCropHeight: 90, // 默认生成截图框高度
+    autoCropWidth: 1600, // 默认生成截图框宽度
+    autoCropHeight: 1600, // 默认生成截图框高度
     fixedBox: false, // 固定截图框大小 不允许改变
     fixed: true, // 是否开启截图框宽高固定比例，这个如果设置为true，截图框会是固定比例缩放的，如果设置为false，则截图框的狂宽高比例就不固定了
     fixedNumber: [16, 9], // 截图框的宽高比例 [ 宽度 , 高度 ]
@@ -315,6 +315,7 @@ watch(
     (newVal, oldVal) => {
         let bg = document.getElementById("index_bg");
         if (newVal.bgSwitch == 1) {
+            if (newVal.bgImgPath == null || newVal.bgImgPath.trim() == "") return;
             newVal.bgImgPath = newVal.bgImgPath.replace(/\\/g, "/");
             bg.style.backgroundImage = "url(" + newVal.bgImgPath + ")";
         } else {

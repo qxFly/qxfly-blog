@@ -1,6 +1,8 @@
 package fun.qxfly.admin.mapper;
 
 import fun.qxfly.common.domain.entity.User;
+import fun.qxfly.common.domain.entity.UserSetting;
+import fun.qxfly.common.domain.vo.UserSettingVO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -68,5 +70,32 @@ public interface UserManageMapper {
      * @param time
      */
     @Insert("insert into user_token(userId, username, token, create_time) values(#{id}, #{username}, #{token}, #{time})")
-    void setUserToken(Integer id, String username, String token, long time);
+    void setUserToken(@Param("uid") Integer id, @Param("uid") String username, @Param("uid") String token, @Param("uid") long time);
+
+    /**
+     * 列出用户设置
+     *
+     * @param uid
+     * @param username
+     * @return
+     */
+    List<UserSettingVO> listUserSetting(@Param("uid") Integer uid, @Param("username") String username);
+
+    /**
+     * 编辑用户设置信息
+     *
+     * @param userSetting 用户设置信息
+     * @return
+     */
+    @Update("update user_settings set bgImgPath = #{bgImgPath}, bgSwitch = #{bgSwitch}, bgBlur = #{bgBlur} where uid = #{uid}")
+    boolean editUserSetting(UserSetting userSetting);
+
+    /**
+     * 删除用户背景
+     *
+     * @param uid uid
+     * @return boolean
+     */
+    @Update("update user_settings set bgImgPath = null where uid = #{uid}")
+    boolean deleteUserBackground(Integer uid);
 }

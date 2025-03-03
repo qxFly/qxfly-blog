@@ -1,9 +1,11 @@
 package fun.qxfly.admin.controller;
 
-import fun.qxfly.admin.service.UserManageService;
 import com.github.pagehelper.PageInfo;
-import fun.qxfly.common.domain.po.Result;
+import fun.qxfly.admin.service.UserManageService;
 import fun.qxfly.common.domain.entity.User;
+import fun.qxfly.common.domain.entity.UserSetting;
+import fun.qxfly.common.domain.po.Result;
+import fun.qxfly.common.domain.vo.UserSettingVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -87,6 +89,52 @@ public class UserManageController {
     @PostMapping("/deleteUserAvatar")
     public Result deleteUserAvatar(@RequestBody User user) {
         boolean flag = userManageService.deleteUserAvatar(user);
+        if (flag) {
+            return Result.success("修改成功", null);
+        } else {
+            return Result.error("修改失败");
+        }
+    }
+
+    /**
+     * 列出用户设置
+     *
+     * @param map
+     * @return
+     */
+    @Operation(description = "列出用户", summary = "列出用户")
+    @PostMapping("/listUserSetting")
+    public Result listUserSetting(@RequestBody Map<String, Object> map) {
+        PageInfo<UserSettingVO> pageBean = userManageService.listUserSetting((Integer) map.get("currPage"), (Integer) map.get("pageSize"), (Integer) map.get("uid"), (String) map.get("username"));
+        return Result.success(pageBean);
+    }
+
+    /**
+     * 编辑用户设置信息
+     *
+     * @param userSetting
+     * @return
+     */
+    @Operation(description = "编辑用户设置信息", summary = "编辑用户设置信息")
+    @PostMapping("/editUserSetting")
+    public Result editUserSetting(@RequestBody UserSetting userSetting) {
+        boolean flag = userManageService.editUserSetting(userSetting);
+        if (flag) {
+            return Result.success("修改成功", null);
+        } else {
+            return Result.error("修改失败");
+        }
+    }
+
+    /**
+     * 删除用户背景
+     *
+     * @return
+     */
+    @Operation(description = "删除用户背景", summary = "删除用户背景")
+    @PostMapping("/deleteUserBackground")
+    public Result deleteUserBackground(@RequestBody Map<String, Object> map) {
+        boolean flag = userManageService.deleteUserBackground((Integer) map.get("uid"), (String) map.get("bgPath"));
         if (flag) {
             return Result.success("修改成功", null);
         } else {

@@ -56,12 +56,12 @@
                     :row-style="rowStyle"
                     :max-height="setTableHeight()">
                     <el-table-column fixed prop="id" label="ID" width="80" align="center" />
-                    <el-table-column prop="username" label="用户名" width="160" align="center" />
-                    <el-table-column prop="phone" label="手机号" width="140" align="center" />
-                    <el-table-column prop="email" label="邮箱" width="200" align="center" />
-                    <el-table-column prop="introduction" min-width="300" label="简介" align="center" />
-                    <el-table-column prop="location" label="地址" width="250" align="center" />
-                    <el-table-column prop="" label="角色" width="100" align="center">
+                    <el-table-column prop="username" label="用户名" align="center" />
+                    <el-table-column prop="phone" label="手机号" align="center" />
+                    <el-table-column prop="email" label="邮箱" align="center" />
+                    <el-table-column prop="introduction" label="简介" align="center" />
+                    <el-table-column prop="location" label="地址" align="center" />
+                    <el-table-column prop="" label="角色" align="center">
                         <template #default="scope">
                             <span v-if="scope.row.role == 0">普通用户</span>
                             <span v-if="scope.row.role == 1">管理员</span>
@@ -70,7 +70,7 @@
                             <span v-if="scope.row.role == 4">用户审核员</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="" label="头像" width="80" align="center">
+                    <el-table-column prop="" label="头像" align="center">
                         <template #default="scope">
                             <el-button
                                 type="primary"
@@ -82,12 +82,12 @@
                             </el-button>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="birthday" label="生日" width="170" align="center">
+                    <el-table-column prop="birthday" label="生日" align="center">
                         <template #default="scope">
                             {{ adjustTime(scope.row.birthday) }}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="" label="操作" width="160" align="center">
+                    <el-table-column prop="" label="操作" width="150" align="center">
                         <template #default="scope">
                             <el-button type="primary" size="small" plain @click="toEditUser(scope.row)">
                                 编辑
