@@ -1,8 +1,10 @@
 package fun.qxfly.framework.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
+import fun.qxfly.common.domain.entity.User;
 import fun.qxfly.common.domain.po.Result;
 import fun.qxfly.common.utils.JwtUtils;
+import fun.qxfly.common.utils.LoginHolder;
 import fun.qxfly.framework.service.InterceptorService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-@CrossOrigin
 @Slf4j
 @Component
 public class LoginCheckInterceptor implements HandlerInterceptor {
@@ -25,7 +26,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
     //目标资源方法运行前运行，返回true:放行，返回false:不放行
     @Override
-    public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object handler) {
         if (HttpMethod.OPTIONS.toString().equals(req.getMethod())) {
             return true;
         }
@@ -42,25 +43,31 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         String token = req.getHeader("token");
         //解析token，解析失败，返回错误结果（未登录）
         Claims claims = JwtUtils.parseJWT(token);
-        if (claims == null) {
-            log.info("解析证书失败，未登录");
-            resp.getWriter().write(errorMsg);
-            return false;
-        }
-        /*查询用户是否退出，退出则返回错误结果*/
-        String logoutUser = interceptorService.getLogoutStatus(token);
-        if (logoutUser != null) {
-            resp.getWriter().write(errorMsg);
-            return false;
-        }
-
-        /*检查是否为管理员*/
-        if (url.contains("manage")) {
-            String username = (String) claims.get("username");
-            if (!interceptorService.isAdmin(username)) return false;
-        }
-        //放行
+        User user = new User();
+        user.setId(claims.get("uid", Integer.class));
+        user.setUsername(claims.get("username", String.class));
+        LoginHolder.setUser(user);
         log.info("证书合法，放行");
         return true;
+//        if (claims == null) {
+//            log.info("解析证书失败，未登录");
+//            resp.getWriter().write(errorMsg);
+//            return false;
+//        }
+//        /*查询用户是否退出，退出则返回错误结果*/
+//        String logoutUser = interceptorService.getLogoutStatus(token);
+//        if (logoutUser != null) {
+//            resp.getWriter().write(errorMsg);
+//            return false;
+//        }
+//
+//        /*检查是否为管理员*/
+//        if (url.contains("manage")) {
+//            String username = (String) claims.get("username");
+//            if (!interceptorService.isAdmin(username)) return false;
+//        }
+//        //放行
+//        log.info("证书合法，放行");
+//        return true;
     }
 }

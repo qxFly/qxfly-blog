@@ -17,6 +17,7 @@ server:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
+#   log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:mappers/*.xml,classpath:mappers/admin/*.xml
 
 qxfly:
@@ -36,6 +37,8 @@ qxfly:
         - /swagger-ui/**  #api文档
         - /doc.html/**
         - /webjars/**
+        - /getImage #图片页
+        - /error   #错误页面
         - /userAvatar/**   #用户头像
         - /userBgImg/**   #用户背景图片
         - /user/getUserInfo   #获取用户信息

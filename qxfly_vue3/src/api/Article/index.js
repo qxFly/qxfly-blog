@@ -147,35 +147,35 @@ export function checkA() {
     });
 }
 /* 检测用户章是否可编辑文章 */
-export function addArticleView(articleId) {
+export function addArticleView(p) {
     return request({
         url: "/article/addArticleView",
-        method: "post",
-        data: articleId,
+        method: "get",
+        params: p,
     });
 }
 /* 文章点赞 */
-export function articleLike(articleId) {
+export function articleLike(p) {
     return request({
         url: "/article/articleLike",
-        method: "post",
-        data: articleId,
+        method: "get",
+        params: p,
     });
 }
-/* 判断文章是否点赞删除 */
-export function isArticleLike(articleId) {
+/* 判断文章是否点赞 */
+export function isArticleLike(p) {
     return request({
         url: "/article/isArticleLike",
-        method: "post",
-        data: articleId,
+        method: "get",
+        params: { aid: p },
     });
 }
 /* 文章收藏 */
-export function articleCollection(articleId) {
+export function articleCollection(p) {
     return request({
         url: "/article/articleCollection",
-        method: "post",
-        data: articleId,
+        method: "get",
+        params: p,
     });
 }
 /* 文章收藏 */

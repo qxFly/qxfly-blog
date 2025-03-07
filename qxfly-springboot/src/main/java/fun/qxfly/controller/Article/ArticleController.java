@@ -6,6 +6,7 @@ import fun.qxfly.common.domain.entity.*;
 import fun.qxfly.common.domain.po.Result;
 import fun.qxfly.common.domain.vo.ArticleVO;
 import fun.qxfly.common.utils.JwtUtils;
+import fun.qxfly.common.utils.LoginHolder;
 import fun.qxfly.service.Article.ArticleService;
 import fun.qxfly.service.User.UserInfoService;
 import io.jsonwebtoken.Claims;
@@ -161,9 +162,10 @@ public class ArticleController {
         String token = request.getHeader("token");
         int pub = 12;//个位：图片是否公开到图片页；十位：文章是否公开。（1、公开、2、私密、3、好友）
         int userId = -1;
-        Claims claims = JwtUtils.parseJWT(token);
-        if (claims != null) {
-            userId = (int) claims.get("uid");
+//        Claims claims = JwtUtils.parseJWT(token);
+        User user = LoginHolder.getUser();
+        if (user != null) {
+            userId = user.getId();
         } else {
             verify = 3;
         }
@@ -211,10 +213,12 @@ public class ArticleController {
     @Operation(description = "根据id获取文章", summary = "根据id获取文章")
     public Result getArticleById(@RequestParam int aid, HttpServletRequest request) {
         String token = request.getHeader("token");
-        Claims claims = JwtUtils.parseJWT(token);
         Integer uid = null;
-        if (claims != null) {
-            uid = (Integer) claims.get("uid");
+        if (token != null) {
+            Claims claims = JwtUtils.parseJWT(token);
+            if (claims != null) {
+                uid = claims.get("uid", Integer.class);
+            }
         }
         ArticleVO articleVO = articleService.getArticleById(aid, uid);
         return Result.success(articleVO);
@@ -239,61 +243,74 @@ public class ArticleController {
     /**
      * 文章浏览量
      *
-     * @param dailyView
+     * @param aid     文章id
+     * @param request 请求
      * @return
      */
-    @PostMapping("/addArticleView")
+    @GetMapping("/addArticleView")
     @Operation(description = "文章浏览量", summary = "文章浏览量")
-    public Result addArticleView(@RequestBody DailyView dailyView, HttpServletRequest request) {
+    public Result addArticleView(@RequestParam Integer aid, HttpServletRequest request) {
         String token = request.getHeader("token");
         String UA = request.getHeader("User-Agent");
-        Claims claims = JwtUtils.parseJWT(token);
-        if (claims == null) return Result.error("");
-        Integer uid = (Integer) claims.get("uid");
-        articleService.addArticleView(dailyView.getArticleId(), uid, UA);
+        Integer uid = null;
+        if (token != null) {
+            Claims claims = JwtUtils.parseJWT(token);
+            if (claims != null) {
+                uid = (Integer) claims.get("uid");
+            }
+        }
+        articleService.addArticleView(aid, uid, UA);
         return Result.success();
     }
 
     /**
      * 文章点赞和取消
      *
-     * @param dailyView
+     * @param aid     文章id
+     * @param flag    0:取消点赞，1:点赞
+     * @param request 请求
      * @return
      */
-    @PostMapping("/articleLike")
+    @GetMapping("/articleLike")
     @Operation(description = "文章点赞", summary = "文章点赞")
-    public Result articleLike(@RequestBody DailyView dailyView, HttpServletRequest request) {
+    public Result articleLike(@RequestParam Integer aid, @RequestParam Integer flag, HttpServletRequest request) {
         /*从token中获取用户id*/
         String token = request.getHeader("token");
         Claims claims = JwtUtils.parseJWT(token);
         if (claims == null) return Result.error("操作失败");
         Integer uid = (Integer) claims.get("uid");
-        if (dailyView.getViews().equals(0))
-            articleService.articleLike(dailyView.getArticleId(), uid);
+        boolean f;
+        if (flag == 0)
+            f = articleService.articleLike(aid, uid);
         else
-            articleService.cancelArticleLike(dailyView.getArticleId(), uid);
-        return Result.success();
+            f = articleService.cancelArticleLike(aid, uid);
+        if (f) {
+            return Result.success();
+        }
+        return Result.error("操作失败");
     }
 
     /**
      * 文章收藏和取消
      *
-     * @param Collection
+     * @param aid     文章id
+     * @param flag    0收藏，1取消
+     * @param request 请求
      * @return
      */
-    @PostMapping("/articleCollection")
+    @GetMapping("/articleCollection")
     @Operation(description = "文章收藏", summary = "文章收藏")
-    public Result articleCollection(@RequestBody DailyView Collection, HttpServletRequest request) {
+    public Result articleCollection(@RequestParam Integer aid, @RequestParam Integer flag, HttpServletRequest request) {
         /*从token中获取用户id*/
         String token = request.getHeader("token");
         Claims claims = JwtUtils.parseJWT(token);
         if (claims == null) return Result.operationError();
         Integer uid = (Integer) claims.get("uid");
         /* 0为没有收藏，否则取消收藏*/
-        if (Collection.getViews().equals(0))
-            articleService.articleCollection(Collection.getArticleId(), uid);
+        if (flag == 0)
+            articleService.articleCollection(aid, uid);
         else
-            articleService.cencelArticleCollection(Collection.getArticleId(), uid);
+            articleService.cencelArticleCollection(aid, uid);
         return Result.success();
 
     }

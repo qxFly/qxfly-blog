@@ -52,7 +52,7 @@ public class JwtUtils {
      */
     public static Claims parseJWT(String token) {
         if (token == null || token.isEmpty() || token.isBlank()) {
-            return null;
+           throw new RuntimeException("token为空");
         }
         try {
             return Jwts.parser()
@@ -61,8 +61,7 @@ public class JwtUtils {
                     .getBody();
 
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
 
     }

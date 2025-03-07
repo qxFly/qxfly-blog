@@ -5,6 +5,7 @@ import fun.qxfly.common.domain.entity.User;
 import fun.qxfly.common.domain.po.Result;
 import fun.qxfly.common.service.RSAService;
 import fun.qxfly.common.utils.JwtUtils;
+import fun.qxfly.common.utils.LoginHolder;
 import fun.qxfly.common.utils.RSAEncrypt;
 import fun.qxfly.service.User.LoginService;
 import fun.qxfly.service.User.LogoutService;
@@ -52,50 +53,41 @@ public class LoginController {
     @Operation(description = "登陆", summary = "登陆")
     @PostMapping("/login")
     public Result Login(@RequestBody User user) {
-        /*判断是否为手机号*/
-        boolean isPhone = user.getUsername().matches("^[0-9]*$");
-        if (isPhone) {
-            user.setPhone(user.getUsername());
-        }
-        String encodePassword = user.getPassword();
-        String decodePassword;
-        String privateKey = rsaService.getPrivateKey(user.getSalt());
-        try {
-            decodePassword = RSAEncrypt.decrypt(encodePassword, privateKey);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.error("密码错误");
-        }
-        user.setPassword(decodePassword);
         User u = loginService.login(user);
-        /* 用户不存在 */
+        /* 登录失败 */
         if (u == null) return Result.error("用户名或密码错误");
-        /* 用户存在 */
+        /* 登录成功 */
+        String token = JwtUtils.createToken(u.getId(), u.getUsername(), null);
         HashMap<String, String> resBody = new HashMap<>();
         resBody.put("uid", u.getId().toString());
         resBody.put("username", u.getUsername());
-        /*获取用户的token*/
-        Token userToken = loginService.getTokenByUser(u);
-        /*token不为空*/
-        if (userToken != null && userToken.getToken() != null) {
-            /*验证Token是否有效*/
-            Claims claims = JwtUtils.parseJWT(userToken.getToken());
-            /* token有效，登录*/
-            if (claims != null) {
-                logoutService.deleteToken(userToken);
-                resBody.put("token", userToken.getToken());
-                return Result.success(resBody);
-            }
-            loginService.deleteToken(userToken);
-            logoutService.deleteToken(userToken);
-        }
-        /* 用户token失效或者无token，生成token */
-        /* 获取现在的时间，转化为毫秒 */
-        String newToken = JwtUtils.createToken(u.getId(), u.getUsername(), null);
-        long createDate = JwtUtils.parseJWT(newToken).getIssuedAt().getTime();
-        loginService.setToken(u.getUsername(), newToken, createDate);
-        resBody.put("token", newToken);
+        resBody.put("token", token);
         return Result.success(resBody);
+//        HashMap<String, String> resBody = new HashMap<>();
+//        resBody.put("uid", u.getId().toString());
+//        resBody.put("username", u.getUsername());
+//        /*获取用户的token*/
+//        Token userToken = loginService.getTokenByUser(u);
+//        /*token不为空*/
+//        if (userToken != null && userToken.getToken() != null) {
+//            /*验证Token是否有效*/
+//            Claims claims = JwtUtils.parseJWT(userToken.getToken());
+//            /* token有效，登录*/
+//            if (claims != null) {
+//                logoutService.deleteToken(userToken);
+//                resBody.put("token", userToken.getToken());
+//                return Result.success(resBody);
+//            }
+//            loginService.deleteToken(userToken);
+//            logoutService.deleteToken(userToken);
+//        }
+//        /* 用户token失效或者无token，生成token */
+//        /* 获取现在的时间，转化为毫秒 */
+//        String newToken = JwtUtils.createToken(u.getId(), u.getUsername(), null);
+//        long createDate = JwtUtils.parseJWT(newToken).getIssuedAt().getTime();
+//        loginService.setToken(u.getUsername(), newToken, createDate);
+//        resBody.put("token", newToken);
+//        return Result.success(resBody);
     }
 
     /**

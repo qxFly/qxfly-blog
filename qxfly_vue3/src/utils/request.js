@@ -73,7 +73,6 @@ service.interceptors.request.use(async (config) => {
             }
         } else {
             if (token == null) {
-                console.log("nologin", config.url);
                 router.replace("/login");
                 return config;
             } else {

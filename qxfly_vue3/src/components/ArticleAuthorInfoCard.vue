@@ -108,21 +108,23 @@ function GetUserInfo() {
 /* 前往文章作者空间 */
 function toUserInfoPage() {
     if (router.currentRoute.value.path.match(/space/) != null) return;
-    if (localStorage.getItem(md5("token")) != null && localStorage.getItem(md5("token")) != md5("nologin")) {
+    if (localStorage.getItem(md5("token")) != null) {
         router.push({
             path: "/user/space",
             query: {
                 uid: userCardInfo.value.id,
             },
         });
+    } else {
+        router.push("/login");
     }
 }
 function toUserArticle() {
-    if (localStorage.getItem(md5("token")) != null && localStorage.getItem(md5("token")) != md5("nologin"))
+    if (localStorage.getItem(md5("token")) != null)
         router.push("/user/space/userArticle?page=1&uid=" + userCardInfo.value.id);
 }
 function toUserCollections() {
-    if (localStorage.getItem(md5("token")) != null && localStorage.getItem(md5("token")) != md5("nologin"))
+    if (localStorage.getItem(md5("token")) != null)
         router.push("/user/space/userCollection?page=1&uid=" + userCardInfo.value.id);
 }
 function toLogin() {

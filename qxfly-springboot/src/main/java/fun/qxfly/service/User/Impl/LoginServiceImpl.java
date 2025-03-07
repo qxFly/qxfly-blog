@@ -1,5 +1,8 @@
 package fun.qxfly.service.User.Impl;
 
+import fun.qxfly.common.domain.po.Result;
+import fun.qxfly.common.service.RSAService;
+import fun.qxfly.common.utils.RSAEncrypt;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,8 +14,12 @@ import fun.qxfly.service.User.LoginService;
 @Slf4j
 @Service
 public class LoginServiceImpl implements LoginService {
-    @Autowired
-    private LoginMapper loginMapper;
+    private final LoginMapper loginMapper;
+    private final RSAService rsaService;
+    public LoginServiceImpl(LoginMapper loginMapper, RSAService rsaService) {
+        this.loginMapper = loginMapper;
+        this.rsaService = rsaService;
+    }
 
     /**
      * 登陆校验
@@ -22,6 +29,20 @@ public class LoginServiceImpl implements LoginService {
      */
     @Override
     public User login(User user) {
+        /*判断是否为手机号*/
+        boolean isPhone = user.getUsername().matches("^[0-9]*$");
+        if (isPhone) {
+            user.setPhone(user.getUsername());
+        }
+        String encodePassword = user.getPassword();
+        String decodePassword;
+        String privateKey = rsaService.getPrivateKey(user.getSalt());
+        try {
+            decodePassword = RSAEncrypt.decrypt(encodePassword, privateKey);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        user.setPassword(decodePassword);
         return loginMapper.login(user);
     }
 

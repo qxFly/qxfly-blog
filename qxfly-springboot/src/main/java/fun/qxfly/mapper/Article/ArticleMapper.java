@@ -199,6 +199,15 @@ public interface ArticleMapper {
     @Select("select count(*) from user_article_daily_view where (aid = #{aid} and uid = #{uid}) or (aid = #{aid} and UserAgent = #{UA})")
     Integer getUserArticleView(@Param("aid") Integer aid, @Param("uid") Integer uid, @Param("UA") String UA);
 
+
+    /**
+     * 查看UA是否浏览过该文章
+     * @param aid
+     * @param UA
+     * @return
+     */
+    @Select("select count(*) from user_article_daily_view where aid = #{aid} and UserAgent = #{UA}")
+    Integer getUAArticleView(Integer aid, String UA);
     /**
      * 添加用户每日浏览记录
      *
@@ -378,4 +387,5 @@ public interface ArticleMapper {
      */
     @Select("select count(*) from image where aid = #{id} and name = #{imageName}")
     Integer checkSamePubImage(@Param("id") Integer id, @Param("imageName") String imageName);
+
 }

@@ -20,11 +20,11 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>3.1.5</spring-boot.version>
         <!-- 项目模块版本 -->
-        <revision>1.0.1</revision><!--父模块-->
-        <qxfly.springboot.version>1.0.1</qxfly.springboot.version>
-        <qxfly.framework.version>1.0.0</qxfly.framework.version>
-        <qxfly.common.version>1.0.0</qxfly.common.version>
-        <qxfly.quartz.version>1.0.0</qxfly.quartz.version>
+        <revision>1.0.2</revision><!--父模块-->
+        <qxfly.springboot.version>1.0.2</qxfly.springboot.version>
+        <qxfly.framework.version>1.0.1</qxfly.framework.version>
+        <qxfly.common.version>1.0.1</qxfly.common.version>
+        <qxfly.quartz.version>1.0.1</qxfly.quartz.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -43,17 +43,17 @@
             <dependency>
                 <groupId>fun.qxfly</groupId>
                 <artifactId>qxfly-framework</artifactId>
-                <version>1.0.0</version>
+                <version>${qxfly.framework.version}</version>
             </dependency>
             <dependency>
                 <groupId>fun.qxfly</groupId>
                 <artifactId>qxfly-common</artifactId>
-                <version>1.0.0</version>
+                <version>${qxfly.common.version}</version>
             </dependency>
             <dependency>
                 <groupId>fun.qxfly</groupId>
                 <artifactId>qxfly-quartz</artifactId>
-                <version>1.0.0</version>
+                <version>${qxfly.quartz.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -85,13 +85,7 @@
             <artifactId>pagehelper-spring-boot-starter</artifactId>
             <version>2.1.0</version>
         </dependency>
-
-        <!--工具类-->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
+        <!--jwt-->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
@@ -101,6 +95,12 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>2.3.1</version>
+        </dependency>
+        <!--工具类-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -161,6 +161,9 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
 <!--            &lt;!&ndash; 此插件必须放在父 POM 中  &ndash;&gt;-->

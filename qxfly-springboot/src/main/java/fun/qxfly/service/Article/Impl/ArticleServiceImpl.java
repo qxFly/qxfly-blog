@@ -357,23 +357,28 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public boolean articleLike(Integer articleId, Integer uid) {
         Integer al = articleMapper.getUserArticleLike(articleId, uid);
-
+        log.info("articleId:{}", articleId);
         /*获取用户的点赞json数据*/
         UserLikesAndCollection userLikes = articleMapper.getUserLikes(uid);
         ArrayList<Integer> articles = new ArrayList<>();
+        log.info("userLikes:{}", userLikes);
         /*如果为空，则创建相关json数据*/
         if (userLikes == null) {
+            log.info("if");
             articles.add(articleId);
             UserLikesAndCollection userLikes1 = new UserLikesAndCollection(uid, JSONObject.toJSONString(articles), JSONObject.toJSONString(""));
             articleMapper.addUserLikes(userLikes1);
         } else {
+            log.info("else");
             //否则查询用户是否点赞
             String likeArticles = userLikes.getLikeArticles();
+            log.info("likeArticles:{}", likeArticles);
             ArrayList<Integer> arrayList = new ArrayList<>();
             if (likeArticles != null) {
+                log.info("likeArticles != null");
                 arrayList = JSONObject.parseObject(likeArticles, ArrayList.class);
-
-                for (Object item : arrayList) {
+                for (Integer item : arrayList) {
+                    log.info("item:{}", item);
                     if (item.equals(articleId)) {
                         //已点赞
                         return false;
@@ -459,7 +464,15 @@ public class ArticleServiceImpl implements ArticleService {
      */
     @Override
     public void addArticleView(Integer aid, Integer uid, String UA) {
-        Integer view = articleMapper.getUserArticleView(aid, uid, UA);
+        Integer view ;
+        if (uid != null) {
+            view = articleMapper.getUserArticleView(aid, uid, UA);
+            log.info("1:{}", view);
+        } else {
+            view = articleMapper.getUAArticleView(aid, UA);
+            log.info("2:{}", view);
+        }
+
         if (view == null || view == 0) {
             articleMapper.addUserArticleView(aid, uid, UA);
             articleMapper.addArticleTotalViews(aid);

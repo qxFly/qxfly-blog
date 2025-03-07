@@ -338,7 +338,7 @@ function DeleteArticle() {
 /* 文章浏览量计时器 */
 let timer = null;
 function addArticleViews() {
-    addArticleView({ articleId: route.params.id });
+    addArticleView({ aid: route.params.id });
     clearInterval(timer);
 }
 /* 文章点赞 */
@@ -368,7 +368,7 @@ function ArticleLike() {
         likeflag = 0;
         isLike.value = true;
     }
-    articleLike({ articleId: route.params.id, views: likeflag }).then((res) => {
+    articleLike({ aid: route.params.id, flag: likeflag }).then((res) => {
         if (res.data.code != 1) {
             ElMessage({
                 message: res.data.msg,
@@ -409,7 +409,7 @@ function ArticleCollection() {
         collectionflag = 0;
         isCollection.value = true;
     }
-    articleCollection({ articleId: route.params.id, views: collectionflag }).then((res) => {
+    articleCollection({ aid: route.params.id, flag: collectionflag }).then((res) => {
         if (res.data.code != 1) {
             ElMessage({
                 message: res.data.msg,
@@ -707,7 +707,7 @@ function ClearTimeout() {
 onMounted(() => {
     timer = setInterval(() => {
         addArticleViews();
-    }, 10000);
+    }, 1000);
     const load = document.getElementById("load");
     load.style.backgroundImage = "url(" + route.params.cover + ")";
     window.addEventListener("scroll", Listener);
