@@ -1160,7 +1160,7 @@ onBeforeUnmount(() => {
         padding: 40px 20px;
     } */
 }
-@media (max-width: 700px) {
+@media (max-width: 800px) {
     .content {
         flex-direction: column;
         margin-top: 100px;

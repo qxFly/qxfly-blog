@@ -1,4 +1,4 @@
-package fun.qxfly.common.utils;
+package fun.qxfly.framework.custom;
 
 import fun.qxfly.common.domain.entity.User;
 

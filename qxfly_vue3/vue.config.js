@@ -4,7 +4,7 @@ module.exports = defineConfig({
     outputDir: "html",
     assetsDir: ".static",
     devServer: {
-        host: "localhost",
+        // host: "localhost",
         port: 8088, // 端口号
         https: false, // https:{type:Boolean}
         open: true, //配置自动启动浏览器

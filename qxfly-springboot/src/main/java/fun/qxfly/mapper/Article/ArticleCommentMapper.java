@@ -9,23 +9,13 @@ import java.util.List;
 @Mapper
 public interface ArticleCommentMapper {
 
-
-    /**
-     * 获取文章评论数
-     *
-     * @param id
-     * @return
-     */
-    @Select("select count(*) from comment where articleId = #{id} and verify = 3 and parentCommentId = 0")
-    int getArticleCommentsCount(int id);
-
     /**
      * 根据文章id获取评论
      *
      * @param id
      * @return
      */
-    List<Comment> getArticleCommentsByPage(@Param("start") int start, @Param("pageSize") int pageSize, @Param("sort") String sort, @Param("id") int id);
+    List<Comment> getArticleCommentsByPage(@Param("sort") String sort, @Param("id") int id);
 
     /**
      * 获取子评论
@@ -43,15 +33,6 @@ public interface ArticleCommentMapper {
      */
     @Insert("insert into comment(articleId, content, parentCommentId, userId, username, createTime,toUserId,toUsername,verify)values(#{articleId},#{content},#{parentCommentId},#{user.id},#{user.username},#{createTime},#{toUserId},#{toUsername},#{verify})")
     boolean releaseComment(Comment comment);
-
-    /**
-     * 清空每日浏览量
-     *
-     * @return
-     */
-    @Update("update daily_view set daily_views = 0")
-    boolean resetDailyView();
-
 
     /**
      * 添加评论点赞

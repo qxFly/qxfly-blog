@@ -58,7 +58,7 @@ onUnmounted(() => {});
         max-width: unset;
     }
 }
-@media (max-width: 700px) {
+@media (max-width: 800px) {
     .right-Sidebar-main {
         width: 100%;
         margin: 0px;

@@ -252,7 +252,7 @@ img:hover {
         margin: 0 10px;
     }
 }
-@media (max-width: 700px) {
+@media (max-width: 800px) {
     .user-info-btn {
         margin: 4px 0;
     }

@@ -1,8 +1,8 @@
 package fun.qxfly.service.Article;
 
+import com.github.pagehelper.PageInfo;
 import fun.qxfly.common.domain.entity.Comment;
 import fun.qxfly.common.domain.entity.User;
-import fun.qxfly.common.domain.po.PageBean;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public interface ArticleCommentService {
      * @param id
      * @return
      */
-    PageBean<Comment> getArticleCommentsByPage(int currPage, int pageSize, String sort, int id);
+    PageInfo<Comment> getArticleCommentsByPage(int currPage, int pageSize, String sort, int id);
 
     /**
      * 发布评论

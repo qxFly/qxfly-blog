@@ -9,6 +9,7 @@ import fun.qxfly.common.service.CUserInfoService;
 import fun.qxfly.common.service.RSAService;
 import fun.qxfly.common.utils.JwtUtils;
 import fun.qxfly.common.utils.RSAEncrypt;
+import fun.qxfly.common.utils.RoleUtils;
 import fun.qxfly.service.User.LoginService;
 import fun.qxfly.service.User.UserInfoService;
 import io.jsonwebtoken.Claims;
@@ -74,7 +75,6 @@ public class UserInfoController {
     public Result updateUserInfo(@RequestBody User user, HttpServletRequest request) {
         String token = request.getHeader("token");
         Claims claims = JwtUtils.parseJWT(token);
-        if (claims == null) return Result.error("登录状态异常");
         String username = (String) claims.get("username");
         Integer uid = (Integer) claims.get("userId");
         User u = userInfoService.checkUsername(user);
@@ -98,7 +98,8 @@ public class UserInfoController {
             boolean flag = userInfoService.updateUserInfo(user);
             if (flag) {
                 if (!username.equals(user.getUsername())) {
-                    String newToken = JwtUtils.createToken(user.getId(), user.getUsername(), null);
+                    String role = RoleUtils.getRoleNameByRoleId(user.getRole());
+                    String newToken = JwtUtils.createToken(user.getId(), user.getUsername(), role, null);
                     loginService.updateToken(user.getUsername(), newToken, new Date().getTime());
                 }
                 return Result.success();
@@ -121,7 +122,6 @@ public class UserInfoController {
     public Result updateImg(MultipartFile file, HttpServletRequest request) {
         String token = request.getHeader("token");
         Claims claims = JwtUtils.parseJWT(token);
-        if (claims == null) return Result.error("发布失败");
         Integer uid = (Integer) claims.get("uid");
         return userInfoService.updateAvatar(file, uid);
     }
@@ -192,7 +192,6 @@ public class UserInfoController {
     public Result listUserSpaceNav(HttpServletRequest request) {
         String token = request.getHeader("token");
         Claims claims = JwtUtils.parseJWT(token);
-        if (claims == null) return Result.error("");
         Integer uid = (Integer) claims.get("uid");
         List<Navigation> navigations = userInfoService.listUserSpaceNav(uid);
         return Result.success(navigations);

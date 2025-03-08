@@ -85,9 +85,14 @@ img {
     overflow: hidden;
     color: #000;
 }
-@media (max-width: 700px) {
+@media (max-width: 800px) {
     .user_info {
-        // width: 100%;
+        // width: 25px;
+        // height: 25px;
+    }
+    .user_info img {
+        width: 25px;
+        height: 25px;
     }
     .name {
         display: none;

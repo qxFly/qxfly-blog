@@ -1,12 +1,10 @@
 package fun.qxfly.controller.User;
 
-import fun.qxfly.common.domain.entity.Token;
 import fun.qxfly.common.domain.entity.User;
 import fun.qxfly.common.domain.po.Result;
 import fun.qxfly.common.service.RSAService;
 import fun.qxfly.common.utils.JwtUtils;
-import fun.qxfly.common.utils.LoginHolder;
-import fun.qxfly.common.utils.RSAEncrypt;
+import fun.qxfly.common.utils.RoleUtils;
 import fun.qxfly.service.User.LoginService;
 import fun.qxfly.service.User.LogoutService;
 import fun.qxfly.service.User.UserInfoService;
@@ -57,7 +55,8 @@ public class LoginController {
         /* 登录失败 */
         if (u == null) return Result.error("用户名或密码错误");
         /* 登录成功 */
-        String token = JwtUtils.createToken(u.getId(), u.getUsername(), null);
+        String role = RoleUtils.getRoleNameByRoleId(u.getRole());
+        String token = JwtUtils.createToken(u.getId(), u.getUsername(), role, null);
         HashMap<String, String> resBody = new HashMap<>();
         resBody.put("uid", u.getId().toString());
         resBody.put("username", u.getUsername());
@@ -100,10 +99,6 @@ public class LoginController {
 
         /* 检查token有效性 */
         Claims claims = JwtUtils.parseJWT(token);
-        if (claims == null) {
-            log.info("claims");
-            return Result.noLoginError();
-        }
         /* 检查用户是否退出 */
         String logoutStatus = logoutService.getLogoutStatus(token);
         if (logoutStatus != null) {

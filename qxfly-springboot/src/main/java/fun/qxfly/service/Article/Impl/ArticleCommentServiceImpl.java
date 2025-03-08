@@ -1,8 +1,9 @@
 package fun.qxfly.service.Article.Impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import fun.qxfly.common.domain.entity.Comment;
 import fun.qxfly.common.domain.entity.User;
-import fun.qxfly.common.domain.po.PageBean;
 import fun.qxfly.mapper.Article.ArticleCommentMapper;
 import fun.qxfly.service.Article.ArticleCommentService;
 import lombok.extern.slf4j.Slf4j;
@@ -68,10 +69,9 @@ public class ArticleCommentServiceImpl implements ArticleCommentService {
      * @return
      */
     @Override
-    public PageBean<Comment> getArticleCommentsByPage(int currPage, int pageSize, String sort, int id) {
-        int count = articleCommentMapper.getArticleCommentsCount(id);
-        PageBean<Comment> pageBean = new PageBean<>(currPage, pageSize, count);
-        List<Comment> comments = articleCommentMapper.getArticleCommentsByPage(pageBean.getStart(), pageSize, sort, id);
+    public PageInfo<Comment> getArticleCommentsByPage(int currPage, int pageSize, String sort, int id) {
+        PageHelper.startPage(currPage, pageSize);
+        List<Comment> comments = articleCommentMapper.getArticleCommentsByPage(sort, id);
         for (Comment comment : comments) {
             /*获取子评论*/
             List<Comment> child = articleCommentMapper.getChildCommentByCommentId(comment.getId());
@@ -89,8 +89,7 @@ public class ArticleCommentServiceImpl implements ArticleCommentService {
                 user.setAvatar(userAvatarPath + comment.getUser().getAvatar());
             comment.setUser(user);
         }
-        pageBean.setData(comments);
-        return pageBean;
+        return new PageInfo<>(comments);
     }
 
     /**

@@ -278,7 +278,18 @@ onMounted(() => {
         margin: 0;
     }
 }
-@media (max-width: 700px) {
+@media (max-width: 850px) {
+    .nav-item-editArticle {
+        font-size: 16px;
+        width: 20px;
+        padding: 2px;
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+@media (max-width: 800px) {
     .search-btn {
         font-size: 14px;
         background-color: #00000000;
@@ -302,12 +313,19 @@ onMounted(() => {
         display: none;
     }
 }
-@media (max-width: 435px) {
+@media (max-width: 500px) {
     .nav-items {
         margin: 0;
+        width: 200px;
+    }
+    .nav-item {
+        // margin: 8px;
     }
     .search-input {
         margin: 0 0 0 2px;
+    }
+    .search {
+        width: 100px;
     }
 }
 </style>

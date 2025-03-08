@@ -142,4 +142,17 @@ label {
         content: "";
     }
 }
+@media (max-width: 800px) {
+    .user_login {
+        /* flex-direction: column; */
+    }
+    .nav-item {
+        width: 20px;
+        margin-left: 4px;
+        /* padding: 0; */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
 </style>

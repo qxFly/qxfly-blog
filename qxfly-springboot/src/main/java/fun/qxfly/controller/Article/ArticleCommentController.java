@@ -1,8 +1,8 @@
 package fun.qxfly.controller.Article;
 
+import com.github.pagehelper.PageInfo;
 import fun.qxfly.common.domain.entity.Comment;
 import fun.qxfly.common.domain.entity.User;
-import fun.qxfly.common.domain.po.PageBean;
 import fun.qxfly.common.domain.po.Result;
 import fun.qxfly.common.utils.JwtUtils;
 import fun.qxfly.service.Article.ArticleCommentService;
@@ -43,8 +43,8 @@ public class ArticleCommentController {
     @GetMapping("/getArticleComments")
     @Operation(description = "根据文章id获取评论", summary = "根据文章id获取评论")
     public Result getArticleComments(@RequestParam int currPage, @RequestParam int pageSize, @RequestParam(defaultValue = "new") String sort, @RequestParam int id) {
-        PageBean<Comment> pageBean = articleCommentService.getArticleCommentsByPage(currPage, pageSize, sort, id);
-        return Result.success(pageBean);
+        PageInfo<Comment> pageInfo = articleCommentService.getArticleCommentsByPage(currPage, pageSize, sort, id);
+        return Result.success(pageInfo);
     }
 
     /**
@@ -59,7 +59,6 @@ public class ArticleCommentController {
     public Result releaseComment(@RequestBody Comment comment, HttpServletRequest request) {
         String token = request.getHeader("token");
         Claims claims = JwtUtils.parseJWT(token);
-        if (claims == null) return Result.error("发布失败");
         Integer uid = (Integer) claims.get("uid");
         User u = userInfoService.getUserInfo(uid);
         User user = new User();
@@ -86,7 +85,6 @@ public class ArticleCommentController {
     public Result getUserLikeComment(@RequestParam Integer aid, HttpServletRequest request) {
         String token = request.getHeader("token");
         Claims claims = JwtUtils.parseJWT(token);
-        if (claims == null) return Result.noLoginError();
         int uid = (Integer) claims.get("uid");
         List<Integer> likeComment = articleCommentService.getUserLikeComment(aid, uid);
         return Result.success(likeComment);
@@ -106,7 +104,6 @@ public class ArticleCommentController {
         String token = request.getHeader("token");
         User u = new User();
         Claims claims = JwtUtils.parseJWT(token);
-        if (claims == null) return Result.noLoginError();
         u.setId((Integer) claims.get("uid"));
         Integer f = articleCommentService.likeComment(comment, u);
         return Result.success(f);

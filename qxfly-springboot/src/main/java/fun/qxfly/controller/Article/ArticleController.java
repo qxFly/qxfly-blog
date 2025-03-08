@@ -6,7 +6,7 @@ import fun.qxfly.common.domain.entity.*;
 import fun.qxfly.common.domain.po.Result;
 import fun.qxfly.common.domain.vo.ArticleVO;
 import fun.qxfly.common.utils.JwtUtils;
-import fun.qxfly.common.utils.LoginHolder;
+import fun.qxfly.framework.custom.LoginHolder;
 import fun.qxfly.service.Article.ArticleService;
 import fun.qxfly.service.User.UserInfoService;
 import io.jsonwebtoken.Claims;
@@ -48,8 +48,6 @@ public class ArticleController {
         article.setUpdateTime(new Date());
         String token = request.getHeader("token");
         Claims claims = JwtUtils.parseJWT(token);
-        if (claims == null)
-            return Result.error("发布失败");
         Integer uid = (Integer) claims.get("uid");
         User u = userInfoService.getUserInfo(uid);
         if (u == null) {
@@ -216,9 +214,7 @@ public class ArticleController {
         Integer uid = null;
         if (token != null) {
             Claims claims = JwtUtils.parseJWT(token);
-            if (claims != null) {
-                uid = claims.get("uid", Integer.class);
-            }
+            uid = claims.get("uid", Integer.class);
         }
         ArticleVO articleVO = articleService.getArticleById(aid, uid);
         return Result.success(articleVO);
@@ -233,7 +229,6 @@ public class ArticleController {
     @Operation(description = "检测用户章是否可编辑文章，返回包含uid、和用户名的用户对象", summary = "检测用户章是否可编辑文章")
     public Result checkArticle(HttpServletRequest request) {
         Claims claims = JwtUtils.parseJWT(request.getHeader("token"));
-        if (claims == null) return Result.error("");
         User user = new User();
         user.setId((Integer) claims.get("uid"));
         user.setUsername((String) claims.get("username"));
@@ -255,9 +250,7 @@ public class ArticleController {
         Integer uid = null;
         if (token != null) {
             Claims claims = JwtUtils.parseJWT(token);
-            if (claims != null) {
-                uid = (Integer) claims.get("uid");
-            }
+            uid = (Integer) claims.get("uid");
         }
         articleService.addArticleView(aid, uid, UA);
         return Result.success();
@@ -277,7 +270,6 @@ public class ArticleController {
         /*从token中获取用户id*/
         String token = request.getHeader("token");
         Claims claims = JwtUtils.parseJWT(token);
-        if (claims == null) return Result.error("操作失败");
         Integer uid = (Integer) claims.get("uid");
         boolean f;
         if (flag == 0)
@@ -304,7 +296,6 @@ public class ArticleController {
         /*从token中获取用户id*/
         String token = request.getHeader("token");
         Claims claims = JwtUtils.parseJWT(token);
-        if (claims == null) return Result.operationError();
         Integer uid = (Integer) claims.get("uid");
         /* 0为没有收藏，否则取消收藏*/
         if (flag == 0)
@@ -435,7 +426,6 @@ public class ArticleController {
         Integer aid = (Integer) map.get("aid");
         String token = request.getHeader("token");
         Claims claims = JwtUtils.parseJWT(token);
-        if (claims == null) return Result.error("保存失败");
         Integer uid = (Integer) claims.get("uid");
         Integer f = articleService.saveAttachment(aid, uid, attachmentList);
         return Result.success();

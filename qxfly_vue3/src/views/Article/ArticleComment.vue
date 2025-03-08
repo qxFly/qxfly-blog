@@ -151,12 +151,12 @@ let articleId = route.params.id;
 /* 分页查询 */
 let totalPages = ref(1); //总页数
 let currPage = ref(1); //当前页
-let pageSize = ref(10); //分页大小
+let pageSize = ref(2); //分页大小
 let comments = ref([]);
 async function getComment() {
     await getArticleComments(currPage.value, pageSize.value, sortValue.value, articleId).then((res) => {
-        comments.value = res.data.data.data;
-        totalPages.value = res.data.data.totalPage;
+        comments.value = res.data.data.list;
+        totalPages.value = res.data.data.pages;
         setTimeout(() => {
             if (exflag.value.length > 0) {
                 for (let i = 0; i < exflag.value.length; i++) {

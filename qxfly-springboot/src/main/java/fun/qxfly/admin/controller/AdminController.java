@@ -32,8 +32,6 @@ public class AdminController {
     @PostMapping("/check")
     public Result check(HttpServletRequest request) {
         String token = request.getHeader("token");
-        Claims claims = JwtUtils.parseJWT(token);
-        if (claims == null) return Result.error("您没有权限访问！");
         Integer uid = (Integer) JwtUtils.parseJWT(token).get("uid");
         Integer f = adminService.check(uid);
         if (f != 0) {

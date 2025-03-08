@@ -129,17 +129,22 @@ onUnmounted(() => {
 }
 @media (max-width: 1100px) {
 }
-@media (max-width: 700px) {
+@media (max-width: 800px) {
     .top-bar-right {
         /* width: 100%; */
     }
     #top-bar-1 {
         padding: 0;
+        height: 50px;
     }
     #top-bar-2 {
         padding: 0 10px 0 0;
         min-width: unset;
+        height: 50px;
         /* justify-content: left; */
+    }
+    .top-bar-bg {
+        height: 55px;
     }
 }
 </style>

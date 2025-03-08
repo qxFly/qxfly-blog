@@ -286,7 +286,7 @@ onUnmounted(() => {
     box-shadow: 0 1px 6px 4px rgba(7, 17, 27, 0.14);
 }
 
-@media (max-width: 700px) {
+@media (max-width: 800px) {
     .article-sort-select {
         height: 30px;
     }

@@ -597,7 +597,7 @@ code {
     border-right: 1px solid #333;
     margin-right: 10px;
 }
-@media (max-width: 700px) {
+@media (max-width: 800px) {
     span code {
         font-size: 16px;
     }
@@ -672,7 +672,7 @@ code {
 </style>
 <!-- 响应布局 -->
 <style scoped>
-@media (max-width: 700px) {
+@media (max-width: 800px) {
     .article-time {
         flex-direction: column;
     }

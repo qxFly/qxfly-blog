@@ -5,12 +5,10 @@ import fun.qxfly.common.domain.entity.Article;
 import fun.qxfly.common.domain.entity.Attachment;
 import fun.qxfly.common.domain.entity.Classify;
 import fun.qxfly.common.domain.entity.Tag;
-import fun.qxfly.common.domain.po.PageBean;
 import fun.qxfly.common.domain.po.Result;
 import fun.qxfly.common.domain.vo.ArticleVO;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface ArticleService {

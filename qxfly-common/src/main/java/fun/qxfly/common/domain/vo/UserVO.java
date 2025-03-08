@@ -38,4 +38,6 @@ public class UserVO {
     private Integer Likes;
     @Schema(description = "收藏数")
     private Integer Collection;
+    @Schema(description = "角色")
+    private Integer Role;
 }

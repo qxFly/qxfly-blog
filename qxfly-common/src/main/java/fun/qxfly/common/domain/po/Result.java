@@ -30,6 +30,12 @@ public class Result {
     public static Result error(String msg) {
         return new Result(0, msg, null);
     }
+
+    //失败响应
+    public static Result error(String msg, Object data) {
+        return new Result(0, msg, data);
+    }
+
     //失败响应，未登入
     public static Result noLoginError() {
         return new Result(0, "未登入", null);

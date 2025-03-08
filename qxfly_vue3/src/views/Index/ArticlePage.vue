@@ -4,7 +4,7 @@
         <div class="header">
             <div class="article-main-label">{{ isClassify ? "" : "文章" }}</div>
             <div class="article-sort-select">
-                <div class="article-sort">
+                <div class="article-sort" id="article-sort" @click="extendArticleSort">
                     <div class="article-sort-label" v-text="sortLabel"></div>
                     <div class="article-sort-item" value="new" @click="sort('new')">最新发布</div>
                     <div class="article-sort-item" value="hot" @click="sort('hot')">浏览最多</div>
@@ -174,6 +174,28 @@ function sort(value) {
         });
     }
 }
+/* 展开排序列表 */
+let isExtendSort = ref(false);
+function extendArticleSort() {
+    let ele = document.getElementById("article-sort");
+    ele.addEventListener("mouseleave", closeSort);
+    if (ele != null) {
+        if (isExtendSort.value) {
+            ele.style.height = "25px";
+        } else {
+            ele.style.height = "99px";
+        }
+        isExtendSort.value = !isExtendSort.value;
+    }
+}
+function closeSort() {
+    let ele = document.getElementById("article-sort");
+    if (ele != null) {
+        isExtendSort.value = false;
+        ele.style.height = "25px";
+        ele.removeEventListener("mouseleave", closeSort);
+    }
+}
 /* 换页操作 */
 function changePage(page = 0) {
     if (totalPages.value != 0 && page != 0) {
@@ -285,9 +307,9 @@ onMounted(() => {
     z-index: 9;
     transition: all 0.2s ease;
 }
-.article-sort:hover {
-    height: 99px;
-}
+// .article-sort:hover {
+//     height: 99px;
+// }
 .article-sort-item {
     font-size: 15px;
     padding: 2px 4px;

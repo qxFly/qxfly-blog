@@ -467,12 +467,9 @@ public class ArticleServiceImpl implements ArticleService {
         Integer view ;
         if (uid != null) {
             view = articleMapper.getUserArticleView(aid, uid, UA);
-            log.info("1:{}", view);
         } else {
             view = articleMapper.getUAArticleView(aid, UA);
-            log.info("2:{}", view);
         }
-
         if (view == null || view == 0) {
             articleMapper.addUserArticleView(aid, uid, UA);
             articleMapper.addArticleTotalViews(aid);

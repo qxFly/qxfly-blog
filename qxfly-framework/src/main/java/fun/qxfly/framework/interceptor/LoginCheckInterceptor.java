@@ -1,10 +1,9 @@
 package fun.qxfly.framework.interceptor;
 
-import com.alibaba.fastjson.JSONObject;
 import fun.qxfly.common.domain.entity.User;
-import fun.qxfly.common.domain.po.Result;
 import fun.qxfly.common.utils.JwtUtils;
-import fun.qxfly.common.utils.LoginHolder;
+import fun.qxfly.common.utils.RoleUtils;
+import fun.qxfly.framework.custom.LoginHolder;
 import fun.qxfly.framework.service.InterceptorService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Slf4j
@@ -31,8 +29,8 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             return true;
         }
         // 错误信息
-        Result error = Result.error("Not Login");
-        String errorMsg = JSONObject.toJSONString(error);
+//        Result error = Result.error("Not Login");
+//        String errorMsg = JSONObject.toJSONString(error);
         //中文支持
         resp.setContentType("text/html;charset=UTF-8");
         //获取请求的url
@@ -46,6 +44,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         User user = new User();
         user.setId(claims.get("uid", Integer.class));
         user.setUsername(claims.get("username", String.class));
+        user.setRole(RoleUtils.getRoleIdByRoleName(claims.get("role", String.class)));
         LoginHolder.setUser(user);
         log.info("证书合法，放行");
         return true;

@@ -31,7 +31,7 @@ import DailyHotArticle from "@/views/Sider/DailyHotArticle.vue";
         width: 200px;
     }
 }
-@media (max-width: 700px) {
+@media (max-width: 800px) {
     .left-Sidebar-main {
         flex-direction: row;
         width: 100%;

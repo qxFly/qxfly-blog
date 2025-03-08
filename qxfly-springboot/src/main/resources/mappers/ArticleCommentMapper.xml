@@ -28,9 +28,13 @@
         <if test="sort == 'hot'">
             order by c.likes desc
         </if>
-        limit #{start}, #{pageSize}
     </select>
     <select id="getChildCommentByCommentId" resultMap="comment">
-        select c.*,u.avatar from comment c join `user` u on u.id = c.userId where parentCommentId = #{id} and c.verify = 3 order by c.createTime ASC
+        select c.*, u.avatar
+        from comment c
+                 join `user` u on u.id = c.userId
+        where parentCommentId = #{id}
+          and c.verify = 3
+        order by c.createTime
     </select>
 </mapper>

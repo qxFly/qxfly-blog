@@ -58,7 +58,6 @@ public class UserSettingController {
     public Result uploadBgImg(MultipartFile file , HttpServletRequest request) {
         String token = request.getHeader("token");
         Claims claims = JwtUtils.parseJWT(token);
-        if(claims == null) return Result.error("背景更换失败");
         Integer uid = Integer.valueOf(claims.get("uid").toString());
         String fileName = userSettingService.uploadBgImg(file,uid);
         return Result.success(fileName);

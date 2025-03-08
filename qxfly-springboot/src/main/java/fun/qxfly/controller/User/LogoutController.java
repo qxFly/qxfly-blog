@@ -33,11 +33,11 @@ public class LogoutController {
         if (!StringUtils.hasLength(reqToken)) return Result.error("验证失败");
 
         Claims claims = JwtUtils.parseJWT(reqToken);
-        if (claims == null) {
-            log.info("退出操作，但是token失效");
-            logoutService.deleteToken(new Token(reqToken));
-            return Result.error("验证失败");
-        }
+//        if (claims == null) { todo 退出操作 token 代办
+//            log.info("退出操作，但是token失效");
+//            logoutService.deleteToken(new Token(reqToken));
+//            return Result.error("验证失败");
+//        }
         String username = (String) claims.get("username");
         logoutService.logout(new Token(username, reqToken));
         return Result.success();
