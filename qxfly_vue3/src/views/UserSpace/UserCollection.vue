@@ -114,7 +114,7 @@
 
 <script setup>
 import { onMounted, ref, watch } from "vue";
-import { getCollectionArticles, checkA } from "@/api/Article/index";
+import { getCollectionArticles } from "@/api/Article/index";
 import router from "@/router";
 import mymd5 from "@/utils/md5";
 import { useRoute } from "vue-router";

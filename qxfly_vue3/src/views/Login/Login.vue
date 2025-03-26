@@ -111,21 +111,18 @@ async function login() {
         isError.value = 0;
         let resBody = res.data.data;
         localStorage.setItem(md5("token"), resBody.token);
+        localStorage.setItem(md5("refreshToken"), resBody.refreshToken);
         localStorage.setItem("username", resBody.username);
         localStorage.setItem("uid", resBody.uid);
         localStorage.setItem(md5("islogin"), md5("true"));
         if (remember.value) {
             localStorage.setItem("autologin", true);
         } else {
-            localStorage.setItem("autologin", false);
+            sessionStorage.setItem("autologin", remember.value);
         }
+
         setTimeout(() => {
             location.reload();
-            // setTimeout(() => {
-            //     loginText.value = "登录";
-            //     loginBtn.value.disabled = true;
-            //     router.replace("/");
-            // }, 1000);
         }, 1000);
     } else {
         loginText.value = "登录";
@@ -172,34 +169,16 @@ function showPwd(flag) {
         ele.type = "password";
     }
 }
-/* 隐藏顶栏 */
-function hideTopBar() {
-    console.log("隐藏顶栏");
-
-    let topBar = document.getElementById("top-bar-1");
-    if (topBar != null) {
-        topBar.style.top = "-70px";
-    }
-}
-/* 显示顶栏 */
-function showTopBar() {
-    let topBar = document.getElementById("top-bar-1");
-    if (topBar != null) {
-        topBar.style.top = "0px";
-    }
-}
 onBeforeMount(() => {
     if (localStorage.getItem(md5("token")) != null && localStorage.getItem(md5("islogin")) == md5("true"))
         router.replace("/");
 });
 onMounted(() => {
     loadBackGround();
-    hideTopBar();
     /* 添加监听按键事件 */
     window.addEventListener("keydown", keyDown);
 });
 onUnmounted(() => {
-    showTopBar();
     /* 移除监听按键事件 */
     window.removeEventListener("keydown", keyDown, false);
 });

@@ -3,15 +3,14 @@ import router from "@/router";
 import axios from "axios";
 import md5 from "js-md5";
 import { ref } from "vue";
-let token = localStorage.getItem(md5("token"));
+import { updateLoginStatue } from "@/api/";
+let accessToken = ref(localStorage.getItem(md5("token")));
+let refreshToken = ref(localStorage.getItem(md5("refreshToken")));
 let domain = window.location.hostname;
 const service = axios.create({
     baseURL: domain == "38.55.199.233" ? process.env.VUE_APP_IP_BASE_URL : process.env.VUE_APP_BASE_URL,
     // baseURL: "https://qxfly.fun/fly",
     // baseURL: "http://120.24.195.4:8081",
-    headers: {
-        token: token,
-    },
 });
 const passurl = [
     "/gs", //获取公匙
@@ -48,6 +47,8 @@ const passurl = [
 ];
 /* 请求拦截器 */
 service.interceptors.request.use(async (config) => {
+    /* 设置token */
+    config.headers.token = accessToken.value;
     /* 无需拦截的白名单路径 */
     if (passurl.includes(config.url, 0)) {
         return config;
@@ -72,7 +73,7 @@ service.interceptors.request.use(async (config) => {
                 }
             }
         } else {
-            if (token == null) {
+            if (accessToken.value == null) {
                 router.replace("/login");
                 return config;
             } else {
@@ -82,4 +83,55 @@ service.interceptors.request.use(async (config) => {
     }
 });
 
+/* 响应拦截器 */
+service.interceptors.response.use(async (response) => {
+    let code = response.data.code;
+    /* 登录过期：双token都已经过期 */
+    if (code === 1102 || code === 1201) {
+        localStorage.clear();
+        sessionStorage.clear();
+        location.reload();
+        return response;
+    }
+    /* token过期 */
+    if (code === 1101) {
+        /* 获取新token */
+        const isSuccess = await refresh_Token();
+        if (isSuccess) {
+            /* 将token过期的请求在发一遍 */
+            response.config.headers.token = accessToken.value;
+            const r = await service.request(response.config);
+            return r;
+        } else {
+            localStorage.clear();
+            sessionStorage.clear();
+            location.reload();
+            return response;
+        }
+    } else {
+        return response;
+    }
+});
+let promise = null;
+async function refresh_Token() {
+    /* 刷新token时，有大量请求返回第一个 */
+    if (promise) {
+        return promise;
+    }
+    promise = new Promise(async (resolve) => {
+        const res = await updateLoginStatue(refreshToken.value);
+        let data = res.data;
+        if (data.code == 1) {
+            accessToken.value = data.data.accessToken;
+            refreshToken.value = data.data.refreshToken;
+            localStorage.setItem(md5("token"), accessToken.value);
+            localStorage.setItem(md5("refreshToken"), refreshToken.value);
+        }
+        resolve(data.code === 1);
+    });
+    promise.finally(() => {
+        promise = null;
+    });
+    return promise;
+}
 export default service;

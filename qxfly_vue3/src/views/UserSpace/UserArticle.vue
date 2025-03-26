@@ -137,7 +137,7 @@
 
 <script setup>
 import { onMounted, ref, watch } from "vue";
-import { listArticles, checkA, batchDeleteArticle } from "@/api/Article/index";
+import { listArticles, batchDeleteArticle } from "@/api/Article/index";
 import router from "@/router";
 import mymd5 from "@/utils/md5";
 import { useRoute } from "vue-router";
@@ -155,8 +155,7 @@ let isBlank = ref(false); //是否为空
 let isload = ref(true); //是否加载
 let searchData = ref(""); //搜索数据
 let uid = ref(""); //用户id
-let loginUid = ref(""); //登录用户id
-let loginUsername = ref(""); //登录用户名
+let loginUid = ref(localStorage.getItem("uid")); //登录用户id
 let showVerifyTip = ref(false); //是否显示审核提示
 function GetArticles() {
     listArticles(
@@ -283,19 +282,6 @@ function changePage(page = 0) {
         });
     }
 }
-
-/* 查询当前登陆用户id */
-function checkId() {
-    if (localStorage.getItem(md5("token")) == md5("nologin") || localStorage.getItem(md5("islogin") == md5("false"))) {
-        return;
-    }
-    checkA().then((res) => {
-        if (res.data.code == 1) {
-            loginUid.value = res.data.data.id;
-            loginUsername.value = res.data.data.username;
-        }
-    });
-}
 function Backtop() {
     var timer = null;
     cancelAnimationFrame(timer);
@@ -336,7 +322,6 @@ watch(
     }
 );
 onMounted(() => {
-    checkId();
     searchData.value = useRouter.query.search;
     let tuid = useRouter.query.uid;
     if (!isNaN(parseFloat(tuid)) && isFinite(tuid)) {

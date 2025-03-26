@@ -1,6 +1,8 @@
 package fun.qxfly.service.User.Impl;
 
 import fun.qxfly.common.domain.po.Result;
+import fun.qxfly.common.enums.ExceptionEnum;
+import fun.qxfly.common.exception.excep.UserException;
 import fun.qxfly.common.service.RSAService;
 import fun.qxfly.common.utils.RSAEncrypt;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +42,7 @@ public class LoginServiceImpl implements LoginService {
         try {
             decodePassword = RSAEncrypt.decrypt(encodePassword, privateKey);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new UserException(ExceptionEnum.USER_LOGIN_EXPIRED);
         }
         user.setPassword(decodePassword);
         return loginMapper.login(user);

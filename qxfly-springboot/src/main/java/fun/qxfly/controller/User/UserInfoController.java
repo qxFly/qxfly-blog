@@ -99,7 +99,7 @@ public class UserInfoController {
             if (flag) {
                 if (!username.equals(user.getUsername())) {
                     String role = RoleUtils.getRoleNameByRoleId(user.getRole());
-                    String newToken = JwtUtils.createToken(user.getId(), user.getUsername(), role, null);
+                    String newToken = JwtUtils.createAccessToken(user.getId(), user.getUsername(), role, null);
                     loginService.updateToken(user.getUsername(), newToken, new Date().getTime());
                 }
                 return Result.success();

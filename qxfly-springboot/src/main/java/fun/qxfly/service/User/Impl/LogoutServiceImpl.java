@@ -14,28 +14,28 @@ public class LogoutServiceImpl implements LogoutService {
     private LogoutMapper logoutMapper;
 
     @Override
-    public void logout(Token token) {
-        logoutMapper.addTokenToBlack(token);
+    public void logout(String username, Integer uid) {
+        logoutMapper.addTokenToBlack(username,uid);
     }
 
     /**
      * 删除token
      *
-     * @param token
+     * @param uid 用户id
      */
     @Override
-    public void deleteToken(Token token) {
-        logoutMapper.deleteToken(token);
+    public void deleteToken(Integer uid) {
+        logoutMapper.deleteToken(uid);
     }
 
     /**
      * 获取退出状态信息
      *
-     * @param token
+     * @param uid 用户id
      */
     @Override
-    public String getLogoutStatus(String token) {
-        return logoutMapper.getLogoutStatusByToken(token);
+    public String getLogoutStatus(Integer uid) {
+        return logoutMapper.getLogoutStatusByToken(uid);
     }
 
 }

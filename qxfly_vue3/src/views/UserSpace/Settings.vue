@@ -266,7 +266,6 @@ function UpdateImg() {
         uploadBgImg(formData).then((res) => {
             if (res.data.code == 1) {
                 ElMessage.success("上传成功");
-                // location.reload();
                 formData = new FormData();
                 cropperBgImgDialog.value = false;
                 userSettings.value.bgImgPath = res.data.data;

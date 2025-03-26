@@ -178,9 +178,22 @@ const router = createRouter({
     routes,
 });
 let black = /(editArticle)/;
+let hideTopBarList1 = /manage|login|register|findPassword/;
 router.beforeEach(async (to, from, next) => {
+    /* 根据路由隐藏状态栏 */
+    if (to.path.match(hideTopBarList1) != null) {
+        hideTopBar();
+    } else {
+        showTopBar();
+    }
+    /* 返回上一页时跳过空页面 */
+    if (from.path.match(/space/)) {
+        if (to.path == "/user/space") {
+            router.back();
+        }
+    }
     if (to.path.includes("/manage")) {
-        // 获取 token
+        /* 检测是否有权限进入管理员界面 */
         await check().then((res) => {
             if (res.data.code == 1) {
                 next();
@@ -190,6 +203,7 @@ router.beforeEach(async (to, from, next) => {
             }
         });
     } else {
+        /* 拦截需要登录的路径 */
         let isStop = false;
         if (to.path.match(black) != null) {
             isStop = true;
@@ -207,5 +221,18 @@ router.beforeEach(async (to, from, next) => {
         }
     }
 });
-
+/* 隐藏顶栏 */
+function hideTopBar() {
+    let topBar = document.getElementById("top-bar-1");
+    if (topBar != null) {
+        topBar.style.top = "-70px";
+    }
+}
+/* 显示顶栏 */
+function showTopBar() {
+    let topBar = document.getElementById("top-bar-1");
+    if (topBar != null) {
+        topBar.style.top = "0px";
+    }
+}
 export default router;

@@ -755,6 +755,7 @@ const editorConfig = {
             base64LimitSize: 5 * 1024,
             allowedFileTypes: ["image/*"],
             customInsert(res, insertFn) {
+                console.log(res);
                 const imgUrl = res.data;
                 if (!imgUrl) throw new Error(`Image url is empty`);
                 insertFn(imgUrl, res.msg, imgUrl);

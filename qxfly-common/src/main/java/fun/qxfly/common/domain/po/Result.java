@@ -1,5 +1,6 @@
 package fun.qxfly.common.domain.po;
 
+import fun.qxfly.common.enums.ExceptionEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,16 @@ public class Result {
     //失败响应
     public static Result error(String msg, Object data) {
         return new Result(0, msg, data);
+    }
+
+    //失败响应
+    public static Result error(ExceptionEnum exceptionEnum, Object data) {
+        return new Result(exceptionEnum.getCode(), exceptionEnum.getMsg(), data);
+    }
+
+    //失败响应
+    public static Result error(ExceptionEnum exceptionEnum) {
+        return new Result(exceptionEnum.getCode(), exceptionEnum.getMsg(), null);
     }
 
     //失败响应，未登入

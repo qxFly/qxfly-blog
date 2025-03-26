@@ -14,6 +14,8 @@ import { getUserInfo } from "@/api/User";
 import * as socketUtil from "@/utils/Socket";
 import { getUserSettings } from "@/api/User";
 import TopBar from "@/components/TopBar/TopBar.vue";
+import { onBeforeRouteUpdate } from "vue-router";
+let token = localStorage.getItem(md5("token"));
 let user = ref({
     id: getUUID(),
     username: "游客" + getUUID(),
@@ -22,6 +24,7 @@ let user = ref({
 /* 设置初始状态 */
 function setInitStatue() {
     localStorage.clear();
+    sessionStorage.clear();
     localStorage.setItem(md5("islogin"), md5("false"));
     localStorage.setItem("username", user.value.username);
 }
@@ -54,26 +57,9 @@ async function setUsernameAndAvatar() {
 }
 /* 检查登录状态 */
 async function checkStatus() {
-    let token = localStorage.getItem(md5("token"));
     if (token == null) {
         clearLoginStatue();
         return;
-    } else {
-        await updateLoginStatue().then((ress) => {
-            if (ress.data.code == 1) {
-                if (ress.data.data == null) {
-                    clearLoginStatue();
-                    /* !ok 表示需要续期，替换成新的token */
-                } else if (ress.data.data != "ok") {
-                    localStorage.setItem(md5("token"), ress.data.data);
-                    location.reload();
-                } else {
-                    console.log("登录！");
-                }
-            } else {
-                clearLoginStatue();
-            }
-        });
     }
 }
 /* 未登录时设置唯一标识 */
@@ -148,15 +134,14 @@ async function setBackgroundImage() {
     bg.style.backgroundImage = "url(" + localbgimg + ")";
     bg.style.filter = "blur(" + settingObj.value.bgBlur + "px)";
     bg.style.backdropFilter = "blur(" + settingObj.value.bgBlur + "px)";
-    // bg.style.webkitBackdropFilter = "blur(" + settingObj.value.bgBlur + "px)";
 }
+
 onBeforeMount(() => {
-    let log = localStorage.getItem("autologin");
-    let ses = sessionStorage.getItem("a");
-    if (log == null) {
-        localStorage.setItem("autologin", false);
-    } else if (log != "true" && ses == null) {
-        clearLoginStatue();
+    if (token != null) {
+        /* 如果其中一个存在则，无需退出登录，否则退出登录。记住密码时抱在在localStorage，否则放在sessionStorage */
+        if (sessionStorage.getItem("autologin") == null && localStorage.getItem("autologin") == null) {
+            clearLoginStatue();
+        }
     }
 });
 onMounted(async () => {
@@ -173,7 +158,7 @@ onMounted(async () => {
         await setUsernameAndAvatar();
         setBackgroundImage();
         setInterval(async () => {
-            await checkStatus();
+            // await checkStatus();
         }, 100000);
         // 初始化socket
         socketUtil.initWebsocket();

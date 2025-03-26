@@ -8,17 +8,14 @@ import fun.qxfly.common.utils.RoleUtils;
 import fun.qxfly.service.User.LoginService;
 import fun.qxfly.service.User.LogoutService;
 import fun.qxfly.service.User.UserInfoService;
-import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -56,11 +53,9 @@ public class LoginController {
         if (u == null) return Result.error("用户名或密码错误");
         /* 登录成功 */
         String role = RoleUtils.getRoleNameByRoleId(u.getRole());
-        String token = JwtUtils.createToken(u.getId(), u.getUsername(), role, null);
-        HashMap<String, String> resBody = new HashMap<>();
+        HashMap<String, String> resBody = JwtUtils.createAccessAndRefreshToken(u.getId(), u.getUsername(), role, null);
         resBody.put("uid", u.getId().toString());
         resBody.put("username", u.getUsername());
-        resBody.put("token", token);
         return Result.success(resBody);
 //        HashMap<String, String> resBody = new HashMap<>();
 //        resBody.put("uid", u.getId().toString());
@@ -94,41 +89,42 @@ public class LoginController {
      */
     @Operation(description = "每次进入站点检查更新登录状态", summary = "更新登录状态")
     @PostMapping("/updateLoginStatue")
-    public Result updateLoginStatue(HttpServletRequest request) {
-        String token = request.getHeader("token");
-
-        /* 检查token有效性 */
-        Claims claims = JwtUtils.parseJWT(token);
-        /* 检查用户是否退出 */
-        String logoutStatus = logoutService.getLogoutStatus(token);
-        if (logoutStatus != null) {
-            return Result.noLoginError();
-        }
-        /* 检查用户信息是否异常 */
-        Integer uid = (Integer) claims.get("uid");
-        String username = (String) claims.get("username");
-        User userInfo = userInfoService.getUserInfo(uid);
-        if (userInfo == null) {
-            log.info("userInfo");
-            return Result.noLoginError();
-        }
-        /* 有效则判断剩余时间 */
-        long createTime = claims.getIssuedAt().getTime();
-        long updateTime = new Date().getTime();
-        /*判断证书剩余时间，小于1周则发放新证书*/
-        if (updateTime - createTime >= 604800000) {
-            log.info("剩余一周，续期");
-            /*生成token*/
-            String newToken = JwtUtils.updateToken(token);
-            if (newToken == null) {
-                log.info("newToken");
-                return Result.noLoginError();
-            }
-            loginService.updateToken(username, newToken, updateTime);
-            return Result.success(newToken);
-        } else {
-            return Result.success("ok");
-        }
+    public Result updateLoginStatue(@RequestBody HashMap<String, String> map) {
+        String refreshToken = map.get("refreshToken");
+        HashMap<String, String> tokenMap = JwtUtils.refreshToken(refreshToken);
+        return Result.success(tokenMap);
+//        String token = request.getHeader("token");
+////        /* 检查token有效性 */
+//        Claims claims = JwtUtils.parseJWT(token);
+//        /* 检查用户是否退出 */
+//        String logoutStatus = logoutService.getLogoutStatus(token);
+//        if (logoutStatus != null) {
+//            return Result.noLoginError();
+//        }
+//        /* 检查用户信息是否异常 */
+//        Integer uid = (Integer) claims.get("uid");
+//        String username = (String) claims.get("username");
+//        User userInfo = userInfoService.getUserInfo(uid);
+//        if (userInfo == null) {
+//            return Result.noLoginError();
+//        }
+//        /* 有效则判断剩余时间 */
+//        long createTime = claims.getIssuedAt().getTime();
+//        long updateTime = new Date().getTime();
+//        /*判断证书剩余时间，小于1周则发放新证书*/
+//        if (updateTime - createTime >= 604800000) {
+//            log.info("剩余一周，续期");
+//            /*生成token*/
+//            String newToken = JwtUtils.refreshToken(token);
+//            if (newToken == null) {
+//                log.info("newToken");
+//                return Result.noLoginError();
+//            }
+//            loginService.updateToken(username, newToken, updateTime);
+//            return Result.success(newToken);
+//        } else {
+//            return Result.success("ok");
+//        }
     }
 
     /**

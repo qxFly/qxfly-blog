@@ -1,6 +1,5 @@
 <template>
     <div class="space-bg theme-bg" id="space-bg"></div>
-    <!-- <TopBar></TopBar> -->
     <div class="user-space-main">
         <div class="user-space-left-sider">
             <div class="user-space-nav user-space-sider">
@@ -39,16 +38,16 @@
 
 <script setup>
 import BackTop from "@/components/BackTop.vue";
-import TopBar from "@/components/TopBar/TopBar.vue";
 import ArticleAuthorInfoCard from "@/components/ArticleAuthorInfoCard.vue";
 import { onMounted, onUnmounted, ref } from "vue";
 import md5 from "js-md5";
 import { useRoute } from "vue-router";
 import router from "@/router";
-import { checkA } from "@/api/Article/index";
 import { getNoReadMessageCount, listUserSpaceNav } from "@/api/User/index";
 import { ElMessage } from "element-plus";
 let useRouter = useRoute();
+//检查是否为自己空间,是=uid，否=null
+let isSelfSpace = ref(localStorage.getItem("uid"));
 /* 设置菜单栏 */
 let uid = ref(parseInt(useRouter.query.uid));
 /* 获取用户空间导航栏 */
@@ -85,22 +84,7 @@ async function setNav() {
 function setNavPathParam(nav) {
     if (nav.path.match(/uid/)) nav.path = nav.path + uid.value;
 }
-//检查是否为自己空间,是=uid，否=null
-let isSelfSpace = ref(null);
-async function checkIsSelfSpace() {
-    await checkA().then((res) => {
-        if (res.data.code == 1) {
-            isSelfSpace.value = res.data.data.id;
-        }
-    });
-}
-router.afterEach((to, from) => {
-    if (from.path.match(/space/)) {
-        if (to.path == "/user/space") {
-            router.back();
-        }
-    }
-});
+
 function Listener() {
     const SidebarMain = document.getElementsByClassName("user-space-sider");
     var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
@@ -120,7 +104,7 @@ function hasNoReadMsg() {
         if (res.data.code == 1) {
             noReadMsgCount.value = res.data.data;
         } else {
-            ElMessage.error({ message: res.data.msg, offset: 120 });
+            ElMessage.error({ message: "登录过期", offset: 120 });
         }
     });
 }
@@ -131,7 +115,6 @@ onMounted(async () => {
     if (useRouter.path == "/user/space")
         router.push({ path: "/user/space/userArticle", query: { page: 1, uid: uid.value } });
     window.addEventListener("scroll", Listener);
-    await checkIsSelfSpace();
     getUserSpaceNav();
     hasNoReadMsg();
 });

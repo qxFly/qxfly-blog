@@ -20,7 +20,8 @@ public class UserConfig {
     /*jwt令牌密匙*/
     private String JwtSignKey = "qxfly";
     /*jwt令牌失效时长*/
-    private Long JwtTimeout = 2592000000L;
+    private Long RefreshTokenTimeout = 2592000000L;
+    private Long AccessTokenTimeout = 2592000000L;
     /*GithubAPI*/
     private String GithubAPI = "";
     /*邀请码*/

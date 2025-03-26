@@ -26,8 +26,14 @@ export const Register = (userdata) =>
  * @param {username, token} params
  * @returns
  */
-export const updateLoginStatue = () => request.post("/updateLoginStatue");
-
+// export const updateLoginStatue = () => request.post("/updateLoginStatue");
+export function updateLoginStatue(refreshToken) {
+    return request({
+        url: "/updateLoginStatue",
+        method: "post",
+        data: { refreshToken: refreshToken },
+    });
+}
 /**
  * 退出登陆
  * @param {token, username} params

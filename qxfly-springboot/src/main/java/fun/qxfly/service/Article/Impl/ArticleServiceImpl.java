@@ -6,7 +6,9 @@ import com.github.pagehelper.PageInfo;
 import fun.qxfly.common.domain.entity.*;
 import fun.qxfly.common.domain.po.Result;
 import fun.qxfly.common.domain.vo.ArticleVO;
+import fun.qxfly.common.enums.ExceptionEnum;
 import fun.qxfly.common.enums.FilePaths;
+import fun.qxfly.common.exception.excep.FileException;
 import fun.qxfly.common.utils.FileUtils;
 import fun.qxfly.mapper.Article.ArticleMapper;
 import fun.qxfly.service.Article.ArticleService;
@@ -40,8 +42,8 @@ public class ArticleServiceImpl implements ArticleService {
     /**
      * 发布文章
      *
-     * @param article
-     * @return
+     * @param article 文章
+     * @param image   文章内容图片
      */
     @Override
     public Integer releaseArticle(Article article, String image) {
@@ -71,8 +73,7 @@ public class ArticleServiceImpl implements ArticleService {
     /**
      * 编辑文章
      *
-     * @param article
-     * @return
+     * @param article 文章
      */
     @Override
     public boolean editArticle(Article article) {
@@ -185,7 +186,6 @@ public class ArticleServiceImpl implements ArticleService {
      *
      * @param aid 文章id
      * @param uid 用户id
-     * @return
      */
     @Override
     public ArticleVO getArticleById(Integer aid, Integer uid) {
@@ -204,19 +204,17 @@ public class ArticleServiceImpl implements ArticleService {
     /**
      * 文章封面上传
      *
-     * @param file
-     * @return
+     * @param file 封面
+     * @return 封面路径
      */
     @Override
     public String updateArticleCover(MultipartFile file) {
-        //todo 文章封面上传 返回文件名字，而非地址（暂定）
         String path = FilePaths.ARTICLE_COVER_PATH.getPath();
         try {
             String fileName = FileUtils.upload(path, file);
             return FileUtils.toUrlSeparator(articleCoverDownloadPath + fileName);
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            throw new FileException(ExceptionEnum.FILE_UPLOAD_ERROR);
         }
     }
 
@@ -224,8 +222,8 @@ public class ArticleServiceImpl implements ArticleService {
     /**
      * 文章内容图片上传
      *
-     * @param file
-     * @return
+     * @param file 内容图片
+     * @return 图片原名和路径
      */
     @Override
     public Result uploadArticleImage(MultipartFile file) {
@@ -236,16 +234,14 @@ public class ArticleServiceImpl implements ArticleService {
             String[] fileOriginName = file.getOriginalFilename().split("\\.");
             return Result.success(fileOriginName[0], url);
         } catch (IOException e) {
-            e.printStackTrace();
-            return Result.error("上传失败");
+            throw new FileException(ExceptionEnum.FILE_UPLOAD_ERROR);
         }
     }
 
     /**
      * 删除文章
      *
-     * @param aid
-     * @return
+     * @param aid 文章id
      */
     @Override
     public boolean deleteArticleById(Integer aid) {
@@ -263,9 +259,7 @@ public class ArticleServiceImpl implements ArticleService {
             for (String image : arrayList) {
                 path = FileUtils.toSystemSeparator(path + image);
                 File file = new File(path);
-                if (file.exists()) {
-                    file.delete();
-                }
+                if (file.exists()) file.delete();
             }
         }
         /* 删除附件 */
@@ -273,9 +267,7 @@ public class ArticleServiceImpl implements ArticleService {
         for (Attachment attachment : attachmentList) {
             path = FilePaths.ARTICLE_ATTACHMENT_PATH.getPath() + attachment.getFileName();
             File file = new File(path);
-            if (file.exists()) {
-                file.delete();
-            }
+            if (file.exists()) file.delete();
         }
         articleMapper.deleteAllArticleAttachmentByAid(articleById.getId());
         return articleMapper.deleteArticleById(articleById);
@@ -284,8 +276,7 @@ public class ArticleServiceImpl implements ArticleService {
     /**
      * 删除之前的封面
      *
-     * @param coverPath
-     * @return
+     * @param coverPath 封面路径
      */
     @Override
     public boolean deletePreviousCover(String coverPath) {
@@ -351,35 +342,28 @@ public class ArticleServiceImpl implements ArticleService {
     /**
      * 文章点赞
      *
-     * @param articleId
+     * @param aid 文章id
      * @return
      */
     @Override
-    public boolean articleLike(Integer articleId, Integer uid) {
-        Integer al = articleMapper.getUserArticleLike(articleId, uid);
-        log.info("articleId:{}", articleId);
+    public boolean articleLike(Integer aid, Integer uid) {
+        Integer al = articleMapper.getUserArticleLike(aid, uid);
         /*获取用户的点赞json数据*/
         UserLikesAndCollection userLikes = articleMapper.getUserLikes(uid);
         ArrayList<Integer> articles = new ArrayList<>();
-        log.info("userLikes:{}", userLikes);
         /*如果为空，则创建相关json数据*/
         if (userLikes == null) {
-            log.info("if");
-            articles.add(articleId);
+            articles.add(aid);
             UserLikesAndCollection userLikes1 = new UserLikesAndCollection(uid, JSONObject.toJSONString(articles), JSONObject.toJSONString(""));
             articleMapper.addUserLikes(userLikes1);
         } else {
-            log.info("else");
             //否则查询用户是否点赞
             String likeArticles = userLikes.getLikeArticles();
-            log.info("likeArticles:{}", likeArticles);
             ArrayList<Integer> arrayList = new ArrayList<>();
             if (likeArticles != null) {
-                log.info("likeArticles != null");
                 arrayList = JSONObject.parseObject(likeArticles, ArrayList.class);
                 for (Integer item : arrayList) {
-                    log.info("item:{}", item);
-                    if (item.equals(articleId)) {
+                    if (item.equals(aid)) {
                         //已点赞
                         return false;
                     }
@@ -390,14 +374,13 @@ public class ArticleServiceImpl implements ArticleService {
                 }
             }
             //未点赞
-            arrayList.add(articleId);
+            arrayList.add(aid);
             userLikes.setLikeArticles(JSONObject.toJSONString(arrayList));
             articleMapper.updateUserLikes(userLikes);
             if (al == null || al == 0) {
-                articleMapper.addUserArticleLike(articleId, uid);
-                articleMapper.articleLike(articleId);
+                articleMapper.addUserArticleLike(aid, uid);
+                articleMapper.articleLike(aid);
             }
-
         }
         return true;
     }
@@ -405,18 +388,17 @@ public class ArticleServiceImpl implements ArticleService {
     /**
      * 取消用户点赞
      *
-     * @param articleId
-     * @param uid
-     * @return
+     * @param aid 文章id
+     * @param uid 用户id
      */
     @Override
-    public boolean cancelArticleLike(Integer articleId, Integer uid) {
+    public boolean cancelArticleLike(Integer aid, Integer uid) {
         UserLikesAndCollection userLikes = articleMapper.getUserLikes(uid);
         if (userLikes != null && userLikes.getLikeArticles() != null) {
             ArrayList<Integer> arrayList = JSONObject.parseObject(userLikes.getLikeArticles(), ArrayList.class);
             for (Integer item : arrayList) {
-                if (item.equals(articleId)) {
-                    arrayList.remove(articleId);
+                if (item.equals(aid)) {
+                    arrayList.remove(aid);
                     userLikes.setLikeArticles(JSONObject.toJSONString(arrayList));
                     articleMapper.updateUserLikes(userLikes);
                     return true;
@@ -430,15 +412,15 @@ public class ArticleServiceImpl implements ArticleService {
     /**
      * 文章收藏
      *
-     * @param articleId
-     * @param uid
+     * @param aid 文章id
+     * @param uid 用户id
      */
     @Override
-    public boolean articleCollection(Integer articleId, Integer uid) {
-        Integer b = articleMapper.userIsCollArt(articleId, uid);
+    public boolean articleCollection(Integer aid, Integer uid) {
+        Integer b = articleMapper.userIsCollArt(aid, uid);
         if (b == null) {
-            articleMapper.updateUserCollection(articleId, uid, new Date());
-            articleMapper.addarticleCollectionCount(articleId);
+            articleMapper.updateUserCollection(aid, uid, new Date());
+            articleMapper.addarticleCollectionCount(aid);
         }
         return true;
     }
@@ -446,13 +428,12 @@ public class ArticleServiceImpl implements ArticleService {
     /**
      * 取消用户收藏
      *
-     * @param articleId
-     * @param uid
-     * @return
+     * @param aid 文章id
+     * @param uid 用户id
      */
     @Override
-    public boolean cencelArticleCollection(Integer articleId, Integer uid) {
-        return articleMapper.deleteUserCollection(articleId, uid);
+    public boolean cencelArticleCollection(Integer aid, Integer uid) {
+        return articleMapper.deleteUserCollection(aid, uid);
     }
 
     /**
@@ -464,7 +445,7 @@ public class ArticleServiceImpl implements ArticleService {
      */
     @Override
     public void addArticleView(Integer aid, Integer uid, String UA) {
-        Integer view ;
+        Integer view;
         if (uid != null) {
             view = articleMapper.getUserArticleView(aid, uid, UA);
         } else {
@@ -499,7 +480,7 @@ public class ArticleServiceImpl implements ArticleService {
             if (userLikes.getLikeArticles() != null) {
                 String likeArticles = userLikes.getLikeArticles();
                 ArrayList<Integer> a = JSONObject.parseObject(likeArticles, ArrayList.class);
-                for (Object item : a) {
+                for (Integer item : a) {
                     if (item.equals(aid)) {
                         result[0] = true;
                         break;
@@ -524,30 +505,9 @@ public class ArticleServiceImpl implements ArticleService {
         try {
             fileName = FileUtils.upload(path, file);
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            throw new FileException(ExceptionEnum.FILE_UPLOAD_ERROR);
         }
         return fileName;
-//        File filePath = new File(path);
-//        if (!filePath.exists()) {
-//            filePath.mkdirs();
-//        }
-//        if (file != null) {
-//            /* 把文件从临时文件转存到指定目录 */
-//            String uuid = UUID.randomUUID().toString();
-//            String[] split = file.getOriginalFilename().split("\\.");
-//            String suffix = split[split.length - 1];
-//            String fileName = uuid + "." + suffix;
-//            try (FileOutputStream fileOutputStream = new FileOutputStream(path + fileName)) {
-//                fileOutputStream.write(file.getBytes());
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                return null;
-//            }
-//            return fileName;
-//        } else {
-//            return null;
-//        }
     }
 
     /**
@@ -563,7 +523,6 @@ public class ArticleServiceImpl implements ArticleService {
         if (aid != null && aid != 0) {
             articleMapper.deleteAttachment(aid, fileName);
         }
-
         return file.exists() && file.delete();
     }
 

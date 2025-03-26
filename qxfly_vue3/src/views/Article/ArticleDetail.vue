@@ -172,6 +172,7 @@ let isCollection = ref(false);
 async function getArticleDetail() {
     loadBlur();
     await getArticleById(route.params.id).then((res) => {
+        if (res.data.code != 1) return;
         loadBlur();
         article.value = res.data.data;
         if (article.value.updateTime != null) {
@@ -217,6 +218,7 @@ let isLogin = localStorage.getItem(md5("islogin"));
 let attachments = ref([]);
 function getAttachments() {
     getArticleAttachment(article.value.id).then((res) => {
+        if (res.data.code != 1) return;
         attachments.value = res.data.data;
     });
 }
@@ -330,6 +332,12 @@ function DeleteArticle() {
                         offset: 120,
                     });
                     router.replace(router.options.history.state.back);
+                } else {
+                    ElMessage({
+                        message: "删除失败",
+                        type: "error",
+                        offset: 120,
+                    });
                 }
             });
         })

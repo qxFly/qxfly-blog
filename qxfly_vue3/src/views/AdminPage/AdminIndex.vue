@@ -77,9 +77,8 @@
 
 <script setup>
 import router from "@/router";
-import { ref, onMounted, watch, onUnmounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { check, listAdminNavigations } from "@/api/Admin";
-import { onBeforeRouteUpdate } from "vue-router";
 import { ElMessage } from "element-plus";
 import { useRoute } from "vue-router";
 let useRouter = useRoute();
@@ -143,20 +142,6 @@ function handleClose(e) {
 function handleSelect(e) {
     selectNav.value = e;
 }
-/* 隐藏顶栏 */
-function hideTopBar() {
-    let topBar = document.getElementById("top-bar-1");
-    if (topBar != null) {
-        topBar.style.top = "-70px";
-    }
-}
-/* 显示顶栏 */
-function showTopBar() {
-    let topBar = document.getElementById("top-bar-1");
-    if (topBar != null) {
-        topBar.style.top = "0px";
-    }
-}
 /* 路由后恢复激活的导航栏 */
 let routePage = ref(useRouter);
 function setRoutePage() {
@@ -204,14 +189,9 @@ onMounted(async () => {
         else if (role.value == 3) roleName.value = "评论审核员";
         else if (role.value == 4) roleName.value = "用户审核员";
     });
-
     listNav();
     setRoutePage();
-    hideTopBar();
     checkBg();
-});
-onUnmounted(() => {
-    showTopBar();
 });
 </script>
 

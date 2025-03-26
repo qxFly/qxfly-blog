@@ -1,6 +1,5 @@
 package fun.qxfly.controller.User;
 
-import fun.qxfly.common.domain.entity.Token;
 import fun.qxfly.common.domain.po.Result;
 import fun.qxfly.common.utils.JwtUtils;
 import fun.qxfly.service.User.LogoutService;
@@ -39,7 +38,8 @@ public class LogoutController {
 //            return Result.error("验证失败");
 //        }
         String username = (String) claims.get("username");
-        logoutService.logout(new Token(username, reqToken));
+        Integer uid = (Integer) claims.get("uid");
+        logoutService.logout(username, uid);
         return Result.success();
     }
 }
