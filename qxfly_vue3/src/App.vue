@@ -138,8 +138,10 @@ async function setBackgroundImage() {
 
 onBeforeMount(() => {
     if (token != null) {
-        /* 如果其中一个存在则，无需退出登录，否则退出登录。记住密码时抱在在localStorage，否则放在sessionStorage */
-        if (sessionStorage.getItem("autologin") == null && localStorage.getItem("autologin") == null) {
+        let sa = sessionStorage.getItem("autologin");
+        let la = localStorage.getItem("autologin");
+        /* 如果其中一个存在则，无需退出登录，否则退出登录。记住密码时放在localStorage，否则放在sessionStorage */
+        if (sa == null && la == null) {
             clearLoginStatue();
         }
     }

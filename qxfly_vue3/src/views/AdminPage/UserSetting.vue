@@ -298,14 +298,14 @@ function clearAll() {
     currPage.value = 1;
     search();
 }
-let showUserAuthority = ref(false);
-async function testAuthority() {
-    await check().then((res) => {
-        if (res.data.data === 1) {
-            showUserAuthority.value = true;
-        }
-    });
-}
+// let showUserAuthority = ref(false);
+// async function testAuthority() {
+//     await check().then((res) => {
+//         if (res.data.data === 1) {
+//             showUserAuthority.value = true;
+//         }
+//     });
+// }
 /* 路由分页 */
 let routePage = ref(useRouter);
 watch(
@@ -329,7 +329,7 @@ const rowStyle = ({ row, rowIndex }) => {
 };
 onMounted(() => {
     search();
-    testAuthority();
+    // testAuthority();
 });
 </script>
 <style lang="less" scoped>

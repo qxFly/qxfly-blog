@@ -7,7 +7,7 @@
         select * from navigation
         <where>
             <if test="name != null and name != ''">
-                   and name = #{name}
+                and name = #{name}
             </if>
             <if test="id != null">
                 and id = #{id}
@@ -19,5 +19,20 @@
                 and type = #{type}
             </if>
         </where>
+    </select>
+
+    <select id="listAdminNavigations" resultType="fun.qxfly.common.domain.entity.Navigation">
+        select * from navigation
+        <where>
+            <if test="rid == 1">
+                (type = 'admin' or type = 'common')
+            </if>
+            <if test="rid != 1">
+                (((type = 'admin' or type = 'common') and role = #{rid}) or ((type = 'admin' or type = 'common') and
+                role
+                = 0))
+            </if>
+        </where>
+        and parent IS NULL
     </select>
 </mapper>

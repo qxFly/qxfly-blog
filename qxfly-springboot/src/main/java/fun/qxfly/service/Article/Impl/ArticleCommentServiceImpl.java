@@ -63,6 +63,17 @@ public class ArticleCommentServiceImpl implements ArticleCommentService {
     }
 
     /**
+     * 删除评论
+     *
+     * @param cid
+     * @return
+     */
+    @Override
+    public Integer deleteComment(Integer cid) {
+        return articleCommentMapper.deleteComment(cid);
+    }
+
+    /**
      * 根据文章id获取评论
      *
      * @param id

@@ -108,4 +108,18 @@ public class ArticleCommentController {
         Integer f = articleCommentService.likeComment(comment, u);
         return Result.success(f);
     }
+
+    /**
+     * 删除评论
+     *
+     * @param cid
+     * @return
+     */
+    @DeleteMapping("/deleteComment/{cid}")
+    @Operation(description = "删除评论", summary = "删除评论")
+    public Result deleteComment(@PathVariable("cid") Integer cid) {
+        Integer f = articleCommentService.deleteComment(cid);
+        if (f > 0) return Result.success("删除成功", null);
+        return Result.error("删除失败");
+    }
 }

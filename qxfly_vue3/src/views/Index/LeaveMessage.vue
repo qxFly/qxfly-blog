@@ -11,17 +11,25 @@
         </div>
         <div class="leave-message-list">
             <CardView class="leave-message-item" v-for="item in lmsg" :key="item.id">
-                <div class="leave-message-right-avatar">
+                <div class="leave-message-left-avatar">
                     <img :src="setAvatar(item.avatar)" alt="" />
                 </div>
-                <div class="leave-message-left-content">
-                    <div class="leave-message-left-content-header">
-                        <div class="leave-message-left-content-header-username">
+                <div class="leave-message-right-content">
+                    <div class="leave-message-right-content-header">
+                        <div class="leave-message-right-content-header-right-username">
                             {{ item.username }}
                         </div>
-                        <div class="leave-message-left-content-header-date" v-text="formatDate(item.date)"></div>
+                        <div class="leave-message-right-content-header-right">
+                            <div
+                                class="leave-message-right-content-operate"
+                                @click="DeleteLeaveMessage(item.id)"
+                                v-if="isShowDel(item.username)">
+                                删除
+                            </div>
+                            <div class="leave-message-right-content-header-date" v-text="formatDate(item.date)"></div>
+                        </div>
                     </div>
-                    <div class="leave-message-left-content-content">{{ item.content }}</div>
+                    <div class="leave-message-right-content-content">{{ item.content }}</div>
                 </div>
             </CardView>
         </div>
@@ -37,6 +45,7 @@ import pagination from "@/components/Pagination.vue";
 import { useRoute } from "vue-router";
 import router from "@/router";
 import md5 from "js-md5";
+import { ElMessageBox } from "element-plus";
 let useRouter = useRoute();
 let lmsg = ref([]);
 let totalPages = ref(0);
@@ -64,6 +73,26 @@ function SendLeaveMessage() {
         lmsgObj.value.content = "";
         getLeaveMessage();
     });
+}
+/* 删除留言 */
+function DeleteLeaveMessage(id) {
+    ElMessageBox.confirm("是否确认删除?", "提示", {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        type: "warning",
+    })
+        .then((res) => {
+            deleteLeaveMessage(id).then((res) => {
+                if (res.data.code != 1) return;
+                getLeaveMessage();
+            });
+        })
+        .catch((res) => {});
+}
+
+/* 是否显示删除 */
+function isShowDel(username) {
+    return localStorage.getItem("username") == username;
 }
 /* 换页操作 */
 function changePage(page = 0) {
@@ -166,20 +195,20 @@ onUnmounted(() => {});
     display: flex;
     padding: 10px;
 }
-.leave-message-right-avatar {
+.leave-message-left-avatar {
     /* border-right: 1px solid #ccc; */
 }
-.leave-message-right-avatar img {
+.leave-message-left-avatar img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     margin-right: 10px;
 }
-.leave-message-left-content {
+.leave-message-right-content {
     width: 100%;
     padding: 0 10px;
 }
-.leave-message-left-content-header {
+.leave-message-right-content-header {
     display: flex;
     justify-content: space-between;
     border-bottom: 1px solid #ccc;
@@ -188,11 +217,25 @@ onUnmounted(() => {});
     font-weight: bold;
     color: #6cbaff;
 }
-.leave-message-left-content-header-username {
+.leave-message-right-content-header-right-username {
 }
-.leave-message-left-content-header-date {
+.leave-message-right-content-header-right {
+    display: flex;
 }
-.leave-message-left-content-content {
+.leave-message-right-content-operate {
+    color: #ff9a9a;
+    margin: 0 12px;
+    cursor: pointer;
+    border: 1px solid #ffffff;
+    padding: 0 4px;
+    border-radius: 4px;
+    line-height: 16px;
+}
+.leave-message-right-content-operate:hover {
+    color: rgb(245, 108, 108);
+    border: 1px solid #ff9a9a;
+}
+.leave-message-right-content-content {
     padding: 4px 0;
 }
 </style>

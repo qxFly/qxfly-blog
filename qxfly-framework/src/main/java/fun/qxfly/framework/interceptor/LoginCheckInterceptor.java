@@ -1,6 +1,8 @@
 package fun.qxfly.framework.interceptor;
 
 import fun.qxfly.common.domain.entity.User;
+import fun.qxfly.common.enums.ExceptionEnum;
+import fun.qxfly.common.exception.excep.UserException;
 import fun.qxfly.common.utils.JwtUtils;
 import fun.qxfly.common.utils.RoleUtils;
 import fun.qxfly.framework.custom.LoginHolder;
@@ -45,6 +47,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         user.setId(claims.get("uid", Integer.class));
         user.setUsername(claims.get("username", String.class));
         user.setRole(RoleUtils.getRoleIdByRoleName(claims.get("role", String.class)));
+        if (interceptorService.isExpirationUser(user)) throw new UserException(ExceptionEnum.USER_LOGIN_EXPIRED);
         LoginHolder.setUser(user);
         log.info("证书合法，放行");
         return true;

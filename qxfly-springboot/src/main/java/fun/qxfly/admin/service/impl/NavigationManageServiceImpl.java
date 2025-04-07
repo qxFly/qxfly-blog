@@ -7,6 +7,7 @@ import fun.qxfly.admin.service.NavigationManageService;
 import fun.qxfly.common.domain.DTO.NavigationDTO;
 import fun.qxfly.common.domain.entity.Navigation;
 import fun.qxfly.common.domain.vo.NavigationVO;
+import fun.qxfly.common.utils.RoleUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,9 @@ public class NavigationManageServiceImpl implements NavigationManageService {
      * @return
      */
     @Override
-    public List<NavigationVO> listAdminNavigations() {
-        List<Navigation> parentNavs = navigationManageMapper.listAdminNavigations();
+    public List<NavigationVO> listAdminNavigations(String role) {
+        Integer roleIdByRoleName = RoleUtils.getRoleIdByRoleName(role);
+        List<Navigation> parentNavs = navigationManageMapper.listAdminNavigations(roleIdByRoleName);
         List<NavigationVO> navigationVOS = new ArrayList<>();
         for (Navigation parentNav : parentNavs) {
             List<Navigation> childrenList = navigationManageMapper.listChildrenNavigations(parentNav.getId());

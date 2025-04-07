@@ -47,50 +47,64 @@ const passurl = [
 ];
 /* 请求拦截器 */
 service.interceptors.request.use(async (config) => {
+    console.log("request:", config.url);
     /* 设置token */
     config.headers.token = accessToken.value;
     /* 无需拦截的白名单路径 */
     if (passurl.includes(config.url, 0)) {
         return config;
     } else {
-        let urls = config.url.split("/");
-        if (urls.includes("manage", 0)) {
-            if (urls.includes("check", 0)) {
-                return config;
-            } else {
-                let isAdmin = ref(false);
-                await check().then((res) => {
-                    if (res.data.code === 1) {
-                        isAdmin.value = true;
-                    }
-                });
-                if (isAdmin.value) {
-                    return config;
-                } else {
-                    // alert("您没有权限访问该页面！");
-                    router.push("/");
-                    return config;
-                }
-            }
+        if (accessToken.value == null) {
+            router.replace("/login");
+            return config;
         } else {
-            if (accessToken.value == null) {
-                router.replace("/login");
-                return config;
-            } else {
-                return config;
-            }
+            return config;
         }
+        // let urls = config.url.split("/");
+        // if (urls.includes("manage", 0)) {
+        //     if (urls.includes("check", 0)) {
+        //         return config;
+        //     } else {
+        //         let isAdmin = ref(false);
+        //         await check().then((res) => {
+        //             if (res.data.code === 1) {
+        //                 isAdmin.value = true;
+        //             }
+        //         });
+        //         if (isAdmin.value) {
+        //             return config;
+        //         } else {
+        //             // alert("您没有权限访问该页面！");
+        //             router.push("/");
+        //             return config;
+        //         }
+        //     }
+        // } else {
+        //     if (accessToken.value == null) {
+        //         router.replace("/login");
+        //         return config;
+        //     } else {
+        //         return config;
+        //     }
+        // }
     }
 });
 
 /* 响应拦截器 */
 service.interceptors.response.use(async (response) => {
+    return interceptors(response);
+});
+export async function interceptors(response) {
     let code = response.data.code;
     /* 登录过期：双token都已经过期 */
     if (code === 1102 || code === 1201) {
         localStorage.clear();
         sessionStorage.clear();
-        location.reload();
+        location.replace("/login");
+        setTimeout(() => {
+            location.reload();
+        }, 500);
+
         return response;
     }
     /* token过期 */
@@ -111,7 +125,7 @@ service.interceptors.response.use(async (response) => {
     } else {
         return response;
     }
-});
+}
 let promise = null;
 async function refresh_Token() {
     /* 刷新token时，有大量请求返回第一个 */

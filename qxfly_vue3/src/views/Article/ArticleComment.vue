@@ -16,7 +16,15 @@
                         <div class="comment-item-content">
                             <div class="comment-header">
                                 <div class="comment-username" v-text="comment.user.username"></div>
-                                <div class="comment-time" v-text="adjustTime(comment.createTime)"></div>
+                                <div class="comment-header-right">
+                                    <div
+                                        class="comment-delete"
+                                        v-if="isSelf(comment)"
+                                        @click="DeleteComment(comment.id)">
+                                        删除
+                                    </div>
+                                    <div class="comment-time" v-text="adjustTime(comment.createTime)"></div>
+                                </div>
                             </div>
                             <p class="comment-content" v-text="comment.content"></p>
                             <div class="comment-actions">
@@ -73,10 +81,17 @@
                                                         }}
                                                     </div>
                                                 </div>
-
-                                                <div
-                                                    class="comment-time"
-                                                    v-text="adjustTime(chComment.createTime)"></div>
+                                                <div class="comment-header-right">
+                                                    <div
+                                                        class="comment-delete"
+                                                        v-if="isSelf(chComment)"
+                                                        @click="DeleteComment(chComment.id)">
+                                                        删除
+                                                    </div>
+                                                    <div
+                                                        class="comment-time"
+                                                        v-text="adjustTime(chComment.createTime)"></div>
+                                                </div>
                                             </div>
                                             <p class="comment-content child" v-text="chComment.content"></p>
                                             <div class="comment-actions">
@@ -139,19 +154,25 @@
 </template>
 <script setup>
 import Pagination from "@/components/Pagination";
-import { getArticleComments, releaseComment, likeComment, getUserLikeComment } from "@/api/Article/index";
+import {
+    getArticleComments,
+    releaseComment,
+    likeComment,
+    getUserLikeComment,
+    deleteComment,
+} from "@/api/Article/index";
 import { onMounted, ref } from "vue";
 import md5 from "js-md5";
 import router from "@/router";
 import { useRoute } from "vue-router";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 const route = useRoute();
 let articleId = route.params.id;
 /* 获取评论 */
 /* 分页查询 */
 let totalPages = ref(1); //总页数
 let currPage = ref(1); //当前页
-let pageSize = ref(2); //分页大小
+let pageSize = ref(20); //分页大小
 let comments = ref([]);
 async function getComment() {
     await getArticleComments(currPage.value, pageSize.value, sortValue.value, articleId).then((res) => {
@@ -356,7 +377,33 @@ function toUserSpace(com) {
         },
     });
 }
-
+function isSelf(com) {
+    return localStorage.getItem("uid") == com.user.id;
+}
+function DeleteComment(cid) {
+    ElMessageBox.confirm("是否确认删除?", "提示", {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        type: "warning",
+    })
+        .then((res) => {
+            deleteComment(cid).then((res) => {
+                if (res.data.code == 1) {
+                    ElMessage.success({
+                        message: res.data.msg,
+                        offset: 120,
+                    });
+                    getComment();
+                } else {
+                    ElMessage.error({
+                        message: res.data.msg,
+                        offset: 120,
+                    });
+                }
+            });
+        })
+        .catch((res) => {});
+}
 onMounted(() => {
     getComment();
     getUserLikeComm();
@@ -428,6 +475,22 @@ onMounted(() => {
     transition: all 0.3s ease;
     width: 100%;
     padding: 0 5px;
+}
+.comment-header-right {
+    display: flex;
+}
+.comment-delete {
+    color: #ff9a9a;
+    margin: 0 12px;
+    cursor: pointer;
+    border: 1px solid #ffffff;
+    padding: 0 4px;
+    border-radius: 4px;
+    line-height: 16px;
+}
+.comment-delete:hover {
+    color: rgb(245, 108, 108);
+    border: 1px solid #ff9a9a;
 }
 .comment-item.child {
     box-shadow: none;

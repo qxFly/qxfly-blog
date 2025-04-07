@@ -115,6 +115,7 @@ public class JwtUtils {
         if (token == null || token.isEmpty() || token.isBlank()) {
             throw new RuntimeException();
         }
+
         try {
             return Jwts.parser()
                     .setSigningKey(SignKey)

@@ -15,7 +15,7 @@
 import TopBarNavigation from "./TopBarNavigation.vue";
 import LoginLabel from "./LoginLabel.vue";
 import UserImg from "./UserImg.vue";
-import { onMounted, onUnmounted, onUpdated } from "vue";
+import { nextTick, onMounted, onUnmounted, onUpdated } from "vue";
 import router from "@/router";
 const props = defineProps({
     hide: {
@@ -70,6 +70,7 @@ function mousemove() {
     topbarbg.style.opacity = "1";
     topbarbg.style.backgroundImage = "linear-gradient(to right, #84c6ff, #b1dbff)";
 }
+
 onMounted(() => {
     setTimeout(() => {
         const topbar = document.getElementById("top-bar-1");

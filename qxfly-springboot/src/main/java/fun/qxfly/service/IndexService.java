@@ -20,7 +20,7 @@ public interface IndexService {
      *
      * @return 首页导航栏列表
      */
-    List<Navigation> listIndexNav();
+    List<Navigation> listIndexNav(String role);
 
     /**
      * 获取站点状态

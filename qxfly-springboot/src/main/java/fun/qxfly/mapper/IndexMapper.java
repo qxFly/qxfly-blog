@@ -23,6 +23,6 @@ public interface IndexMapper {
      *
      * @return 首页导航栏列表
      */
-    @Select("select * from navigation where type = 'index' or type = 'common'")
-    List<Navigation> listIndexNav();
+    @Select("select * from navigation where ((type = 'index' or type = 'common') and role = #{rid}) or ((type = 'index' or type = 'common') and role = 0) order by `index`")
+    List<Navigation> listIndexNav(Integer rid);
 }

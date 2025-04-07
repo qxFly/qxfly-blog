@@ -27,7 +27,7 @@
                     :router="true"
                     @select="handleSelect">
                     <div
-                        v-for="(item, index) in activeNav"
+                        v-for="(item, index) in navItems"
                         :key="index"
                         class="nav-item"
                         :class="{ active: isCurrNav(item, false) }">
@@ -109,13 +109,13 @@ let activeNav = ref([]); // 激活展示的导航栏
 let selectNav = ref(""); // 当前选中的导航栏
 let openedNav = ref([]);
 function checkNav() {
-    navItems.value.forEach((item) => {
-        if (item.role == role.value || role.value == 1 || item.role == 0) {
-            activeNav.value.push(item);
-        }
-    });
+    // navItems.value.forEach((item) => {
+    //     if (item.role == role.value || role.value == 1 || item.role == 0) {
+    //         activeNav.value.push(item);
+    //     }
+    // });
     if (router.currentRoute.value.path == "/manage") {
-        router.push(activeNav.value[1].path);
+        router.push(navItems.value[1].path);
     }
     openedNav.value.push(router.currentRoute.value.path);
 }
@@ -186,8 +186,7 @@ onMounted(async () => {
         role.value = res.data.data;
         if (role.value == 1) roleName.value = "管理员";
         else if (role.value == 2) roleName.value = "文章审核员";
-        else if (role.value == 3) roleName.value = "评论审核员";
-        else if (role.value == 4) roleName.value = "用户审核员";
+        else if (role.value == 3) roleName.value = "用户审核员";
     });
     listNav();
     setRoutePage();

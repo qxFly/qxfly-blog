@@ -66,8 +66,7 @@
                             <span v-if="scope.row.role == 0">普通用户</span>
                             <span v-if="scope.row.role == 1">管理员</span>
                             <span v-if="scope.row.role == 2">文章审核员</span>
-                            <span v-if="scope.row.role == 3">评论审核员</span>
-                            <span v-if="scope.row.role == 4">用户审核员</span>
+                            <span v-if="scope.row.role == 3">用户审核员</span>
                         </template>
                     </el-table-column>
                     <el-table-column prop="" label="头像" align="center">
@@ -195,8 +194,7 @@
                         <el-select v-model="editUser.role">
                             <el-option value="1" label="管理员">管理员</el-option>
                             <el-option value="2" label="文章审核员">文章审核员</el-option>
-                            <el-option value="3" label="评论审核员">评论审核员</el-option>
-                            <el-option value="4" label="用户审核员">用户审核员</el-option>
+                            <el-option value="3" label="评论审核员">用户审核员</el-option>
                             <el-option value="0" label="普通用户">普通用户</el-option>
                         </el-select>
                     </div>

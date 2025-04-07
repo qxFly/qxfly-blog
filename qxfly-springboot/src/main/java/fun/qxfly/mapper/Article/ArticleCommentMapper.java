@@ -106,4 +106,13 @@ public interface ArticleCommentMapper {
      */
     @Update("update comment set likeCount = likeCount - 1 where id = #{id}")
     void reduceCommentLike(Comment comment);
+
+    /**
+     * 删除评论
+     *
+     * @param cid
+     * @return
+     */
+    @Delete("delete from comment where id = #{cid}")
+    Integer deleteComment(Integer cid);
 }

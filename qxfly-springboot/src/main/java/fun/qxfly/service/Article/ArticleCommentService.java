@@ -39,4 +39,12 @@ public interface ArticleCommentService {
      * @return
      */
     List<Integer> getUserLikeComment(Integer aid, int uid);
+
+    /**
+     * 删除评论
+     *
+     * @param cid
+     * @return
+     */
+    Integer deleteComment(Integer cid);
 }

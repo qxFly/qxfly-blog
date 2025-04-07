@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import fun.qxfly.common.domain.entity.Navigation;
 import fun.qxfly.common.domain.entity.Site;
+import fun.qxfly.common.utils.RoleUtils;
 import fun.qxfly.mapper.IndexMapper;
 import fun.qxfly.service.IndexService;
 import lombok.extern.slf4j.Slf4j;
@@ -44,9 +45,10 @@ public class IndexServiceImpl implements IndexService {
      * @return 首页导航栏列表
      */
     @Override
-    public List<Navigation> listIndexNav() {
-        List<Navigation> navigations = indexMapper.listIndexNav();
-        navigations.sort(Comparator.comparingInt(Navigation::getIndex));
+    public List<Navigation> listIndexNav(String role) {
+        Integer rid = RoleUtils.getRoleIdByRoleName(role);
+        List<Navigation> navigations = indexMapper.listIndexNav(rid);
+//        navigations.sort(Comparator.comparingInt(Navigation::getIndex));
         return navigations;
     }
 

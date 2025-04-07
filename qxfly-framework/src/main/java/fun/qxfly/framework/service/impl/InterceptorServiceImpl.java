@@ -1,5 +1,6 @@
 package fun.qxfly.framework.service.impl;
 
+import fun.qxfly.common.domain.entity.User;
 import fun.qxfly.framework.mapper.InterceptorMapper;
 import fun.qxfly.framework.service.InterceptorService;
 import lombok.extern.slf4j.Slf4j;
@@ -8,30 +9,26 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class InterceptorServiceImpl implements InterceptorService {
-    final InterceptorMapper interceptorMapper;
+    private final InterceptorMapper interceptorMapper;
 
     public InterceptorServiceImpl(InterceptorMapper interceptorMapper) {
         this.interceptorMapper = interceptorMapper;
     }
 
     /**
-     * 获取退出状态信息
+     * 检查用户是否过期
      *
-     * @param token
-     */
-    @Override
-    public String getLogoutStatus(String token) {
-        return interceptorMapper.getLogoutStatusByToken(token);
-    }
-
-    /**
-     * 判断用户是否为管理员
-     *
-     * @param username
+     * @param user 用户
      * @return
      */
     @Override
-    public boolean isAdmin(String username) {
-       return interceptorMapper.isAdmin(username) != 0;
+    public boolean isExpirationUser(User user) {
+        String username = interceptorMapper.isExpirationUser(user);
+        if (username != null) {
+            log.info("过期");
+            interceptorMapper.removeExpirationUser(user);
+            return true;
+        }
+        return false;
     }
 }

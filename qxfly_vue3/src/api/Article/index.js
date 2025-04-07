@@ -127,7 +127,7 @@ export function getArticleComments(currPage, pageSize, sort, id) {
     return request({
         url: "/article/getArticleComments",
         method: "get",
-        params: { currPage: currPage, pageSize: pageSize, sort, sort, id: id },
+        params: { currPage: currPage, pageSize: pageSize, sort: sort, id: id },
     });
 }
 
@@ -137,6 +137,13 @@ export function releaseComment(data) {
         url: "/article/releaseComment",
         method: "post",
         data: data,
+    });
+}
+/* 删除评论 */
+export function deleteComment(cid) {
+    return request({
+        url: "/article/deleteComment/" + cid,
+        method: "delete",
     });
 }
 /* 检测用户章是否可编辑文章 */

@@ -15,6 +15,7 @@ public class RoleUtils {
     }
 
     public static Integer getRoleIdByRoleName(String name) {
+        if (name == null) return 0;
         Integer role = null;
         for (RoleEnums r : RoleEnums.values()) {
             if (r.getName().equals(name)) {

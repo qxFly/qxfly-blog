@@ -1,18 +1,13 @@
 package fun.qxfly.framework.service;
 
+import fun.qxfly.common.domain.entity.User;
+
 public interface InterceptorService {
     /**
-     * 获取退出状态信息
+     * 检查用户是否过期
      *
-     * @param token
-     */
-    String getLogoutStatus(String token);
-
-    /**
-     * 判断用户是否为管理员
-     *
-     * @param username
+     * @param user 用户
      * @return
      */
-    boolean isAdmin(String username);
+    boolean isExpirationUser(User user);
 }

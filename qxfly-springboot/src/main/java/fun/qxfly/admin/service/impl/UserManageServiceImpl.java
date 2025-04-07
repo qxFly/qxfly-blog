@@ -143,7 +143,7 @@ public class UserManageServiceImpl implements UserManageService {
     @Override
     public boolean editUserInfo(User user) {
         User u = userManageMapper.getUserById(user.getId());
-        if (!user.getUsername().equals(u.getUsername())) {
+        if (!user.getUsername().equals(u.getUsername()) || !user.getRole().equals(u.getRole())) {
             userManageMapper.remoUserToken(u.getUsername());
         }
         return userManageMapper.editUserInfo(user);

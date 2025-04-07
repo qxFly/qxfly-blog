@@ -58,19 +58,8 @@ public interface UserManageMapper {
      *
      * @param username
      */
-    @Delete("delete from user_token where username = #{username}")
+    @Insert("insert into expiration_user(username)values(#{username})")
     void remoUserToken(String username);
-
-    /**
-     * 设置用户token
-     *
-     * @param id
-     * @param username
-     * @param token
-     * @param time
-     */
-    @Insert("insert into user_token(userId, username, token, create_time) values(#{id}, #{username}, #{token}, #{time})")
-    void setUserToken(@Param("uid") Integer id, @Param("uid") String username, @Param("uid") String token, @Param("uid") long time);
 
     /**
      * 列出用户设置

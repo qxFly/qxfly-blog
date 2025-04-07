@@ -13,7 +13,7 @@ public interface NavigationManageService {
      *
      * @return
      */
-    List<NavigationVO> listAdminNavigations();
+    List<NavigationVO> listAdminNavigations(String role);
 
     /**
      * 分页列出导航栏

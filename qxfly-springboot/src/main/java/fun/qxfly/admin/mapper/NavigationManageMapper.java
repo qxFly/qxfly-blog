@@ -12,8 +12,7 @@ public interface NavigationManageMapper {
     /**
      * 列出管理员导航栏
      */
-    @Select("select * from navigation where (type = 'admin' or type = 'common') and parent IS NULL")
-    List<Navigation> listAdminNavigations();
+      List<Navigation> listAdminNavigations(Integer rid);
 
     /**
      * 分页列出导航栏

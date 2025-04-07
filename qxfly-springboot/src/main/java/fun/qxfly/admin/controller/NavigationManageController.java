@@ -7,9 +7,13 @@ import fun.qxfly.common.domain.DTO.NavigationDTO;
 import fun.qxfly.common.domain.entity.Navigation;
 import fun.qxfly.common.domain.po.Result;
 import fun.qxfly.common.domain.vo.NavigationVO;
+import fun.qxfly.common.utils.JwtUtils;
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,8 +37,14 @@ public class NavigationManageController {
      */
     @GetMapping("listAdminNavigations")
     @Operation(description = "列出管理员导航栏", summary = "列出管理员导航栏")
-    public Result listAdminNavigations() {
-        List<NavigationVO> navigationList = navigationManageService.listAdminNavigations();
+    public Result listAdminNavigations(HttpServletRequest request) {
+        String token = request.getHeader("token");
+        String role = null;
+        if (StringUtils.hasLength(token)) {
+            Claims claims = JwtUtils.parseJWT(token);
+            role = (String) claims.get("role");
+        }
+        List<NavigationVO> navigationList = navigationManageService.listAdminNavigations(role);
         return Result.success(navigationList);
     }
 
