@@ -450,12 +450,12 @@ function setTable() {
 }
 /* 侧栏监听 */
 function Listener() {
-    const topbar = document.getElementById("sider-right-content");
+    const sider_bar = document.getElementById("sider-right-content");
     var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
     if (scrollTop > 600) {
-        topbar.style.top = "20px";
+        sider_bar.style.top = "20px";
     } else {
-        topbar.style.top = "90px";
+        sider_bar.style.top = "90px";
     }
 }
 /* 判断信息是否加载完 */
@@ -485,8 +485,8 @@ function showConten() {
                 title.style.top = "0";
                 header.style.opacity = 1;
                 header.style.height = "370px";
-                let t = document.getElementById("top-bar-1");
-                t.style.top = "0px";
+                // let t = document.getElementById("top-bar-1");
+                // t.style.top = "0px";
                 // header.style.marginTop = "50px";
             }, 100)
         );

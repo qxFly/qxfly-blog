@@ -128,13 +128,13 @@ function isIndex(item) {
         }
     }
 }
-router.beforeEach((to) => {
-    if (to.path.includes("/index/article//editArticle/")) {
-        let ele = document.getElementsByClassName("nav-item-editArticle");
-        ele[0].innerHTML = "加载中";
-        ele[0].style["content"] = "";
-    }
-});
+// router.beforeEach((to) => {
+//     if (to.path.includes("/index/article//editArticle/")) {
+//         let ele = document.getElementsByClassName("nav-item-editArticle");
+//         ele[0].innerHTML = "加载中";
+//         ele[0].style["content"] = "";
+//     }
+// });
 onMounted(() => {
     getNavigation();
     searchData.value = useRouter.query.search;

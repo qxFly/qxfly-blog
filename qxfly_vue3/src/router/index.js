@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import md5 from "js-md5";
 import { check } from "@/api/Admin/index";
-import { onUnmounted } from "vue";
+import { onUnmounted, ref, watch } from "vue";
 const routes = [
     {
         path: "/",
@@ -179,14 +179,10 @@ const router = createRouter({
     routes,
 });
 let black = /(editArticle)/;
-let hideTopBarList1 = /(manage|login|register|findpassword)/;
+
 router.beforeEach(async (to, from, next) => {
     /* 根据路由隐藏状态栏 */
-    if (to.path.match(hideTopBarList1) != null) {
-        hideTopBar();
-    } else {
-        showTopBar();
-    }
+    hideTopBarByRouter(to.path);
     /* 返回上一页时跳过空页面 */
     if (from.path.match(/space/)) {
         if (to.path == "/user/space") {
@@ -202,7 +198,6 @@ router.beforeEach(async (to, from, next) => {
                 next("/");
             }
         });
-        next();
     } else {
         /* 拦截需要登录的路径 */
         let isStop = false;
@@ -223,38 +218,28 @@ router.beforeEach(async (to, from, next) => {
     }
 });
 /* 隐藏顶栏 */
-let hideTopBarInterval = [];
-function hideTopBar() {
-    let count = 0;
-    hideTopBarInterval.push(
-        setInterval(() => {
-            count++;
-            let topBar = document.getElementById("top-bar-1");
-            if (count >= 10 || topBar.style.top) {
-                for (let i = 0; i < hideTopBarInterval.length; i++) {
-                    clearInterval(hideTopBarInterval[i]);
-                }
-                topBar.style.top = "-70px";
-            }
-        }, 200)
-    );
+let hideTopBarList1 = /(manage|login|register|findpassword)/;
+function hideTopBarByRouter(path) {
+    if (path.match(hideTopBarList1) != null) {
+        changeTopBar(1);
+    } else {
+        changeTopBar(0);
+    }
 }
-/* 显示顶栏 */
-let showTopBarInterval = [];
-function showTopBar() {
+// 0:显示 1:隐藏
+function changeTopBar(state) {
     let count = 0;
-    showTopBarInterval.push(
-        setInterval(() => {
-            count++;
-            let topBar = document.getElementById("top-bar-1");
-            if (count >= 10 || topBar.style.top) {
-                for (let i = 0; i < showTopBarInterval.length; i++) {
-                    clearInterval(showTopBarInterval[i]);
-                }
+    let hideTopBarInterval = setInterval(() => {
+        count++;
+        let topBar = document.getElementById("top-bar-1");
+        if (count >= 10 || topBar.style.top) {
+            clearInterval(hideTopBarInterval);
+            if (state) {
+                topBar.style.top = "-70px";
+            } else {
                 topBar.style.top = "0px";
             }
-        }, 200)
-    );
+        }
+    }, 200);
 }
-
 export default router;

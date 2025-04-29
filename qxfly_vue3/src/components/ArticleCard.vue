@@ -100,7 +100,7 @@ function ArticleDetail(article) {
     document.getElementById("article-detail-load-" + id).style.display = "block";
     document.getElementById("item-cover-" + id).style.display = "none";
     document.getElementById("item-info-" + id).style.display = "none";
-    document.getElementById("top-bar-1").style.top = "-70px";
+    // document.getElementById("top-bar-1").style.top = "-70px";
     let uid = localStorage.getItem("uid");
     if (uid == article.authorId) {
         isEditMode.value = true;

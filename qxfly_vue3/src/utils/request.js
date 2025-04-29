@@ -47,7 +47,6 @@ const passurl = [
 ];
 /* 请求拦截器 */
 service.interceptors.request.use(async (config) => {
-    console.log("request:", config.url);
     /* 设置token */
     config.headers.token = accessToken.value;
     /* 无需拦截的白名单路径 */
@@ -104,7 +103,6 @@ export async function interceptors(response) {
         setTimeout(() => {
             location.reload();
         }, 500);
-
         return response;
     }
     /* token过期 */

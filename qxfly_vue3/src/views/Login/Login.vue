@@ -120,10 +120,7 @@ async function login() {
         } else {
             sessionStorage.setItem("autologin", remember.value);
         }
-
-        setTimeout(() => {
-            location.reload();
-        }, 1000);
+        location.replace("/");
     } else {
         loginText.value = "登录";
         msg.value = res.data.msg;

@@ -304,7 +304,9 @@ async function release() {
                         alert("发布成功");
                         localStorage.removeItem("saveArticle");
                         isrelease.value = true;
-                        router.replace("/index/articleView");
+                        setTimeout(() => {
+                            router.replace("/index/articleView");
+                        }, 500);
                     } else {
                         releaseBtn.value = "发布文章";
                         alert("发布失败,请重试。可能原因：" + res.data.msg);
