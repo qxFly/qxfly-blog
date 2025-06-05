@@ -39,10 +39,7 @@ public class UserManageServiceImpl implements UserManageService {
         List<User> userList = userManageMapper.listUser(user);
         for (User user1 : userList) {
             if (user1.getAvatar() != null && !user1.getAvatar().isEmpty()) {
-                user1.setAvatar(userAvatarDownloadPath + user1.getAvatar());
-            }
-
-        }
+                user1.setAvatar(userAvatarDownloadPath + user1.getAvatar());}}
         return new PageInfo<>(userList);
     }
 
@@ -101,26 +98,6 @@ public class UserManageServiceImpl implements UserManageService {
             userSetting.setBgImgPath(split[1]);
         }
         return userManageMapper.editUserSetting(userSetting);
-    }
-
-    /**
-     * 删除用户背景
-     *
-     * @param uid    用户id
-     * @param bgPath 背景路径
-     */
-    @Override
-    public boolean deleteUserBackground(Integer uid, String bgPath) {
-        String[] split = bgPath.split("userBgImg/");
-        String path = FilePaths.USER_BACKGROUND_IMAGE_PATH.getPath() + split[1];
-        File file = new File(path);
-        if (file.isFile() && file.exists()) {
-            boolean delete = file.delete();
-            if (delete) {
-                return userManageMapper.deleteUserBackground(uid);
-            }
-        }
-        return false;
     }
 
     /**

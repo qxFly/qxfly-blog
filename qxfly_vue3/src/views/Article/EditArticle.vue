@@ -47,6 +47,9 @@
                                     </div>
                                 </div>
                                 <div class="tag-line"></div>
+                                <div class="tag-search">
+                                    <MyInput :clear="true" v-model="tagSearch"></MyInput>
+                                </div>
                                 <div class="select-Tags scorll">
                                     <div class="tag" v-for="item in allTags" :key="item" @click="addTag(item.name)">
                                         {{ item.name }}
@@ -229,6 +232,7 @@ import hljs from "highlight.js/lib/core";
 import "highlight.js/styles/github.css";
 import { ElMessage, ElMessageBox } from "element-plus";
 import request from "@/utils/request";
+import MyInput from "@/components/MyInput.vue";
 window.hljs = hljs;
 require("highlightjs-line-numbers.js");
 // 编辑器实例，必须用 shallowRef
@@ -526,6 +530,11 @@ function rmTag(tag) {
         return 0;
     });
 }
+/* 搜索标签 */
+let tagSearch = ref("");
+watch(tagSearch, (oldVal, newVal) => {
+    // tags.value = allTags.value.filter((i) => i.name.toLowerCase().includes(tagSearch.value.toLowerCase()));
+});
 /* 删除文章已经移除的图片 */
 function delimg() {
     /* 从服务端删除已在文章中移除的图片 */
@@ -819,7 +828,7 @@ const editorConfig = {
 
 /* 排除不用功能 */
 toolbarConfig.excludeKeys = ["group-video", "todo", "fullScreen"];
-/* 根据窗口大小自动调整编辑区大小 */
+/* 根据窗口滚动，调整工具栏的位置，用于手机端 */
 function Listener() {
     const Toolbar = document.getElementById("Toolbar");
     var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
@@ -864,7 +873,7 @@ onMounted(() => {
     /* 根据窗口大小控制编辑区的高度 */
     const Editor = document.getElementById("Editor");
     let height = document.body.scrollHeight - 300;
-    Editor.style.height = height + "px";
+    if (Editor) Editor.style.height = height + "px";
     /* 判断是否可以编辑文章 */
     if (userRoute.params.editMode == "true") {
         editMode.value = true;
@@ -873,13 +882,13 @@ onMounted(() => {
         loadSaveArticle();
     }
     let e = document.getElementById("nav-item-editArticle");
-    e.style.display = "none";
+    if (e) e.style.display = "none";
     window.addEventListener("scroll", Listener);
     window.addEventListener("beforeunload", onbeforeunloadHeadler);
 });
 onUnmounted(() => {
     let e = document.getElementById("nav-item-editArticle");
-    e.style.display = "block";
+    if (e) e.style.display = "block";
     window.removeEventListener("scroll", Listener, false);
     window.removeEventListener("beforeunload", onbeforeunloadHeadler);
 });
@@ -1000,6 +1009,9 @@ onBeforeUnmount(() => {
 .tag-line {
     border: 1px solid #000;
     margin: 10px;
+}
+.tag-search {
+    margin-bottom: 6px;
 }
 .tag {
     border: 1px solid #49b1f5;
@@ -1247,7 +1259,7 @@ span code {
 }
 blockquote {
     background-color: #ebebeb !important;
-    border-left: 10px solid #84c6ff !important;
+    border-left: 10px solid var(--main-theme-color-blue) !important;
     padding: 10px;
     margin: 10px 0;
 }

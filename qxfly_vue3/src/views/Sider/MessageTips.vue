@@ -80,7 +80,7 @@ onUnmounted(() => {
     padding-left: 8px;
 }
 .item-col:hover {
-    background-color: #ffded4;
+    background-color: var(--hover-color-orange);
 }
 .item-col-avatar {
     width: 36px;

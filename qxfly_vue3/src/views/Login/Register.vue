@@ -129,7 +129,6 @@ var isTip = ref(false); // 错误提示
 /* 注册 */
 async function register() {
     var flag = false;
-    /* 判断信息是否完整 */
     if (username.value != null && password.value != null && repassword.value != null && phone != null) {
         if (username.value.length < 5) {
             isTip.value = 1;
@@ -167,7 +166,6 @@ async function register() {
                 return;
             }
         }
-        /* 判断两次密码是否一致 */
         if (password.value != repassword.value) {
             isTip.value = 1;
             msg.value = "两次密码不一致";
@@ -208,7 +206,6 @@ async function register() {
             code: Verification.value,
             salt: publicKey.value,
         });
-        /* 返回状态码，1 为注册成功， 0 为注册失败*/
         if (res.data.code == 1) {
             isTip.value = 1;
             msg.value = res.data.data;

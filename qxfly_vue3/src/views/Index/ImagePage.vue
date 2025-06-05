@@ -1,23 +1,39 @@
 <template>
     <div class="image-main">
         <div style="display: flex; flex-direction: column">
-            <div class="article-sort-select">
+            <!-- <div class="article-sort-select">
                 <div class="article-sort">
                     <div class="article-sort-label" v-text="sortLabel"></div>
+                </div>
+            </div> -->
+            <!-- 视图菜单 -->
+            <div class="viewMenu">
+                <div style="display: flex">
+                    <div
+                        class="grid-list"
+                        :class="{ active: viewType == 'grid' }"
+                        @click="
+                            column = 3;
+                            viewType = 'grid';
+                        ">
+                        <div class="menu-font grid">网格视图</div>
+                    </div>
+                    <div
+                        class="grid-list"
+                        :class="{ active: viewType == 'list' }"
+                        @click="
+                            column = 1;
+                            viewType = 'list';
+                        ">
+                        <div class="menu-font list">列表视图</div>
+                    </div>
+                </div>
+
+                <MySelect :sortLabel="sortLabel" class="article-sort-select">
                     <div class="article-sort-item" value="new" @click="Sort('new')">最新发布</div>
                     <div class="article-sort-item" value="hot" @click="Sort('old')">最早发布</div>
                     <div class="article-sort-item" value="likes" @click="Sort('random')">随机</div>
-                </div>
-            </div>
-            <!-- 视图菜单 -->
-            <div class="viewMenu">
-                <div class="grid-list" @click="column = 3">
-                    <div class="menu-font grid">网格视图</div>
-                </div>
-                <div class="menu-tips">受网络影响，可能会加载失败</div>
-                <div class="grid-list" @click="column = 1">
-                    <div class="menu-font list">列表视图</div>
-                </div>
+                </MySelect>
             </div>
             <!-- 内容区 -->
             <div class="imageContent">
@@ -37,19 +53,20 @@ import { defineAsyncComponent } from "vue";
 import AddImg from "@/components/AddImg.vue";
 import { getImage } from "@/api/index";
 import { ElMessage } from "element-plus";
+import MySelect from "@/components/MySelect.vue";
 /* 异步组件（暂无用处） */
 const AsyncAddImg = defineAsyncComponent(async () => {
     const module = await import("@/components/AddImg.vue");
     return module.default;
 });
 
-var column = ref(3); //列数
-
-var getImgTips = ref("加载更多");
-var imgList = ref([]); //图片列表
+let column = ref(3); //列数
+let viewType = ref("grid"); //视图类型
+let getImgTips = ref("加载更多");
+let imgList = ref([]); //图片列表
 let allImgList = []; //以获取的所有图片
 /* 获取图片 */
-var timeout; // 计时器，如果超过一分钟图片还没加载完成，则可强制加载下一张
+let timeout; // 计时器，如果超过一分钟图片还没加载完成，则可强制加载下一张
 
 let currPage = 0;
 let pageSize = 3;
@@ -60,60 +77,59 @@ function getImg(count) {
     currPage++;
     getImgTips.value = "加载中";
     load.value = false;
-    setTimeout(() => {
-        getImage(currPage, pageSize, sort.value).then((res) => {
-            if (sort.value != "random") {
-                if (res.data.data.length > 0) {
-                    imgList.value = res.data.data;
-                } else {
-                    getImgTips.value = "加载更多";
-                    ElMessage.error({ message: "没有更多图片了", offset: 300 });
-                    return;
+    getImage(currPage, pageSize, sort.value).then((res) => {
+        if (sort.value != "random") {
+            if (res.data.data.length > 0) {
+                imgList.value = res.data.data;
+            } else {
+                getImgTips.value = "加载更多";
+                ElMessage.error({ message: "没有更多图片了", offset: 120 });
+                return;
+            }
+        } else {
+            let tempImgList = res.data.data;
+            let reGetCount = 0; /* 判断是否有重复 */
+            if (allImgList.length > 0) {
+                for (let i = 0; i < tempImgList.length; i++) {
+                    let f = false;
+                    for (let j = 0; j < allImgList.length; j++) {
+                        if (tempImgList[i].id == allImgList[j].id) {
+                            reGetCount++;
+                            f = true;
+                            break;
+                        }
+                    }
+                    if (!f) {
+                        allImgList.push(tempImgList[i]);
+                        pushImgList.push(tempImgList[i]);
+                    }
                 }
             } else {
-                let tempImgList = res.data.data;
-                let reGetCount = 0; /* 判断是否有重复 */
-                if (allImgList.length > 0) {
-                    for (let i = 0; i < tempImgList.length; i++) {
-                        let f = false;
-                        for (let j = 0; j < allImgList.length; j++) {
-                            if (tempImgList[i].id == allImgList[j].id) {
-                                reGetCount++;
-                                f = true;
-                                break;
-                            }
-                        }
-                        if (!f) {
-                            allImgList.push(tempImgList[i]);
-                            pushImgList.push(tempImgList[i]);
+                for (let i = 0; i < tempImgList.length; i++) {
+                    let f = false;
+                    for (let j = i + 1; j < tempImgList.length; j++) {
+                        if (tempImgList[i].id == tempImgList[j].id) {
+                            reGetCount++;
+                            f = true;
+                            break;
                         }
                     }
-                } else {
-                    for (let i = 0; i < tempImgList.length; i++) {
-                        let f = false;
-                        for (let j = i + 1; j < tempImgList.length; j++) {
-                            if (tempImgList[i].id == tempImgList[j].id) {
-                                reGetCount++;
-                                f = true;
-                                break;
-                            }
-                        }
-                        if (!f) {
-                            allImgList.push(tempImgList[i]);
-                            pushImgList.push(tempImgList[i]);
-                        }
+                    if (!f) {
+                        allImgList.push(tempImgList[i]);
+                        pushImgList.push(tempImgList[i]);
                     }
-                }
-                if (reGetCount != 0) {
-                    getImg(reGetCount);
-                }
-                if (pushImgList.length >= 3) {
-                    imgList.value = pushImgList;
-                    pushImgList = [];
                 }
             }
-        });
-    }, 2000);
+            if (reGetCount != 0) {
+                getImg(reGetCount);
+            }
+            if (pushImgList.length >= 3) {
+                imgList.value = pushImgList;
+                pushImgList = [];
+            }
+        }
+    });
+
     clearTimeout(timeout);
     // 计时器，如果超过一分钟图片还没加载完成，则可强制加载下一张
     timeout = setTimeout(() => {
@@ -181,13 +197,18 @@ onUnmounted(() => {
     padding: 1px;
     margin: 0 0 0 0;
     border-radius: 4px;
-    align-items: center;
     box-shadow: 0 1px 6px 4px rgba(7, 17, 27, 0.08);
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
     transition: all 0.3s ease-in-out;
+}
+.viewMenu .active {
+    color: white;
+    background-color: var(--main-theme-color-blue);
+    box-shadow: 0 1px 6px 4px rgba(7, 17, 27, 0.14);
+    border-radius: 4px;
 }
 .viewMenu:hover {
     box-shadow: 0 1px 6px 4px rgba(7, 17, 27, 0.14);
@@ -230,9 +251,8 @@ onUnmounted(() => {
 }
 .article-sort-select {
     position: relative;
-    min-width: 90px;
-    text-align: center;
-    margin-top: 10px;
+    top: 6px;
+    margin-right: 10px;
 }
 .article-sort {
     position: absolute;

@@ -5,7 +5,7 @@
             <!-- <Saying></Saying> -->
             <ArticleAuthorInfoCard :authorId="uid" class="UserInfoCard item" :btnType="btnType"></ArticleAuthorInfoCard>
             <MessageTips></MessageTips>
-            <SuggestAuthor class="SuggestAuthor item"></SuggestAuthor>
+            <!-- <SuggestAuthor class="SuggestAuthor item"></SuggestAuthor> -->
             <!-- <Resource class="Resource item"></Resource> -->
             <Site class="item"></Site>
         </div>

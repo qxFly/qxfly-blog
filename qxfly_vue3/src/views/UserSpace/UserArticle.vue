@@ -12,23 +12,16 @@
                         @click="batchDeletion"
                         v-text="batchDeletionFlag ? '取消' : '批量删除'"></div>
                 </div>
-
-                <div class="article-sort-select" v-if="uid == loginUid">
-                    <div class="article-sort">
-                        <div class="article-sort-label" v-text="verifyLabel"></div>
-                        <div class="article-sort-item" value="1" @click="verify(1)">审核中</div>
-                        <div class="article-sort-item" value="3" @click="verify(3)">审核通过</div>
-                        <div class="article-sort-item" value="2" @click="verify(2)">审核未通过</div>
-                    </div>
-                </div>
-                <div class="article-sort-select">
-                    <div class="article-sort">
-                        <div class="article-sort-label" v-text="sortLabel"></div>
-                        <div class="article-sort-item" value="new" @click="sort('new')">最新发布</div>
-                        <div class="article-sort-item" value="hot" @click="sort('hot')">浏览最多</div>
-                        <div class="article-sort-item" value="likes" @click="sort('likes')">点赞最多</div>
-                    </div>
-                </div>
+                <MySelect class="article-sort-select" :sort-label="verifyLabel">
+                    <div @click="verify(1)">审核中</div>
+                    <div @click="verify(3)">审核通过</div>
+                    <div @click="verify(2)">审核未通过</div>
+                </MySelect>
+                <MySelect class="article-sort-select" :sort-label="sortLabel">
+                    <div @click="sort('new')">最新发布</div>
+                    <div @click="sort('hot')">浏览最多</div>
+                    <div @click="sort('likes')">点赞最多</div>
+                </MySelect>
             </div>
         </div>
         <div class="articles">
@@ -145,6 +138,7 @@ import Pagination from "@/components/Pagination";
 import { ElMessageBox } from "element-plus";
 import md5 from "js-md5";
 import ArticleCard from "@/components/ArticleCard.vue";
+import MySelect from "@/components/MySelect.vue";
 let useRouter = useRoute();
 /* 分页查询 */
 let totalPages = ref(); //总页数
@@ -264,6 +258,31 @@ function batchDeletionConfirm() {
         })
         .catch((res) => {});
 }
+/* 展开排序列表 */
+let isExtendSort = ref(false);
+function extendArticleSort(eleID) {
+    let ele = document.getElementById(eleID);
+    ele.addEventListener("mouseleave", function () {
+        closeSort(eleID);
+    });
+    if (ele != null) {
+        if (isExtendSort.value) {
+            ele.style.height = "25px";
+        } else {
+            ele.style.height = "99px";
+        }
+        isExtendSort.value = !isExtendSort.value;
+    }
+}
+/* 关闭排序列表 */
+function closeSort(eleID) {
+    let ele = document.getElementById(eleID);
+    if (ele != null) {
+        isExtendSort.value = false;
+        ele.style.height = "25px";
+        ele.removeEventListener("mouseleave", closeSort);
+    }
+}
 /* 换页操作 */
 function changePage(page = 0) {
     if (page != 0) {
@@ -358,7 +377,6 @@ onMounted(() => {
     position: relative;
     top: -20px;
     width: 90px;
-    // background-color: #fff;
     text-align: center;
 }
 .article-deletion {
@@ -371,7 +389,6 @@ onMounted(() => {
 .article-deletion.delete {
     width: 46px;
 }
-.article-sort,
 .batch-deletion,
 .batch-deletion-confirm {
     position: absolute;
@@ -379,45 +396,21 @@ onMounted(() => {
     width: 100%;
     overflow: hidden;
     border-radius: 4px;
-    border: 1px solid #000;
-    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid;
+    background-color: var(--main-background-color);
     z-index: 99;
     transition: all 0.2s ease;
     user-select: none;
 }
-.article-sort:hover {
-    height: 99px;
-}
-.batch-deletion,
-.batch-deletion-confirm {
-    border: 1px solid #49b1f5;
-    background-color: rgba(255, 255, 255, 0.5);
-    color: #49b1f5;
-    line-height: 24px;
-}
+
 .batch-deletion:hover {
     background-color: #49b1f5;
-    // border: 1px solid #fff;
     color: #fff;
 }
 .batch-deletion-confirm:hover {
-    background-color: #ff8e68;
-    border: 1px solid #ff8e68;
+    background-color: var(--main-theme-color-orange);
+    border: 1px solid var(--main-theme-color-orange);
     color: #fff;
-}
-.article-sort-item {
-    font-size: 15px;
-    padding: 2px 4px;
-    cursor: pointer;
-}
-.article-sort-label {
-    font-size: 15px;
-    padding: 2px 4px;
-    border-bottom: 1px solid #000;
-    cursor: pointer;
-}
-.article-sort-item:hover {
-    background-color: #84c6ff;
 }
 .article-main-label {
     font-weight: 700;
@@ -438,7 +431,7 @@ onMounted(() => {
     padding: 0;
     overflow: hidden;
     border-radius: 8px 4px 4px 8px;
-    background-color: #ffffff50;
+    background-color: var(--main-background-color);
     box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.08);
     transition: all ease 0.2s;
 }

@@ -24,3 +24,4 @@ qxfly:
       articleCover: ${qxfly.domain}/articleCover/
       articleImage: ${qxfly.domain}/articleImage/
       articleAttachment: ${qxfly.domain}/articleAttachment/
+      systemBgImg: ${qxfly.domain}/systemBgImg/

@@ -25,4 +25,11 @@ public interface UserSettingService {
      * @return
      */
     String uploadBgImg(MultipartFile file, Integer uid);
+    /**
+     * 删除用户背景
+     *
+     * @param uid    用户id
+     * @param bgPath 背景路径
+     */
+    boolean deleteUserBackground(Integer uid, String bgPath);
 }

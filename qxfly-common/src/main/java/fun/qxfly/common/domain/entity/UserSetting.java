@@ -24,4 +24,7 @@ public class UserSetting {
 
     @Schema(description = "背景图片模糊（单位:px）")
     private Integer bgBlur;
+
+    @Schema(description = "字体颜色")
+    private String fontColor;
 }

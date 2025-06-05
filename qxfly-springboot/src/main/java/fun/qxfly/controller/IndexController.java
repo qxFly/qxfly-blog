@@ -71,4 +71,9 @@ public class IndexController {
         List<Navigation> navigationList = indexService.listIndexNav(role);
         return Result.success(navigationList);
     }
+
+    @GetMapping("/hello")
+    public Result hello() {
+           return Result.success("hello");
+    }
 }

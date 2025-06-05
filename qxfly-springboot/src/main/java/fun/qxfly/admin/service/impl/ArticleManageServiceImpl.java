@@ -82,12 +82,13 @@ public class ArticleManageServiceImpl implements ArticleManageService {
      * @return
      */
     @Override
-    public PageInfo<Article> searchArticle(Integer currPage, Integer pageSize, Integer articleId, String title, String author, Integer authorId, String tag, String classify, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd, Integer verify) {
+    public PageInfo<Article> searchArticle(Integer currPage, Integer pageSize, Integer articleId, String title,
+                                           String author, Integer authorId, String tag, String classify,
+                                           String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd, Integer verify) {
         PageHelper.startPage(currPage, pageSize);
-        List<Article> articleList = articleManageMapper.searchArticle(articleId, title, author, authorId, tag, classify, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd, verify);
-        for (Article article : articleList) {
-            article.setCover(articleCoverDownloadPath + article.getCover());
-        }
+        List<Article> articleList = articleManageMapper.searchArticle(articleId, title, author, authorId, tag, classify,
+                createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd, verify);
+        for (Article article : articleList) {article.setCover(articleCoverDownloadPath + article.getCover());}
         return new PageInfo<>(articleList);
     }
 
@@ -99,31 +100,14 @@ public class ArticleManageServiceImpl implements ArticleManageService {
      */
     @Override
     public boolean deleteArticle(Article article) {
-        /*删除文章封面*/
         String s = article.getCover().split("/")[article.getCover().split("/").length - 1];
-        File cover = new File(System.getProperty("user.dir") + "/data/qxfly-articleCover/" + s);
-        if (cover.exists()) cover.delete();
-        /* 删除内容图片 */
+        File cover = new File(System.getProperty("user.dir") + "/data/qxfly-articleCover/" + s);if (cover.exists()) cover.delete();
         String images = articleMapper.getArticleImage(article);
-        if (images != null) {
-            ArrayList<String> arrayList = JSONObject.parseObject(images, ArrayList.class);
+        if (images != null) {ArrayList<String> arrayList = JSONObject.parseObject(images, ArrayList.class);
             String path = System.getProperty("user.dir") + "/data/qxfly-articleImage/";
-            for (String image : arrayList) {
-                File file = new File(path + image);
-                if (file.exists()) {
-                    file.delete();
-                }
-            }
-        }
-        /* 删除附件 */
+            for (String image : arrayList) {File file = new File(path + image);if (file.exists()) {file.delete();}}}
         List<Attachment> attachmentList = articleMapper.getArticleAttachmentByAid(article.getId());
         for (Attachment attachment : attachmentList) {
             File file = new File(System.getProperty("user.dir") + "/data/qxfly-articleAttachment/" + attachment.getFileName());
-            if (file.exists()) {
-                file.delete();
-            }
-        }
-        articleMapper.deleteAllArticleAttachmentByAid(article.getId());
-        return articleManageMapper.deleteArticle(article.getId());
-    }
-}
+            if (file.exists()) {file.delete();}}
+        articleMapper.deleteAllArticleAttachmentByAid(article.getId());return articleManageMapper.deleteArticle(article.getId());}}

@@ -125,20 +125,4 @@ public class UserManageController {
             return Result.error("修改失败");
         }
     }
-
-    /**
-     * 删除用户背景
-     *
-     * @return
-     */
-    @Operation(description = "删除用户背景", summary = "删除用户背景")
-    @PostMapping("/deleteUserBackground")
-    public Result deleteUserBackground(@RequestBody Map<String, Object> map) {
-        boolean flag = userManageService.deleteUserBackground((Integer) map.get("uid"), (String) map.get("bgPath"));
-        if (flag) {
-            return Result.success("修改成功", null);
-        } else {
-            return Result.error("修改失败");
-        }
-    }
 }

@@ -101,4 +101,24 @@ public class UserSettingServiceImpl implements UserSettingService {
         }
         return bgImgDownloadPath + fileName;
     }
+
+    /**
+     * 删除用户背景
+     *
+     * @param uid    用户id
+     * @param bgPath 背景路径
+     */
+    @Override
+    public boolean deleteUserBackground(Integer uid, String bgPath) {
+        String[] split = bgPath.split("userBgImg/");
+        String path = FilePaths.USER_BACKGROUND_IMAGE_PATH.getPath() + split[1];
+        File file = new File(path);
+        if (file.isFile() && file.exists()) {
+            boolean delete = file.delete();
+            if (delete) {
+                return userSettingMapper.deleteUserBackground(uid);
+            }
+        }
+        return false;
+    }
 }

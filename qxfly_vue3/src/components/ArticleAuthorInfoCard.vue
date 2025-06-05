@@ -157,7 +157,7 @@ onMounted(() => {});
 onUnmounted(() => {});
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .user-info-card {
     width: 100%;
     padding: 16px 10px;
@@ -199,7 +199,7 @@ img:hover {
     cursor: pointer;
 }
 .user-name:hover {
-    color: #ff8e68;
+    color: var(--main-theme-color-orange);
 }
 .user-introduction {
     margin-top: 8px;
@@ -226,7 +226,7 @@ img:hover {
     /* transition: all 0.3s ease; */
 }
 .item-btn:hover {
-    color: #ff8e68;
+    color: var(--main-theme-color-orange);
 }
 .item-title {
     font-size: 14px;
@@ -240,12 +240,12 @@ img:hover {
     text-align: center;
     border-radius: 4px;
     cursor: pointer;
-    background-color: #84c6ff;
+    background-color: var(--main-theme-color-blue);
     color: #ffffff;
     font-size: 14px;
 }
 .user-info-btn:hover {
-    background-color: #ff8e68;
+    background-color: var(--main-theme-color-orange);
 }
 @media (max-width: 1200px) {
     .user-info-data-item {

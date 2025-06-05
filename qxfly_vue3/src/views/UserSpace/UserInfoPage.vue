@@ -318,7 +318,7 @@ let isTip = ref(false);
 let tip = ref("");
 
 const userInfo = ref({});
-let Verification = ref(null); //验证码
+let Verification = ref(""); //验证码
 let isPwdShow = ref(false);
 let isRePwdShow = ref(false);
 /* 显示密码 */
@@ -705,18 +705,18 @@ onUnmounted(() => {
     padding: 6px 8px;
     border-radius: 6px;
     border: 2px solid #d0d7de;
-    background-color: rgba(246, 248, 250, 0.5);
+    background-color: var(--input-background-color);
     font-size: 16px;
     max-height: 100px;
 }
 .user-info-item input:hover,
 .user-info-item textarea:hover {
-    border: 2px solid #90ccff;
+    border: 2px solid var(--main-theme-color-blue);
     outline: none;
 }
 .user-info-item input:focus,
 .user-info-item textarea:focus {
-    border: 2px solid #90ccff;
+    border: 2px solid var(--main-theme-color-blue);
     outline: none;
 }
 .user-info-item.img {
@@ -755,18 +755,6 @@ onUnmounted(() => {
     /* text-align: center; */
     /* line-height: 300px; */
 }
-.editAatarDialog-operation-item {
-    width: 120px;
-    margin-bottom: 4px;
-    font-size: 16px;
-    /* font-weight: 600; */
-    line-height: 26px;
-    height: 26px;
-    text-align: center;
-    border-radius: 6px;
-    color: #fff;
-    background-color: #9a8fff;
-}
 .upload-input {
     display: none;
     font-size: 0;
@@ -792,12 +780,12 @@ onUnmounted(() => {
     border-radius: 6px;
     font-weight: 500;
     line-height: 34px;
-    background-color: #a28dd1;
+    background-color: var(--main-theme-color-purple);
     cursor: pointer;
     margin: 0 auto;
 }
 .profile:hover {
-    background-color: #846cb6;
+    background-color: var(--hover-color-purple);
 }
 .edit-password,
 .edit-repassword {
@@ -820,10 +808,13 @@ onUnmounted(() => {
     border-radius: 6px;
     font-weight: 500;
     line-height: 34px;
-    background-color: #a28dd1;
+    background-color: var(--main-theme-color-purple);
     cursor: pointer;
     border: none;
     font-size: 16px;
+}
+.edit-Verification button:hover {
+    background-color: var(--hover-color-purple);
 }
 .pwd-btn {
     position: relative;

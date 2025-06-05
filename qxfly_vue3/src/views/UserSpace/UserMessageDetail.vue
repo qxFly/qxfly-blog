@@ -201,7 +201,7 @@ onUnmounted(() => {
 .msg-item.right .msg-item-content {
     border-radius: 8px 0 8px 8px;
     color: #fff;
-    background-color: #84c6ff;
+    background-color: var(--main-theme-color-blue);
 }
 .msg-item .avatar {
     width: 30px;
@@ -246,7 +246,7 @@ onUnmounted(() => {
 }
 .input-msg button {
     border: none;
-    background-color: #84c6ff;
+    background-color: var(--main-theme-color-blue);
     color: #fff;
     padding: 5px 10px;
     border-radius: 4px;

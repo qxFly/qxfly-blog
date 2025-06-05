@@ -69,17 +69,17 @@ onMounted(() => {
     align-items: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    border: 1px solid #ff9e7e;
+    border: 1px solid var(--main-theme-color-orange);
     border-radius: 0 4px 4px 0;
-    background-color: #ffffff50;
+    background-color: var(--main-background-color);
 }
 .item-col:hover {
-    background-color: rgba(255, 222, 212, 0.6);
+    background-color: var(--hover-color-orange);
 }
 .span-number {
     width: 24px;
     min-width: 24px;
-    background-color: #ff9e7e;
+    background-color: var(--main-theme-color-orange);
     text-align: center;
     font-weight: 700;
     border-radius: 0 4px 4px 0;

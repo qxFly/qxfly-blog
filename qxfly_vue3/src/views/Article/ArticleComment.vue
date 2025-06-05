@@ -409,7 +409,7 @@ onMounted(() => {
     getUserLikeComm();
 });
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .comments {
     border-radius: 4px;
     /* box-shadow: inset 0 3px 8px 6px rgba(7, 17, 27, 0.1); */
@@ -436,7 +436,7 @@ onMounted(() => {
     border: 2px solid #b6ddff;
 }
 .release-comment-textarea:focus {
-    border: 2px solid #84c6ff;
+    border: 2px solid var(--main-theme-color-blue);
 }
 .release-comment-btn {
     margin-left: 20px;
@@ -444,12 +444,13 @@ onMounted(() => {
     font-size: 16px;
     padding: 4px 12px;
     transition: all 0.3s ease;
-    background-color: #84c6ff;
+    background-color: var(--main-theme-color-blue);
     border: none;
     color: #fff;
+    cursor: pointer;
 }
 .release-comment-btn:hover {
-    background-color: #ff9977;
+    background-color: var(--main-theme-color-orange);
 }
 .comment-item-content {
     flex: 1;
@@ -533,7 +534,7 @@ onMounted(() => {
 .comment-username {
     // width: 100%;
     font-weight: 700;
-    color: #6cbaff;
+    color: var(--main-theme-color-blue);
     // width: 100%;
     overflow: hidden;
 }
@@ -596,12 +597,12 @@ onMounted(() => {
     font-size: 16px;
     padding: 0 12px;
     transition: all 0.3s ease;
-    background-color: #84c6ff;
+    background-color: var(--main-theme-color-blue);
     border: none;
     color: #fff;
 }
 .child-comment-input button:hover {
-    background-color: #ff9977;
+    background-color: var(--main-theme-color-orange);
 }
 .child-comment-textarea {
     width: 100%;

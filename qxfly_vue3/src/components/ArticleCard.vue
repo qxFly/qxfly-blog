@@ -100,7 +100,6 @@ function ArticleDetail(article) {
     document.getElementById("article-detail-load-" + id).style.display = "block";
     document.getElementById("item-cover-" + id).style.display = "none";
     document.getElementById("item-info-" + id).style.display = "none";
-    // document.getElementById("top-bar-1").style.top = "-70px";
     let uid = localStorage.getItem("uid");
     if (uid == article.authorId) {
         isEditMode.value = true;
@@ -160,7 +159,7 @@ function isDisPlayActionLabel() {
     padding: 0;
     overflow: hidden;
     border-radius: 8px 4px 4px 8px;
-    background-color: #ffffff50;
+    background-color: var(--main-background-color);
     box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.08);
     transition: all ease 0.2s;
 }
@@ -238,7 +237,7 @@ function isDisPlayActionLabel() {
 }
 .item-info .time {
     font-weight: 700;
-    color: #000;
+    // color: var(--main-theme-font-color);
 }
 .item-content {
     height: 100px;

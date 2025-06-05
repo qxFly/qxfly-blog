@@ -80,7 +80,7 @@ onMounted(() => {});
     padding: 6px;
     padding-right: 24px;
     border-radius: 4px;
-    border: 1px solid #00000000;
+    border: 1px solid var(--main-theme-color-blue);
     outline: none;
 }
 /*设置输入框选中时的样式*/

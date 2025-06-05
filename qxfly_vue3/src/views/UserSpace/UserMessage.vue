@@ -197,10 +197,12 @@ onUnmounted(() => {
     padding: 10px;
 }
 .user-nav-items:hover {
-    background-color: rgb(177, 218, 255, 0.7);
+    color: #000;
+    background-color: var(--hover-color-blue);
 }
 .active {
-    background-color: rgb(132, 198, 255, 0.7);
+    color: #fff;
+    background-color: var(--main-theme-color-blue);
 }
 .user-nav-item {
     display: flex;
@@ -237,7 +239,7 @@ onUnmounted(() => {
 }
 .msgCount {
     border-radius: 50%;
-    background-color: #ff8e68;
+    background-color: var(--main-theme-color-orange);
     width: 16px;
     height: 16px;
     font-size: 12px;

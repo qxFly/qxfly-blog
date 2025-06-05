@@ -17,13 +17,14 @@ server:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-#   log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:mappers/*.xml,classpath:mappers/admin/*.xml
 
 qxfly:
   jwt:
     ignore:
       urls:
+        - /index/hello
         - /favicon.ico  #网站图标
         - /gs  #获取公匙
         - /login   #登陆
@@ -60,6 +61,8 @@ qxfly:
         - /index/sendLeaveMessage   #发送留言
         - /index/deleteLeaveMessage  #删除留言
         - /index/getSiteStatus  #获取站点状态
+        - /systemBgImg/**   #系统背景图片
+        - /sysSetting/getSysSettings #获取系统设置
         
 
 

@@ -3,15 +3,12 @@
         <div class="header">
             <div class="article-main-label"></div>
             <div class="article-select-bar">
-                <div class="article-sort-select">
-                    <div class="article-sort">
-                        <div class="article-sort-label" v-text="sortLabel"></div>
-                        <div class="article-sort-item" value="new" @click="sort('newC')">最新收藏</div>
-                        <div class="article-sort-item" value="new" @click="sort('new')">最新发布</div>
-                        <div class="article-sort-item" value="hot" @click="sort('hot')">浏览最多</div>
-                        <div class="article-sort-item" value="likes" @click="sort('likes')">点赞最多</div>
-                    </div>
-                </div>
+                <MySelect class="article-sort-select" :sort-label="sortLabel">
+                    <div @click="sort('newC')">最新收藏</div>
+                    <div @click="sort('new')">最新发布</div>
+                    <div @click="sort('hot')">浏览最多</div>
+                    <div @click="sort('likes')">点赞最多</div>
+                </MySelect>
             </div>
         </div>
         <div class="articles">
@@ -120,6 +117,7 @@ import mymd5 from "@/utils/md5";
 import { useRoute } from "vue-router";
 import Pagination from "@/components/Pagination";
 import ArticleCard from "@/components/ArticleCard.vue";
+import MySelect from "@/components/MySelect.vue";
 let useRouter = useRoute();
 /* 分页查询 */
 let totalPages = ref(); //总页数
@@ -257,44 +255,6 @@ onMounted(() => {
     width: 90px;
     text-align: center;
 }
-.article-sort {
-    position: absolute;
-    height: 26px;
-    width: 100%;
-    overflow: hidden;
-    border-radius: 4px;
-    border: 1px solid #000;
-    background-color: rgba(255, 255, 255, 0.5);
-    z-index: 99;
-    transition: all 0.2s ease;
-    user-select: none;
-}
-.article-sort:hover {
-    height: 123px;
-}
-.article-sort-item {
-    font-size: 15px;
-    padding: 2px 4px;
-    cursor: pointer;
-}
-.article-sort-label {
-    font-size: 15px;
-    padding: 2px 4px;
-    border-bottom: 1px solid #000;
-    cursor: pointer;
-}
-.article-sort-item:hover {
-    background-color: #84c6ff;
-}
-// .article-main {
-//   // border-radius: 4px;
-//   // box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.08);
-//   // transition: all ease 0.2s;
-//   // margin-bottom: 20px;
-// }
-// .article-main:hover {
-//   box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.14);
-// }
 .article-main-label {
     font-weight: 700;
     font-size: 26px;
@@ -315,7 +275,7 @@ onMounted(() => {
     padding: 0;
     overflow: hidden;
     border-radius: 8px 4px 4px 8px;
-    background-color: #ffffff50;
+    background-color: var(--main-background-color);
     box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.08);
     transition: all ease 0.2s;
 }

@@ -67,6 +67,7 @@ public class UserInfoServiceImpl implements UserInfoService {
      */
     @Override
     public boolean updateUserInfo(User user) {
+
         return userInfoMapper.updateUserInfo(user);
     }
 

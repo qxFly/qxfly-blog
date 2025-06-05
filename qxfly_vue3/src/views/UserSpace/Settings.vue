@@ -21,6 +21,12 @@
                                     v-model="userSettings.bgSwitch"
                                     :value="1" />
                                 <label for="bg-switch-on"> 开</label>
+                                <span
+                                    class="leave-message-right-content-operate"
+                                    @click="DeleteBgImg()"
+                                    v-if="userSettings.bgImgPath != null && userSettings.bgImgPath != ''">
+                                    删除
+                                </span>
                             </span>
                         </div>
                         <div for="upload-input" class="img-box" @click="editBg">
@@ -41,10 +47,15 @@
                             v-model="userSettings.bgBlur"
                             placeholder="请输入背景模糊度" />
                     </div>
+                    <div class="setting-item">
+                        <div class="item-header">
+                            <label for="bg-blur-input" style="margin-right: 10px">字体颜色（暂停使用）</label>
+                            <el-color-picker v-model="userSettings.fontColor" :predefine="predefineColors" />
+                        </div>
+                    </div>
                 </div>
                 <div class="col"></div>
             </div>
-
             <div class="profile" @click="UpdateUserSettings">确认更改</div>
         </div>
         <!-- 更换背景弹框 -->
@@ -159,12 +170,12 @@
 <script setup>
 import { onMounted, onUnmounted, reactive, ref, watch } from "vue";
 import md5 from "js-md5";
-import { getUserSettings, updateUserSettings, uploadBgImg } from "@/api/User/index";
+import { getUserSettings, updateUserSettings, uploadBgImg, deleteUserBackground } from "@/api/User/index";
 import { useRoute } from "vue-router";
 import router from "@/router";
 import "vue-cropper/dist/index.css";
 import { VueCropper } from "vue-cropper";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 let useRouter = useRoute();
 let isTip = ref(false);
 let tip = ref("");
@@ -199,6 +210,8 @@ let fileName = "";
 function editBg() {
     editBgDialog.value = true;
 }
+/* 设置字体颜色 */
+let predefineColors = ref(["#000000", "#ffffff"]);
 
 /* 获取文件数据 */
 function getFile(event) {
@@ -296,7 +309,24 @@ function cencel() {
     isTip.value = false;
     tip.value = "";
 }
-
+function DeleteBgImg() {
+    ElMessageBox.confirm("确定删除背景吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+    })
+        .then(() => {
+            deleteUserBackground({ uid: parseInt(uid), bgPath: userSettings.value.bgImgPath }).then((res) => {
+                if (res.data.code == 1) {
+                    ElMessage.success({ message: "删除成功", offset: 120 });
+                    location.reload();
+                } else {
+                    ElMessage.success({ message: "删除失败", offset: 120 });
+                }
+            });
+        })
+        .catch(() => {});
+}
 /* 未保存背景图片设置时恢复原来设置 */
 function resetBg() {
     let bg = document.getElementById("index_bg");
@@ -374,11 +404,11 @@ onUnmounted(() => {
     background-color: #fff;
     outline: none;
     appearance: none;
-    border: 1px solid #84c6ff;
+    border: 1px solid var(--main-theme-color-blue);
     border-radius: 50%;
 }
 .bg-switchs input[type="radio"]:checked {
-    background: #84c6ff;
+    background: var(--main-theme-color-blue);
 }
 .setting-item input[type="text"],
 .setting-item input[type="number"],
@@ -388,14 +418,14 @@ onUnmounted(() => {
     padding: 6px 8px;
     border-radius: 6px;
     border: 2px solid #d0d7de;
-    background-color: rgba(246, 248, 250, 0.5);
+    background-color: var(--input-background-color);
     font-size: 16px;
     max-height: 100px;
 }
 .setting-item input[type="text"]:hover,
 .setting-item input[type="number"]:hover,
 .setting-item textarea:hover {
-    border: 2px solid #90ccff;
+    border: 2px solid var(--main-theme-color-blue);
     outline: none;
 }
 .setting-item input[type="text"]:focus,
@@ -415,7 +445,9 @@ onUnmounted(() => {
     border-radius: 4px;
     /* height: 100%; */
 }
-
+.color-picker {
+    width: 100px !important;
+}
 .profile {
     text-align: center;
     color: #fff;
@@ -425,9 +457,12 @@ onUnmounted(() => {
     border-radius: 6px;
     font-weight: 500;
     line-height: 34px;
-    background-color: #a28dd1;
+    background-color: var(--main-theme-color-purple);
     cursor: pointer;
     margin: 0 auto;
+}
+.profile:hover {
+    background-color: var(--hover-color-purple);
 }
 .editBgDialog-content {
     display: flex;
@@ -490,6 +525,19 @@ onUnmounted(() => {
     width: 500px;
     height: 500px;
     margin: 0 auto;
+}
+.leave-message-right-content-operate {
+    color: #ff9a9a;
+    margin: 0 12px;
+    cursor: pointer;
+    border: 1px solid #ffffff;
+    padding: 0 4px;
+    border-radius: 4px;
+    line-height: 16px;
+}
+.leave-message-right-content-operate:hover {
+    color: rgb(245, 108, 108);
+    border: 1px solid #ff9a9a;
 }
 @media (max-width: 600px) {
     .setting-items {

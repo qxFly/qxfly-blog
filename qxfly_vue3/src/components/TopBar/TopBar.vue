@@ -29,7 +29,7 @@ function Listener() {
     if (scrollTop > 600) {
         topbar.style.top = "-70px";
     } else {
-        if (router.currentRoute.value.path.match(/ArticleDetail/)) return;
+        if (router.currentRoute.value.path.match(/manage/)) return;
         topbar.style.top = "0";
     }
 }
@@ -57,6 +57,7 @@ function ListenerTime() {
     topbar.addEventListener("mouseleave", mouseleave);
     mouseleave();
 }
+// 鼠标离开状态栏
 function mouseleave() {
     const topbarbg = document.getElementById("top-bar-bg");
     if (topbarbg == null) return;
@@ -64,11 +65,12 @@ function mouseleave() {
         topbarbg.style.opacity = "0.2";
     }, 2000);
 }
+// 鼠标移动到状态栏
 function mousemove() {
     const topbarbg = document.getElementById("top-bar-bg");
     if (topbarbg == null) return;
     topbarbg.style.opacity = "1";
-    topbarbg.style.backgroundImage = "linear-gradient(to right, #84c6ff, #b1dbff)";
+    topbarbg.style.backgroundImage = "linear-gradient(to right, var(--main-theme-color-blue), #b1dbff)";
 }
 
 onMounted(() => {
@@ -100,14 +102,14 @@ onUnmounted(() => {
     transition: all 0.4s ease;
 }
 #top-bar-1:hover {
-    /* background-image: linear-gradient(to right, #84c6ff, #b1dbff); */
+    /* background-image: linear-gradient(to right, var(--main-theme-color-blue), #b1dbff); */
     box-shadow: 0 1px 6px 4px rgba(7, 17, 27, 0.5);
 }
 .top-bar-bg {
     width: 100%;
     height: 70px;
     position: fixed;
-    background-image: linear-gradient(to right, #84c6ff, #b1dbff);
+    background-image: linear-gradient(to right, var(--main-theme-color-blue), #b1dbff);
     box-shadow: 0 1px 6px 4px rgba(7, 17, 27, 0.5);
     transition: all 1s ease;
 }

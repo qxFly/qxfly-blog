@@ -515,7 +515,7 @@ onUnmounted(() => {
 .attachment {
     // display: flex;
     border-radius: 2px;
-    border: 1px solid #84c6ff;
+    border: 1px solid var(--main-theme-color-blue);
     margin: 2px 0;
     transition: all 0.3s ease;
     cursor: pointer;
@@ -544,7 +544,7 @@ onUnmounted(() => {
     display: none;
     height: 3px;
     width: 0%;
-    background-color: #ff8e68;
+    background-color: var(--main-theme-color-orange);
     transition: all 0.3s ease;
     // margin-top: 4px;
 }
@@ -552,7 +552,7 @@ onUnmounted(() => {
     display: none;
     width: max-content;
     min-width: 24px;
-    background-color: #ff8e68;
+    background-color: var(--main-theme-color-orange);
     text-align: center;
     font-weight: 700;
     border-radius: 4px 0 0 4px;

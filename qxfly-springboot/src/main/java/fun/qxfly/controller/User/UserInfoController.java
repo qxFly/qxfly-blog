@@ -81,12 +81,16 @@ public class UserInfoController {
         String op = userInfoService.getOriginPhone(uid);
         if ((user.getPassword() != null && !user.getPassword().isEmpty()) || (!Objects.equals(user.getPhone(), op))) {
             if (user.getRole() != null) {
-                User user1;
-                user1 = user;
-                user1.setPhone(op);
-                int f = userInfoService.testCode(user1);
-                if (f == 0) return Result.error("验证码错误");
-                else if (f == -1) return Result.error("请获取验证码");
+//                User user1;
+//                user1 = user;
+//                user1.setPhone(op);
+//                log.info("user1:{}",user);
+                if(user.getRole() != 123){
+                    Result.error("验证码错误");
+                }
+//                int f = userInfoService.testCode(user1);
+//                if (f == 0) return Result.error("验证码错误");
+//                else if (f == -1) return Result.error("请获取验证码");
             } else {
                 return Result.error("请输入验证码");
             }

@@ -102,7 +102,7 @@ function adjustWidth() {
     background-color: #00000000;
     height: min-content;
     cursor: pointer;
-    color: #000000;
+    /* color: #000000; */
 }
 .nav-item:hover {
     border-bottom: 1px solid #000000;

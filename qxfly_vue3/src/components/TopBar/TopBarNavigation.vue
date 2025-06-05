@@ -3,12 +3,13 @@
         <div class="search">
             <div class="search-bar">
                 <button class="search-btn" @click="search"></button>
-                <my-input
+                <MyInput
                     class="search-input"
                     :clear="true"
                     @enter="search"
                     v-model="searchData"
-                    placeholder="输入要搜索的文章标题" />
+                    placeholder="输入要搜索的文章标题">
+                </MyInput>
             </div>
         </div>
 
@@ -178,8 +179,9 @@ onMounted(() => {
 //   cursor: pointer;
 // }
 .search-btn {
-    background-color: #a5d5ff;
-    border: 1px solid #000;
+    color: #000000;
+    background-color: #fff;
+    border: 1px solid var(--main-theme-color-blue);
     border-radius: 4px;
     width: 70px;
     height: 29px;
@@ -191,12 +193,12 @@ onMounted(() => {
 }
 .search-btn:hover {
     color: #fff;
-    background-color: #ff8e68;
+    background-color: var(--main-theme-color-orange);
     border: none;
 }
 /* 导航栏按钮 */
 .nav-item {
-    color: #000000;
+    // color: #000000;
     display: block;
     margin: 0 8px;
     font-size: 16px;
@@ -215,18 +217,18 @@ onMounted(() => {
     user-select: none;
 }
 .nav-item-heightlight:hover {
-    border-bottom: 1px solid #000000;
+    border-bottom: 1px solid;
 }
 .active {
-    color: #000;
-    border-bottom: 1px solid #000000;
+    // color: #000;
+    border-bottom: 1px solid;
 }
 
 .iconfont {
     font-family: "iconfont" !important;
     font-style: normal;
     margin-right: 4px;
-    color: #000;
+    // color: #000;
 }
 .nav-item-editArticle {
     display: inline-block;
@@ -235,7 +237,7 @@ onMounted(() => {
     font-size: 18px;
     border-radius: 4px;
     padding: 4px 14px;
-    background-color: #ff8e68;
+    background-color: var(--main-theme-color-orange);
     color: #fff;
     text-align: center;
     // transition: all 0.3s ease;

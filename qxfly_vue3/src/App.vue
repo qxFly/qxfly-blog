@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { updateLoginStatue } from "./api";
+import { getSysSetting } from "@/api/System";
 import router from "@/router";
 import { onBeforeMount, onMounted, onBeforeUnmount, onUnmounted, onRenderTracked, ref } from "vue";
 import md5 from "js-md5";
@@ -97,28 +97,51 @@ function getUUID() {
     var crc = bin2hex(bin.slice(-16, -12));
     return crc;
 }
-
-/* 获取用户背景图片 */
-let bgimg = ref();
-let bgSwitch = ref(0);
-let settingObj = ref({});
-async function getUserBgImg() {
+/* 初始化主题 */
+async function initTheme() {
+    await GetUserSettings();
+    await GetSysSettings();
+    compactSetting();
+    setBackgroundImage();
+    setFontColor();
+}
+/* 获取用户设置 */
+let userSettingObj = ref({});
+async function GetUserSettings() {
     let uid = ref(localStorage.getItem("uid"));
+    if (uid.value == null) return;
     await getUserSettings(uid.value).then((res) => {
         if (res.data.code != 1) return;
-        settingObj.value = res.data.data;
+        userSettingObj.value = res.data.data;
     });
+}
+/* 获取系统设置 */
+let sysSettingObj = ref({});
+async function GetSysSettings() {
+    await getSysSetting().then((res) => {
+        if (res.data.code != 1) return;
+        sysSettingObj.value = res.data.data;
+    });
+}
+function compactSetting() {
+    for (let key in sysSettingObj.value) {
+        if (userSettingObj.value[key] != null) {
+            sysSettingObj.value[key] = userSettingObj.value[key];
+        }
+    }
+}
+/* 设置字体颜色 */
+function setFontColor() {
+    document.documentElement.style.setProperty("--main-theme-font-color", sysSettingObj.value.fontColor);
 }
 /* 设置背景 */
 async function setBackgroundImage() {
     let bg = document.getElementById("index_bg");
     let localbgimg = localStorage.getItem("bgimg");
-    // 获取用户背景图片
-    await getUserBgImg();
     // 检查是否开启背景
-    if (settingObj.value.bgSwitch == 0) return;
+    if (sysSettingObj.value.bgSwitch == 0) return;
     // 检查是否设置背景图片
-    let onlineBg = settingObj.value.bgImgPath;
+    let onlineBg = sysSettingObj.value.bgImgPath;
     if (localbgimg == null && onlineBg != null) {
         localStorage.setItem("bgimg", onlineBg);
     }
@@ -132,8 +155,8 @@ async function setBackgroundImage() {
     }
     localbgimg = localbgimg.replace(/\\/g, "/");
     bg.style.backgroundImage = "url(" + localbgimg + ")";
-    bg.style.filter = "blur(" + settingObj.value.bgBlur + "px)";
-    bg.style.backdropFilter = "blur(" + settingObj.value.bgBlur + "px)";
+    bg.style.filter = "blur(" + sysSettingObj.value.bgBlur + "px)";
+    bg.style.backdropFilter = "blur(" + sysSettingObj.value.bgBlur + "px)";
 }
 
 onBeforeMount(() => {
@@ -147,6 +170,7 @@ onBeforeMount(() => {
     }
 });
 onMounted(async () => {
+    initTheme();
     /* 初次访问设置初始状态 */
     if (localStorage.getItem("username") == null) {
         console.log("用户未登录");
@@ -158,7 +182,7 @@ onMounted(async () => {
         /* 检查用户登录状态 */
         await checkStatus();
         await setUsernameAndAvatar();
-        setBackgroundImage();
+
         setInterval(async () => {
             // await checkStatus();
         }, 100000);
@@ -190,5 +214,25 @@ onMounted(async () => {
     backdrop-filter: var(--bg-blur); */
     background-size: cover;
     background-repeat: no-repeat;
+}
+</style>
+<style>
+/* body {
+    color: var(--main-theme-font-color);
+}
+div {
+    color: var(--main-theme-font-color);
+} */
+:root {
+    --bg-blur: blur(10px);
+    --main-background-color: #ffffff3b; /* 主背景颜色 */
+    --main-theme-color-blue: #84c6ff; /* 主题颜色-蓝 */
+    --main-theme-color-orange: #ff8e68; /* 主题颜色-橙 */
+    --main-theme-color-purple: #a28dd1; /* 主题颜色-紫 */
+    --main-theme-font-color: #242424; /* 主题颜色-紫 */
+    --hover-color-blue: #b9deff80; /* 鼠标悬浮颜色-蓝 */
+    --hover-color-orange: #ffded499; /* 鼠标悬浮颜色-橙 */
+    --hover-color-purple: #a38dd1da; /* 鼠标悬浮颜色-橙 */
+    --input-background-color: #f6f8fa80; /* 输入框背景颜色 */
 }
 </style>

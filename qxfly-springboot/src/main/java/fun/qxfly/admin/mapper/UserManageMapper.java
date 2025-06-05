@@ -78,13 +78,4 @@ public interface UserManageMapper {
      */
     @Update("update user_settings set bgImgPath = #{bgImgPath}, bgSwitch = #{bgSwitch}, bgBlur = #{bgBlur} where uid = #{uid}")
     boolean editUserSetting(UserSetting userSetting);
-
-    /**
-     * 删除用户背景
-     *
-     * @param uid uid
-     * @return boolean
-     */
-    @Update("update user_settings set bgImgPath = null where uid = #{uid}")
-    boolean deleteUserBackground(Integer uid);
 }

@@ -84,7 +84,7 @@ onUnmounted(() => {});
     overflow: hidden;
 }
 .item-col:hover {
-    background-color: #ffded4;
+    background-color: var(--hover-color-orange);
 }
 .site-status.success::before {
     content: "\e6bc";

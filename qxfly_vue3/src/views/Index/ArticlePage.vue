@@ -3,44 +3,15 @@
     <div class="article-main">
         <div class="header">
             <div class="article-main-label">{{ isClassify ? "" : "文章" }}</div>
-            <div class="article-sort-select">
-                <div class="article-sort" id="article-sort" @click="extendArticleSort">
-                    <div class="article-sort-label" v-text="sortLabel"></div>
-                    <div class="article-sort-item" value="new" @click="sort('new')">最新发布</div>
-                    <div class="article-sort-item" value="hot" @click="sort('hot')">浏览最多</div>
-                    <div class="article-sort-item" value="likes" @click="sort('likes')">点赞最多</div>
-                </div>
-            </div>
+            <MySelect :sortLabel="sortLabel">
+                <div value="new" @click="sort('new')">最新发布</div>
+                <div value="hot" @click="sort('hot')">浏览最多</div>
+                <div value="likes" @click="sort('likes')">点赞最多</div>
+            </MySelect>
         </div>
-
         <div class="articles">
             <div class="articles-item" v-for="(article, index) in articles" :key="index">
                 <ArticleCard :article="article" :index="index" :isload="isload"></ArticleCard>
-            </div>
-            <div class="articles-item" v-if="isload">
-                <a class="article-item-a">
-                    <div class="item-title" style="text-align: center">加 载 中...</div>
-                </a>
-            </div>
-            <div class="articles-item" v-if="isload">
-                <a class="article-item-a">
-                    <div class="item-title" style="text-align: center">加 载 中...</div>
-                </a>
-            </div>
-            <div class="articles-item" v-if="isload">
-                <a class="article-item-a">
-                    <div class="item-title" style="text-align: center">加 载 中...</div>
-                </a>
-            </div>
-            <div class="articles-item" v-if="isload">
-                <a class="article-item-a">
-                    <div class="item-title" style="text-align: center">加 载 中...</div>
-                </a>
-            </div>
-            <div class="articles-item" v-if="isload">
-                <a class="article-item-a">
-                    <div class="item-title" style="text-align: center">加 载 中...</div>
-                </a>
             </div>
         </div>
         <!-- 分页-->
@@ -58,6 +29,7 @@ import mymd5 from "@/utils/md5.js";
 import ArticleClassify from "@/views/Index/ArticleClassify.vue";
 import pagination from "@/components/Pagination";
 import ArticleCard from "@/components/ArticleCard.vue";
+import MySelect from "@/components/MySelect.vue";
 let indexPath = process.env.VUE_APP_INDEX_PATH;
 let useRouter = useRoute();
 let isload = ref(true);
@@ -85,7 +57,7 @@ async function ListArticles() {
             let resData = res.data.data;
             if (resData.list != "") {
                 articles.value = res.data.data.list;
-                Backtop();
+                // Backtop();
             } else {
                 articles.value = [
                     {
@@ -188,6 +160,7 @@ function extendArticleSort() {
         isExtendSort.value = !isExtendSort.value;
     }
 }
+/* 关闭排序列表 */
 function closeSort() {
     let ele = document.getElementById("article-sort");
     if (ele != null) {
@@ -291,39 +264,6 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
 }
-.article-sort-select {
-    position: relative;
-    min-width: 90px;
-    text-align: center;
-}
-.article-sort {
-    position: absolute;
-    height: 26px;
-    width: 100%;
-    overflow: hidden;
-    border-radius: 4px;
-    border: 1px solid #000;
-    background-color: rgba(255, 255, 255, 0.5);
-    z-index: 9;
-    transition: all 0.2s ease;
-}
-// .article-sort:hover {
-//     height: 99px;
-// }
-.article-sort-item {
-    font-size: 15px;
-    padding: 2px 4px;
-    cursor: pointer;
-}
-.article-sort-label {
-    font-size: 15px;
-    padding: 2px 4px;
-    border-bottom: 1px solid #000;
-    cursor: pointer;
-}
-.article-sort-item:hover {
-    background-color: #84c6ff;
-}
 .article-main-label {
     font-weight: 700;
     font-size: 26px;
@@ -334,6 +274,7 @@ onMounted(() => {
     white-space: nowrap;
     overflow: hidden;
 }
+
 .article-main {
     transition: all 0.3s ease;
 }
@@ -343,7 +284,7 @@ onMounted(() => {
     padding: 0;
     overflow: hidden;
     border-radius: 8px 4px 4px 8px;
-    background-color: #ffffff50;
+    background-color: var(--main-background-color);
     box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.08);
     transition: all ease 0.2s;
 }

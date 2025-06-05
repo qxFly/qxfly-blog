@@ -71,7 +71,7 @@
                             btnType="detail-message"
                             @load="authorCardLoadFun" />
                     </div>
-                    <div class="attachments" v-if="showAttachmens(0)">
+                    <CardView v-if="showAttachmens(0)">
                         <h3>附件</h3>
                         <div v-if="showAttachmens(1)">
                             <div
@@ -102,7 +102,8 @@
                             </div>
                         </div>
                         <div v-if="!showAttachmens(1)"><a href="/login" style="color: red">登录</a> 后查看附件</div>
-                    </div>
+                    </CardView>
+
                     <div
                         class="sider-edit-Btns"
                         v-if="route.params.editMode == mydm5.generateMD5('true' + route.params.salt)">
@@ -141,6 +142,8 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import md5 from "js-md5";
 import { preview } from "v-preview-image";
 import request from "@/utils/request";
+import * as TopBarUtils from "@/utils/TopBarUtils";
+import CardView from "@/components/CardView.vue";
 hljs.registerLanguage("c", require("highlight.js/lib/languages/c"));
 hljs.registerLanguage("cpp", require("highlight.js/lib/languages/cpp"));
 hljs.registerLanguage("java", require("highlight.js/lib/languages/java"));
@@ -172,29 +175,22 @@ let isCollection = ref(false);
 async function getArticleDetail() {
     loadBlur();
     await getArticleById(route.params.id).then((res) => {
-        if (res.data.code != 1) return;
         loadBlur();
+        if (res.data.code != 1) return;
         article.value = res.data.data;
-        if (article.value.updateTime != null) {
+        if (article.value.updateTime != null)
             article.value.updateTime = new Date(article.value.updateTime).toLocaleString();
-        }
-        if (article.value.createTime != null) {
+        if (article.value.createTime != null)
             article.value.createTime = new Date(article.value.createTime).toLocaleString();
-        }
         if (article.value.tag != null && article.value.tag != "") {
             let temp = article.value.tag.split(",");
-            for (let i = 0; i < temp.length; i++) {
-                tags.value.push({ name: temp[i] });
-            }
+            for (let i = 0; i < temp.length; i++) tags.value.push({ name: temp[i] });
         }
         article.value.cover = article.value.cover.replace(/\\/g, "/");
         isLike.value = article.value.isLike;
         isCollection.value = article.value.isCollection;
         let content = document.getElementById("content");
-        if (content != null) {
-            content.innerHTML = article.value.content;
-        }
-        /* 处理链接域名，防止更换域名后图片无法访问 */
+        if (content != null) content.innerHTML = article.value.content;
         let imgEles = content.getElementsByTagName("img");
         for (let i = 0; i < imgEles.length; i++) {
             let imgsrc = imgEles[i].getAttribute("src");
@@ -479,14 +475,14 @@ function showConten() {
         Main.style.display = "block";
         load.style.opacity = 0;
         load.style.height = "200px";
+        TopBarUtils.changeTopBar(0);
         timers.push(
             setTimeout(() => {
                 title.style.opacity = 1;
                 title.style.top = "0";
                 header.style.opacity = 1;
                 header.style.height = "370px";
-                // let t = document.getElementById("top-bar-1");
-                // t.style.top = "0px";
+
                 // header.style.marginTop = "50px";
             }, 100)
         );
@@ -855,22 +851,22 @@ onUnmounted(() => {
     align-items: center;
 }
 .tag {
-    border: 1px solid #49b1f5;
+    border: 1px solid var(--main-theme-color-blue);
     width: max-content;
     border-radius: 6px;
     padding: 6px 12px;
     cursor: pointer;
     margin: 4px 8px 0 0;
-    color: #49b1f5;
+    color: var(--main-theme-color-blue);
     font-weight: 700;
     transition: all 0.2s ease;
 }
 .tag:hover {
     color: #fff;
-    background-color: #49b1f5;
+    background-color: var(--main-theme-color-blue);
 }
 .line {
-    border-bottom: 4px dashed #90ccff;
+    border-bottom: 4px dashed var(--main-theme-color-blue);
     margin: 30px 0;
 }
 .article-update-time {
@@ -900,29 +896,16 @@ onUnmounted(() => {
 .input-attachment-list-item-name::-webkit-scrollbar {
     display: none;
 }
-.attachments {
-    border-radius: 4px;
-    padding: 10px;
-    margin-bottom: 20px;
-    background-color: rgb(255, 255, 255);
-    box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.08);
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-.attachments:hover {
-    box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.14);
-}
 .attachment {
     // display: flex;
     border-radius: 2px;
-    border: 1px solid #84c6ff;
+    border: 1px solid var(--main-theme-color-blue);
     margin: 2px 0;
     transition: all 0.3s ease;
     cursor: pointer;
 }
 .attachment:hover {
-    background-color: #dceeff;
+    background-color: var(--hover-color-blue);
 }
 .input-attachment-list-item-content {
     display: flex;
@@ -945,7 +928,7 @@ onUnmounted(() => {
     display: none;
     height: 3px;
     width: 0%;
-    background-color: #ff8e68;
+    background-color: var(--main-theme-color-orange);
     transition: all 0.3s ease;
     // margin-top: 4px;
 }
@@ -953,7 +936,7 @@ onUnmounted(() => {
     display: none;
     width: max-content;
     min-width: 50px;
-    background-color: #ff8e68;
+    background-color: var(--main-theme-color-orange);
     text-align: center;
     font-weight: 700;
     border-radius: 4px 0 0 4px;
@@ -968,7 +951,7 @@ onUnmounted(() => {
     display: none;
     width: max-content;
     min-width: 36px;
-    background-color: #ff8e68;
+    background-color: var(--main-theme-color-orange);
     text-align: center;
     font-weight: 700;
     border-radius: 4px 0 0 4px;
@@ -988,10 +971,11 @@ onUnmounted(() => {
     border-radius: 4px;
     padding: 6px;
     color: #fff;
-    background-color: #a28dd1;
+    background-color: var(--main-theme-color-purple);
+    cursor: pointer;
 }
 .sider-edit-Btn:hover {
-    background-color: #846cb6;
+    background-color: var(--hover-color-purple);
 }
 .article-actions {
     display: flex;
@@ -1012,14 +996,14 @@ onUnmounted(() => {
     content: "\e63c";
     font-family: "iconfont";
     margin-right: 4px;
-    color: #6cbaff;
+    color: var(--main-theme-color-blue);
     font-size: 20px;
 }
 .article-actions-item.collection::before {
     content: "\e625";
     font-family: "iconfont";
     margin-right: 4px;
-    color: #6cbaff;
+    color: var(--main-theme-color-blue);
     font-size: 20px;
 }
 .article-actions-item.likes.clicked::before {
@@ -1058,7 +1042,7 @@ p {
 }
 blockquote {
     background-color: #ebebeb;
-    border-left: 10px solid #84c6ff;
+    border-left: 10px solid var(--main-theme-color-blue);
     padding: 10px;
     margin: 10px 0;
 }

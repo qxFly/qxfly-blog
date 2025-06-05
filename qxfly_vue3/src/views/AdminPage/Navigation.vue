@@ -72,7 +72,11 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column prop="parent" label="父导航" width="80" align="center" />
+                    <el-table-column prop="parent" label="父导航" width="80" align="center">
+                        <template #default="scope">
+                            {{ getNavParent(scope.row.parent) }}
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="index" label="索引顺序" width="100" align="center" />
                     <el-table-column prop="" label="操作" width="200" align="center">
                         <template #default="scope">
@@ -135,6 +139,16 @@
                     <div class="label">类名</div>
                 </template>
             </el-input>
+        </div>
+        <div class="update-dialog-item">
+            <el-input style="width: 100px">
+                <template #prepend>
+                    <div class="label"><span style="color: rgb(255, 121, 121)">* </span>父导航</div>
+                </template>
+            </el-input>
+            <el-select class="search-item" v-model="addNavObj.parent" style="width: 160px" placeholder="父导航">
+                <el-option v-for="nav in navigations" :value="nav.id" :label="nav.name">{{ nav.name }}</el-option>
+            </el-select>
         </div>
         <div class="update-dialog-item">
             <el-input clearable type="number" v-model="addNavObj.index">
@@ -223,6 +237,21 @@
                         <div class="label">CSS类名</div>
                     </template>
                 </el-input>
+            </div>
+            <div class="update-dialog-item">
+                <el-input style="width: 100px">
+                    <template #prepend>
+                        <div class="label"><span style="color: rgb(255, 121, 121)">* </span>父导航</div>
+                    </template>
+                </el-input>
+                <el-select
+                    class="search-item"
+                    v-model="updateNav.parent"
+                    style="width: 160px"
+                    :placeholder="updateNav.parent">
+                    <el-option value="" label="无">无</el-option>
+                    <el-option v-for="nav in navigations" :value="nav.id" :label="nav.name">{{ nav.name }}</el-option>
+                </el-select>
             </div>
             <div class="update-dialog-item">
                 <el-input clearable type="number" v-model="updateNav.index">
@@ -328,6 +357,8 @@ function search() {
             loading.value = false;
             navigations.value = res.data.data.list;
             total.value = res.data.data.total;
+            navigations.value.lastIndex;
+            addNavObj.value.index = navigations.value[navigations.value.length - 1].index + 1;
         } else {
             ElMessage.error("获取数据失败");
             loading.value = false;
@@ -366,6 +397,7 @@ let addNavObj = ref({
     cssClass: "",
     type: "admin",
     role: "1",
+    parent: "",
 });
 function AddNav() {
     if (addNavObj.value.name == "" || addNavObj.value.path.trim() == "" || addNavObj.value.role == null) {
@@ -425,6 +457,10 @@ function formatType(params) {
     if (params == "admin") return "管理员";
     else if (params == "userSpace") return "用户空间";
     else if (params == "index") return "首页";
+}
+/* 获取父导航名字 */
+function getNavParent(id) {
+    return navigations.value.filter((nav) => nav.id == id).map((nav) => nav.name)[0];
 }
 /* 换页操作 */
 let currentChange = (page) => {

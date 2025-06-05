@@ -61,14 +61,14 @@ onMounted(() => {
     bottom: 100px;
     border-radius: 4px 0 0 4px;
     border-right: none;
-    background-color: #84c6ff;
+    background-color: var(--main-theme-color-blue);
 }
 .nobacktop {
     display: none;
 }
 
 .backtop:hover {
-    background-color: #ff8e68;
+    background-color: var(--main-theme-color-orange);
     /* box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.3); */
     /* animation: launch infinite 0.5s step-start; */
     /* background-image: url(../assets/img/icon/backtop-a.png); */

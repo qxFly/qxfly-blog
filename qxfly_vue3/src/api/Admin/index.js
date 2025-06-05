@@ -96,17 +96,6 @@ export function editUserSetting(data) {
     });
 }
 /**
- * 删除用户背景图
- * @returns
- */
-export function deleteUserBackground(data) {
-    return request({
-        url: "/deleteUserBackground",
-        method: "post",
-        data: data,
-    });
-}
-/**
  * 审核文章
  * @returns
  */
@@ -327,5 +316,29 @@ export function deleteNavigation(data) {
         url: "/deleteNavigation",
         method: "post",
         data: data,
+    });
+}
+/**
+ * 更新系统设置
+ * @returns
+ */
+export function updateSysSetting(data) {
+    return request({
+        url: "/updateSysSetting",
+        method: "post",
+        data: data,
+    });
+}
+
+/**
+ * 上传背景图片
+ * @returns
+ */
+export function uploadBgImg(data) {
+    return request({
+        url: "/uploadBgImg",
+        method: "post",
+        data: data,
+        headers: { "Content-Type": "multipart/form-data" },
     });
 }

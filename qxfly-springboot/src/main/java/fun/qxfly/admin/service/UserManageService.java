@@ -56,12 +56,4 @@ public interface UserManageService {
      * @return
      */
     boolean editUserSetting(UserSetting userSetting);
-
-    /**
-     * 删除用户背景
-     *
-     * @param uid    用户id
-     * @param bgPath 背景路径
-     */
-    boolean deleteUserBackground(Integer uid, String bgPath);
 }

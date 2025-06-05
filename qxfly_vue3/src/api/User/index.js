@@ -206,3 +206,14 @@ export function uploadBgImg(file) {
         headers: { "Content-Type": "multipart/form-data" },
     });
 }
+/**
+ * 删除用户背景图
+ * @returns
+ */
+export function deleteUserBackground(data) {
+    return request({
+        url: "/user/setting/deleteUserBackground",
+        method: "post",
+        data: data,
+    });
+}

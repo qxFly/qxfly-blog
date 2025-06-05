@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/user/setting")
@@ -61,5 +63,20 @@ public class UserSettingController {
         Integer uid = Integer.valueOf(claims.get("uid").toString());
         String fileName = userSettingService.uploadBgImg(file,uid);
         return Result.success(fileName);
+    }
+    /**
+     * 删除用户背景
+     *
+     * @return
+     */
+    @Operation(description = "删除用户背景", summary = "删除用户背景")
+    @PostMapping("/deleteUserBackground")
+    public Result deleteUserBackground(@RequestBody Map<String, Object> map) {
+        boolean flag = userSettingService.deleteUserBackground((Integer) map.get("uid"), (String) map.get("bgPath"));
+        if (flag) {
+            return Result.success("修改成功", null);
+        } else {
+            return Result.error("修改失败");
+        }
     }
 }

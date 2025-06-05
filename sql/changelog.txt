@@ -1,0 +1,2 @@
+user_settings 新增 fontColor 字段，用于设置字体颜色
+新增 sys_settings 表，用于存放系统设置

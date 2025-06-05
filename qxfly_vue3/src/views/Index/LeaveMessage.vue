@@ -173,20 +173,23 @@ onUnmounted(() => {});
     outline: none;
     border: 2px solid #b6ddff;
 }
+.leave-message-input textarea:focus {
+    border: 2px solid var(--main-theme-color-blue);
+}
 .leave-message-input-btn {
     border-radius: 4px;
     font-size: 16px;
     padding: 4px 12px;
     transition: all 0.3s ease;
-    background-color: #84c6ff;
+    background-color: var(--main-theme-color-blue);
     border: none;
     color: #fff;
 }
 .leave-message-input-btn:hover {
-    background-color: #ff9977;
+    background-color: var(--main-theme-color-orange);
 }
 .leave-message-input textarea:focus {
-    outline: #84c6ff;
+    outline: var(--main-theme-color-blue);
 }
 .leave-message-list {
 }
@@ -215,7 +218,7 @@ onUnmounted(() => {});
     padding: 4px 0;
     font-size: 14px;
     font-weight: bold;
-    color: #6cbaff;
+    color: var(--main-theme-color-blue);
 }
 .leave-message-right-content-header-right-username {
 }

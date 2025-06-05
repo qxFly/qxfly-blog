@@ -15,6 +15,9 @@
             <if test="bgBlur != null">
                 bgBlur = #{bgBlur},
             </if>
+            <if test="fontColor != null">
+                fontColor = #{fontColor},
+            </if>
         </set>
         where uid = #{uid}
     </update>

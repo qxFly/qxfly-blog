@@ -72,12 +72,12 @@ onMounted(() => {
     align-items: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    border: 1px solid #90ccff;
+    border: 1px solid var(--main-theme-color-blue);
     border-radius: 0 4px 4px 0;
-    background-color: #ffffff50;
+    background-color: var(--main-background-color);
 }
 .item-col:hover {
-    background-color: rgba(185, 222, 255, 0.5);
+    background-color: var(--hover-color-blue);
 }
 .span-number {
     width: 24px;

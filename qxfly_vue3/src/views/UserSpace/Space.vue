@@ -2,7 +2,7 @@
     <div class="space-bg theme-bg" id="space-bg"></div>
     <div class="user-space-main">
         <div class="user-space-left-sider">
-            <div class="user-space-nav user-space-sider">
+            <CardView class="user-space-navs user-space-sider">
                 <div class="nav-item" v-for="item in showNavigations" :key="item">
                     <router-link
                         :to="item.path"
@@ -18,17 +18,16 @@
                         </div>
                     </router-link>
                 </div>
-            </div>
+            </CardView>
         </div>
-
-        <div class="router-view">
+        <CardView class="router-view">
             <router-view v-slot="{ Component }">
                 <keep-alive>
                     <component :is="Component" :key="$route.path" v-if="$route.meta.keepAlive" />
                 </keep-alive>
                 <component :is="Component" :key="$route.path" v-if="!$route.meta.keepAlive" />
             </router-view>
-        </div>
+        </CardView>
         <div class="user-space-right-sider">
             <ArticleAuthorInfoCard class="UserInfoCard user-space-sider" :authorId="uid" btnType="index-message" />
         </div>
@@ -157,7 +156,7 @@ onUnmounted(() => {
     display: flex;
     justify-content: center;
     position: relative;
-    top: 90px;
+    top: 100px;
     width: 100%;
 }
 .router-view {
@@ -178,7 +177,7 @@ onUnmounted(() => {
     padding-left: 60px;
     transition: all 0.3s ease;
 }
-.user-space-nav {
+.user-space-navs {
     width: 200px;
     height: 500px;
     border-radius: 8px;
@@ -188,8 +187,10 @@ onUnmounted(() => {
     overflow: hidden;
     position: sticky;
     top: 70px;
+    background-image: linear-gradient(to right, #f5f7fa00 30%, var(--main-background-color) 100%);
+    background-color: #f5f7fa00;
 }
-.user-space-nav:hover {
+.user-space-navs:hover {
     box-shadow: 6px 0px 6px rgba(7, 17, 27, 0.14);
 }
 .nav-item {
@@ -227,12 +228,12 @@ onUnmounted(() => {
 }
 .nav-item-span {
     font-size: 16px;
-    color: #000;
+    // color: #000;
     user-select: none;
 }
 .navItemTip {
     border-radius: 50%;
-    background-color: #ff8e68;
+    background-color: var(--main-theme-color-orange);
     width: 8px;
     height: 8px;
     // font-size: 12px;
@@ -244,7 +245,7 @@ onUnmounted(() => {
         width: 200px;
         padding-left: 20px;
     }
-    .user-space-nav {
+    .user-space-navs {
         width: 180px;
         padding: 10px;
     }
@@ -266,7 +267,7 @@ onUnmounted(() => {
         width: 100%;
         padding-left: 0;
     }
-    .user-space-nav {
+    .user-space-navs {
         height: auto;
         width: 100%;
     }

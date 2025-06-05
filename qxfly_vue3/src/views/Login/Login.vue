@@ -101,12 +101,7 @@ async function login() {
             encodePassword.value = encrypt(password.value, publicKey.value);
         }
     });
-    const res = await Login({
-        username: username.value,
-        password: encodePassword.value,
-        salt: publicKey.value,
-    });
-    /* 返回状态码，1 为登录成功， 0 为登录失败*/
+    const res = await Login({ username: username.value, password: encodePassword.value, salt: publicKey.value });
     if (res.data.code == "1") {
         isError.value = 0;
         let resBody = res.data.data;
@@ -115,11 +110,8 @@ async function login() {
         localStorage.setItem("username", resBody.username);
         localStorage.setItem("uid", resBody.uid);
         localStorage.setItem(md5("islogin"), md5("true"));
-        if (remember.value) {
-            localStorage.setItem("autologin", true);
-        } else {
-            sessionStorage.setItem("autologin", remember.value);
-        }
+        if (remember.value) localStorage.setItem("autologin", true);
+        else sessionStorage.setItem("autologin", remember.value);
         location.replace("/");
     } else {
         loginText.value = "登录";

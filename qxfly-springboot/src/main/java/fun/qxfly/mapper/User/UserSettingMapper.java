@@ -27,4 +27,13 @@ public interface UserSettingMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     @Insert("insert into user_settings(uid) values(#{uid})")
     boolean initUserSettings(UserSetting userSetting);
+
+    /**
+     * 删除用户背景
+     *
+     * @param uid uid
+     * @return boolean
+     */
+    @Update("update user_settings set bgImgPath = null where uid = #{uid}")
+    boolean deleteUserBackground(Integer uid);
 }

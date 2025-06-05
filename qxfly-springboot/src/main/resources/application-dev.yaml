@@ -24,4 +24,5 @@ qxfly:
       articleCover: http://localhost:8081/articleCover/
       articleImage: http://localhost:8081/articleImage/
       articleAttachment: http://localhost:8081/articleAttachment/
+      systemBgImg: http://localhost:8081/systemBgImg/
 

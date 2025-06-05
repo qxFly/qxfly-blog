@@ -47,6 +47,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column prop="bgBlur" min-width="300" label="背景模糊" align="center" />
+                    <el-table-column prop="fontColor" min-width="300" label="字体颜色" align="center" />
                     <el-table-column prop="" label="操作" align="center">
                         <template #default="scope">
                             <el-button type="primary" size="small" plain @click="toEditUser(scope.row)">
@@ -115,6 +116,15 @@
                         </el-input>
                     </div>
                 </div>
+                <div class="user-info-item">
+                    <div class="edit-bgBlur">
+                        <el-input clearable v-model="editUS.fontColor">
+                            <template #prepend>
+                                <div class="label">字体颜色（暂停使用）</div>
+                            </template>
+                        </el-input>
+                    </div>
+                </div>
             </div>
             <div class="col">
                 <div class="user-info-item">
@@ -173,12 +183,12 @@
     </el-dialog>
 </template>
 <script setup>
-import { listUserSetting, editUserSetting, deleteUserBackground } from "@/api/Admin";
+import { listUserSetting, editUserSetting } from "@/api/Admin";
 import { ref, onMounted, watch } from "vue";
 import router from "@/router";
 import { useRoute } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { check } from "@/api/Admin";
+import { deleteUserBackground } from "@/api/User";
 let useRouter = useRoute();
 let loading = ref(true);
 /* 分页查询 */

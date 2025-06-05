@@ -1,37 +1,56 @@
 <template>
     <div class="classify-main">
-        <div class="label">分类：</div>
-        <div class="classify">
-            <div
-                class="item classify-item"
-                :class="{ classifyActive: isActive(c, 0) }"
-                v-for="c in Classifys"
-                :key="c.id"
-                @click="clickItem(c.name, 0)">
-                {{ c.name }}
+        <div class="part classify-part">
+            <div class="header">
+                <div class="label">
+                    <span> 分类：</span>
+                </div>
+                <div class="tag-search">
+                    <MyInput :clear="true" v-model="classifySearch"></MyInput>
+                </div>
+            </div>
+            <div class="classify">
+                <div
+                    class="item classify-item"
+                    :class="{ classifyActive: isActive(c, 0) }"
+                    v-for="c in Classifys"
+                    :key="c.id"
+                    @click="clickItem(c.name, 0)">
+                    {{ c.name }}
+                </div>
             </div>
         </div>
-        <div class="label">标签：</div>
-        <div class="tags">
-            <div
-                class="item tags-item"
-                :class="{ tagActive: isActive(t, 1) }"
-                v-for="t in Tags"
-                :key="t.id"
-                @click="clickItem(t.name, 1)">
-                {{ t.name }}
+
+        <div class="part tags-part">
+            <div class="header">
+                <div class="label">
+                    <span> 标签：</span>
+                </div>
+                <div class="tag-search">
+                    <MyInput :clear="true" v-model="tagSearch"></MyInput>
+                </div>
+            </div>
+
+            <div class="tags">
+                <div
+                    class="item tags-item"
+                    :class="{ tagActive: isActive(t, 1) }"
+                    v-for="t in Tags"
+                    :key="t.id"
+                    @click="clickItem(t.name, 1)">
+                    {{ t.name }}
+                </div>
             </div>
         </div>
-        <hr />
-        <div style="text-align: center; font-size: 14px">共 {{ total }} 篇文章</div>
+        <div style="text-align: center; font-size: 14px; margin-top: 5px; font-weight: 700">共 {{ total }} 篇文章</div>
     </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { getClassifies, getTags } from "@/api/Article/index";
-
+import MyInput from "@/components/MyInput.vue";
 let useRouter = useRoute();
 const props = defineProps({
     /* 总记录数 */
@@ -42,9 +61,9 @@ const props = defineProps({
 });
 let emit = defineEmits(["classify", "tag"]);
 /* 获取分类 */
+let allClassifys = ref([]);
 let Classifys = ref([]);
 function GetClassifies() {
-    let allClassifys = ref([]);
     getClassifies().then((res) => {
         allClassifys.value = res.data.data;
         allClassifys.value = allClassifys.value.sort((a, b) => {
@@ -67,11 +86,17 @@ function sleepC(data) {
             sleepC(data);
         }, 20);
 }
+/* 搜索分类 */
+let classifySearch = ref("");
+watch(classifySearch, (oldVal, newVal) => {
+    Classifys.value = allClassifys.value.filter((i) =>
+        i.name.toLowerCase().includes(classifySearch.value.toLowerCase())
+    );
+});
 /* 标签 */
+let allTags = ref([]);
 let Tags = ref([]);
-
 function GetTags() {
-    let allTags = ref([]);
     getTags().then((res) => {
         allTags.value = res.data.data;
         allTags.value = allTags.value.sort((a, b) => {
@@ -83,6 +108,7 @@ function GetTags() {
             }
             return 0;
         });
+
         sleepT(allTags.value);
     });
 }
@@ -95,8 +121,18 @@ function sleepT(data) {
             sleepT(data);
         }, t);
 }
+/* 搜索标签 */
+let tagSearch = ref("");
+watch(tagSearch, (oldVal, newVal) => {
+    Tags.value = allTags.value.filter((i) => i.name.toLowerCase().includes(tagSearch.value.toLowerCase()));
+});
 let ActiveClassify = ref("");
 let ActiveTag = ref([]);
+/**
+ *
+ * @param item 名称
+ * @param type 0:分类；1：标签
+ */
 function clickItem(item, type) {
     if (type == 0) {
         if (ActiveClassify.value != item) {
@@ -143,7 +179,7 @@ onMounted(() => {
 <style scoped lang="less">
 .classify-main {
     border-radius: 4px;
-    background-color: transparent;
+    background-color: var(--main-background-color);
     box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.08);
     transition: all 0.3s ease;
     padding: 6px;
@@ -151,6 +187,31 @@ onMounted(() => {
 }
 .classify-main:hover {
     box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.14);
+}
+.part {
+    margin-bottom: 6px;
+    border-bottom: 2px dashed #888888;
+}
+.header {
+    display: flex;
+    // justify-content: center;
+    align-items: center;
+    margin-bottom: 6px;
+}
+.label {
+    font-size: large;
+    font-weight: 700;
+}
+.classify,
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+    min-height: 35px;
+    max-height: 105px;
+    overflow: auto;
+}
+.tags {
 }
 .label {
     font-size: large;
@@ -176,7 +237,7 @@ onMounted(() => {
     margin: 4px 6px;
     cursor: pointer;
     border-radius: 4px;
-    border: 1px solid #b9deff;
+    border: 1px solid var(--main-theme-color-blue);
     padding: 2px 6px;
     height: 27px;
     transition: all 0.2s ease;
@@ -184,20 +245,26 @@ onMounted(() => {
     text-overflow: ellipsis;
     text-align: center;
     white-space: nowrap;
-}
-.classifyActive {
-    background-color: #ffded4;
+    background-color: var(--main-background-color);
+    font-weight: 700;
 }
 .tagActive {
-    background-color: #b9deff;
-}
-.item.classify-item {
-    border: 1px solid #ffded4;
-}
-.item.classify-item:hover {
-    background-color: #ffded4;
+    color: #fff;
+    background-color: var(--main-theme-color-blue);
 }
 .item.tags-item:hover {
-    background-color: #b9deff;
+    color: #000;
+    background-color: var(--hover-color-blue);
+}
+.classifyActive {
+    color: #fff;
+    background-color: var(--main-theme-color-orange);
+}
+.item.classify-item {
+    border: 1px solid var(--main-theme-color-orange);
+}
+.item.classify-item:hover {
+    color: #000;
+    background-color: var(--hover-color-orange);
 }
 </style>

@@ -12,7 +12,7 @@ public interface NavigationManageMapper {
     /**
      * 列出管理员导航栏
      */
-      List<Navigation> listAdminNavigations(Integer rid);
+    List<Navigation> listAdminNavigations(Integer rid);
 
     /**
      * 分页列出导航栏
@@ -36,7 +36,7 @@ public interface NavigationManageMapper {
      * @param navigation
      * @return
      */
-    @Update("update navigation set name=#{name}, icon=#{icon}, path=#{path}, css_class=#{cssClass}, role=#{role}, type=#{type}, `index`= #{index} where id=#{id}")
+    @Update("update navigation set name=#{name}, icon=#{icon}, path=#{path}, parent = #{parent}, css_class=#{cssClass}, role=#{role}, type=#{type}, `index`= #{index} where id=#{id}")
     boolean updateNavigation(Navigation navigation);
 
     /**
