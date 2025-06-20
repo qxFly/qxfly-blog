@@ -1,0 +1,7 @@
+25.6.20
+新增english_vocabulary表，用于存放英语单词
+管理员后台新增英语单词管理
+25.6.5
+优化前端逻辑，和用户设置相关内容
+user_settings 新增 fontColor 字段，用于设置字体颜色
+新增 sys_settings 表，用于存放系统设置

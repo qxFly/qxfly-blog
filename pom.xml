@@ -20,11 +20,11 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>3.1.5</spring-boot.version>
         <!-- 项目模块版本 -->
-        <revision>1.0.4</revision><!--父模块-->
-        <qxfly.springboot.version>1.0.4</qxfly.springboot.version>
-        <qxfly.framework.version>1.0.4</qxfly.framework.version>
-        <qxfly.common.version>1.0.4</qxfly.common.version>
-        <qxfly.quartz.version>1.0.4</qxfly.quartz.version>
+        <revision>1.0.5</revision><!--父模块-->
+        <qxfly.springboot.version>1.0.5</qxfly.springboot.version>
+        <qxfly.framework.version>1.0.5</qxfly.framework.version>
+        <qxfly.common.version>1.0.5</qxfly.common.version>
+        <qxfly.quartz.version>1.0.5</qxfly.quartz.version>
     </properties>
     <dependencyManagement>
         <dependencies>

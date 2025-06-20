@@ -1,12 +1,8 @@
 <template>
-    <!-- <TopBar></TopBar> -->
     <div class="Toolbar" id="Toolbar">
         <Toolbar style="border-bottom: 1px solid #ccc" :editor="editorRef" :defaultConfig="toolbarConfig" mode="mode" />
     </div>
     <div class="topbar"></div>
-    <!-- <div id="load" class="load" v-if="isload">
-    <div class="load-content">努力加载中...</div>
-  </div> -->
     <div class="add-article-main" id="add-article-main">
         <div class="main">
             <div class="content">
@@ -41,7 +37,11 @@
                             <div class="sider-item-label">标签</div>
                             <div class="sider-item-tags">
                                 <div class="select-Tags">
-                                    <div class="tag selected" v-for="item in tags" :key="item" @click="rmTag(item)">
+                                    <div
+                                        class="tag selected"
+                                        v-for="item in selectedTags"
+                                        :key="item"
+                                        @click="rmTag(item)">
                                         {{ item }}
                                         <span @click="rmTag(item)" class="rmTag"></span>
                                     </div>
@@ -51,7 +51,11 @@
                                     <MyInput :clear="true" v-model="tagSearch"></MyInput>
                                 </div>
                                 <div class="select-Tags scorll">
-                                    <div class="tag" v-for="item in allTags" :key="item" @click="addTag(item.name)">
+                                    <div
+                                        class="tag"
+                                        v-for="item in showNoSelectedTags"
+                                        :key="item"
+                                        @click="addTag(item.name)">
                                         {{ item.name }}
                                     </div>
                                 </div>
@@ -206,7 +210,6 @@
 </template>
 
 <script setup>
-import TopBar from "@/components/TopBar/TopBar.vue";
 import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 import { onBeforeUnmount, ref, shallowRef, onMounted, onUnmounted, reactive, watch } from "vue";
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
@@ -284,8 +287,8 @@ async function release() {
                 delimg();
                 /* 格式化标签 */
                 let temptag = [];
-                for (let i = 0; i < tags.value.length; i++) {
-                    temptag.push(tags.value[i]);
+                for (let i = 0; i < selectedTags.value.length; i++) {
+                    temptag.push(selectedTags.value[i]);
                 }
                 article.value.tag = temptag.toString();
                 /* 是否公开 */
@@ -358,8 +361,8 @@ async function EditArticle() {
     }
     delimg();
     let temptag = [];
-    for (let i = 0; i < tags.value.length; i++) {
-        temptag.push(tags.value[i]);
+    for (let i = 0; i < selectedTags.value.length; i++) {
+        temptag.push(selectedTags.value[i]);
     }
     article.value.tag = temptag.toString();
     /* 是否公开 */
@@ -393,7 +396,7 @@ function toEditArticle(articleId) {
         if (article.value.tag != null && article.value.tag != "") {
             let temp = article.value.tag.split(",");
             for (let i = 0; i < temp.length; i++) {
-                tags.value.push(temp[i]);
+                selectedTags.value.push(temp[i]);
             }
         }
         let temp = editorRef.value.getElemsByType("image");
@@ -427,8 +430,8 @@ function SaveArticle() {
         }
         /* 保存标签 */
         let temptag = [];
-        for (let i = 0; i < tags.value.length; i++) {
-            temptag.push(tags.value[i]);
+        for (let i = 0; i < selectedTags.value.length; i++) {
+            temptag.push(selectedTags.value[i]);
         }
         if (temptag.length > 0) {
             localStorage.setItem("articleTags", temptag.toString());
@@ -469,7 +472,7 @@ function loadSaveArticle() {
                 editorRef.value.setHtml(a.content);
                 article.value.title = a.title;
                 article.value.classify = a.calssify;
-                tags.value = a.Tags.split(",");
+                selectedTags.value = a.Tags.split(",");
                 localStorage.removeItem("articleContent");
                 localStorage.removeItem("articleTitle");
                 localStorage.removeItem("articleCalssify");
@@ -486,55 +489,46 @@ function GetClassifies() {
     });
 }
 /* 标签 */
-let allTags = ref([]);
-let tags = ref([]);
+let allTags = ref([]); //所有标签
+let noSelectedTags = ref([]); // 不进行显示的未选择的标签
+let showNoSelectedTags = ref([]); // 进行显示的未选择的标签
+let selectedTags = ref([]);
 /* 获取标签 */
 function GetTags() {
     getTags().then((res) => {
         allTags.value = res.data.data;
         /* 进行排序 */
-        allTags.value = allTags.value.sort((a, b) => {
-            if (a.name < b.name) {
-                return -1;
-            }
-            if (a.name > b.name) {
-                return 1;
-            }
-            return 0;
-        });
+        showNoSelectedTags.value = noSelectedTags.value = allTags.value;
     });
 }
 /* 添加标签 */
 function addTag(tag) {
-    if (tag == "") return;
-    if (tags != null && tags.value.indexOf(tag) != -1) {
-        tag = "";
+    if (selectedTags != null && selectedTags.value.indexOf(tag) != -1) {
+        return;
     } else {
-        tags.value.push(tag);
-        allTags.value = allTags.value.filter((item) => item.name != tag);
-        tag = "";
+        selectedTags.value.push(tag);
+        noSelectedTags.value = noSelectedTags.value.filter((item) => item.name != tag);
+        searchTag();
     }
 }
-/* 删除标签 */
+/* 移除已经添加的标签 */
 function rmTag(tag) {
-    tags.value = tags.value.filter((item) => item != tag);
-    allTags.value.push({ name: tag });
-    /* 进行排序 */
-    allTags.value = allTags.value.sort((a, b) => {
-        if (a.name < b.name) {
-            return -1;
-        }
-        if (a.name > b.name) {
-            return 1;
-        }
-        return 0;
-    });
+    selectedTags.value = selectedTags.value.filter((item) => item != tag);
+    if (!noSelectedTags.value.includes(tag)) {
+        noSelectedTags.value.push({ name: tag });
+    }
+    searchTag();
 }
 /* 搜索标签 */
 let tagSearch = ref("");
 watch(tagSearch, (oldVal, newVal) => {
-    // tags.value = allTags.value.filter((i) => i.name.toLowerCase().includes(tagSearch.value.toLowerCase()));
+    searchTag();
 });
+function searchTag() {
+    showNoSelectedTags.value = noSelectedTags.value.filter((i) =>
+        i.name.toLowerCase().includes(tagSearch.value.toLowerCase())
+    );
+}
 /* 删除文章已经移除的图片 */
 function delimg() {
     /* 从服务端删除已在文章中移除的图片 */

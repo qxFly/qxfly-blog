@@ -110,6 +110,10 @@ let routes = [
                 path: "/manage/sysSettings",
                 component: () => import("@/views/AdminPage/SysSettings"),
             },
+            {
+                path: "/manage/englishVocabulary",
+                component: () => import("@/views/AdminPage/EnglishVocabulary"),
+            },
         ],
     },
     {

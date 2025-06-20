@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace等于mapper接口类的全限定名,这样实现对应 -->
+<mapper namespace="fun.qxfly.mapper.EnglishVocabularyMapper">
+    <insert id="addVocabularies">
+        insert into english_vocabulary(word, interpretation, phoneticSymbol, levelType) values
+        <foreach collection="list" item="item" separator=",">
+           (#{item.word}, #{item.interpretation}, #{item.phoneticSymbol}, #{levelType})
+        </foreach>
+    </insert>
+    <select id="getVocabularies" resultType="fun.qxfly.common.domain.entity.EnglishVocabulary">
+        select * from english_vocabulary
+        <where>
+            <if test="word != null and word != ''">
+                and word like concat('%', #{word}, '%')
+            </if>
+            <if test="interpretation != null and interpretation != ''">
+                and interpretation like concat('%', #{interpretation}, '%')
+            </if>
+            <if test="levelType != null and levelType != ''">
+                and levelType like concat('%', #{levelType}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>

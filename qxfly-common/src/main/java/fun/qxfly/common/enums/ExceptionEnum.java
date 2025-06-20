@@ -12,6 +12,7 @@ public enum ExceptionEnum {
     USER_LOGIN_EXPIRED(1201, "用户登录过期"),
 
     FILE_UPLOAD_ERROR(1301, "文件上传失败"),
+    FILE_READ_ERROR(1301, "文件读取失败"),
     ;
 
     private final int code;
