@@ -59,4 +59,7 @@ public interface EnglishVocabularyMapper {
      */
     @Select("select * from english_vocabulary")
     List<EnglishVocabulary> getAllVocabularies();
+
+    @Select("select * from english_vocabulary as t1 where t1.id>=(RAND()*(select MAX(id) from english_vocabulary)) limit #{count}")
+    List<EnglishVocabulary> getRandomEnglishVocabularies(Integer count);
 }

@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/englishVocabulary")
 @Slf4j
@@ -35,6 +37,19 @@ public class EnglishVocabularyController {
         log.info("查询英语单词:{}", englishVocabularyDTO);
         PageInfo<EnglishVocabulary> pageInfo = englishVocabularyService.getVocabularies(englishVocabularyDTO);
         return Result.success(pageInfo);
+    }
+
+    /**
+     * 获取随机英语词汇
+     *
+     * @param count 数量
+     * @return 英语单词列表
+     */
+    @GetMapping("/getRandomEnglishVocabularies")
+    @Operation(description = "获取随机英语词汇", summary = "获取随机英语词汇")
+    public Result getRandomEnglishVocabularies(Integer count) {
+        List<EnglishVocabulary> vocabularies = englishVocabularyService.getRandomEnglishVocabularies(count);
+        return Result.success(vocabularies);
     }
 
     /**

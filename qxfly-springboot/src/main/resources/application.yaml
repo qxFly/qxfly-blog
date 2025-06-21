@@ -63,6 +63,7 @@ qxfly:
         - /index/getSiteStatus  #获取站点状态
         - /systemBgImg/**   #系统背景图片
         - /sysSetting/getSysSettings #获取系统设置
+        - /englishVocabulary/getRandomEnglishVocabularies #获取随机英语词汇
         
 
 

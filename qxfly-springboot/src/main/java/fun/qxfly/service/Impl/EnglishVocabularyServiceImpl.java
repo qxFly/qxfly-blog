@@ -138,4 +138,16 @@ public class EnglishVocabularyServiceImpl implements EnglishVocabularyService {
         return englishVocabularyMapper.deleteEnglishVocabulary(id);
         // 调用英语单词Mapper的删除英语单词方法，并返回删除结果
     }
+
+    /**
+     * 随机获取英语单词
+     *
+     * @param count 获取数量
+     * @return 英语单词列表
+     */
+    @Override
+    public List<EnglishVocabulary> getRandomEnglishVocabularies(Integer count) {
+        List<EnglishVocabulary> vocabularies = englishVocabularyMapper.getRandomEnglishVocabularies(count);
+        return vocabularies;
+    }
 }

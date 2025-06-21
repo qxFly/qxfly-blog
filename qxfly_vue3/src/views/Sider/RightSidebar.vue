@@ -1,23 +1,19 @@
 <template>
     <div>
         <div class="right-Sidebar-main between-sider" id="right-Sidebar-main">
-            <Date class="Date item"></Date>
-            <!-- <Saying></Saying> -->
-            <ArticleAuthorInfoCard :authorId="uid" class="UserInfoCard item" :btnType="btnType"></ArticleAuthorInfoCard>
+            <EnglishVocabulary></EnglishVocabulary>
+            <ArticleAuthorInfoCard :authorId="uid" :btnType="btnType"></ArticleAuthorInfoCard>
             <MessageTips></MessageTips>
-            <!-- <SuggestAuthor class="SuggestAuthor item"></SuggestAuthor> -->
-            <!-- <Resource class="Resource item"></Resource> -->
-            <Site class="item"></Site>
+            <Site></Site>
         </div>
     </div>
 </template>
 
 <script setup>
-import Date from "@/views/Sider/Date.vue";
 import MessageTips from "@/views/Sider/MessageTips.vue";
 import Site from "@/views/Sider/Site.vue";
-import SuggestAuthor from "@/views/Sider/SuggestAuthor.vue";
 import ArticleAuthorInfoCard from "@/components/ArticleAuthorInfoCard.vue";
+import EnglishVocabulary from "@/views/Sider/EnglishVocabulary.vue";
 import { onMounted, onUnmounted, ref } from "vue";
 import md5 from "js-md5";
 let uid = ref(0);

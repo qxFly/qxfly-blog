@@ -68,3 +68,18 @@ export function deleteEnglishVocabulary(id) {
         },
     });
 }
+
+/**
+ * 删除单词
+ * @param {*} data
+ * @returns
+ */
+export function getRandomEnglishVocabularies(count) {
+    return request({
+        url: "/englishVocabulary/getRandomEnglishVocabularies",
+        method: "get",
+        params: {
+            count: count,
+        },
+    });
+}

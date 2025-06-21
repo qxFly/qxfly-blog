@@ -1,6 +1,7 @@
 <template>
     <div>
         <div class="left-Sidebar-main between-sider" id="left-Sidebar-main">
+            <Date></Date>
             <DailyHotArticle class="DailyHotArticle" />
             <HotArticle class="HotArticle" />
         </div>
@@ -10,6 +11,7 @@
 <script setup>
 import HotArticle from "@/views/Sider/HotArticle.vue";
 import DailyHotArticle from "@/views/Sider/DailyHotArticle.vue";
+import Date from "@/views/Sider/Date.vue";
 </script>
 
 <style scoped>

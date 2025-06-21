@@ -45,6 +45,7 @@ const passurl = [
     "/index/deleteLeaveMessage", //删除留言
     "/index/getSiteStatus", //获取站点状态
     "/sysSetting/getSysSettings", //获取系统设置
+    "/englishVocabulary/getRandomEnglishVocabularies", //获取随机英语词汇
 ];
 /* 请求拦截器 */
 service.interceptors.request.use(async (config) => {

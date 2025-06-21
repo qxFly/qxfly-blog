@@ -5,6 +5,8 @@ import fun.qxfly.common.domain.DTO.EnglishVocabularyDTO;
 import fun.qxfly.common.domain.entity.EnglishVocabulary;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface EnglishVocabularyService {
     /**
      * 查询英语单词
@@ -46,4 +48,12 @@ public interface EnglishVocabularyService {
      * @return 删除结果
      */
     boolean deleteEnglishVocabulary(Integer id);
+
+    /**
+     * 随机获取英语单词
+     *
+     * @param count 获取数量
+     * @return 英语单词列表
+     */
+    List<EnglishVocabulary> getRandomEnglishVocabularies(Integer count);
 }

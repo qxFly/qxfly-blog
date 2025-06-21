@@ -232,7 +232,7 @@ div {
     --main-theme-font-color: #242424; /* 主题颜色-紫 */
     --hover-color-blue: #b9deff80; /* 鼠标悬浮颜色-蓝 */
     --hover-color-orange: #ffded499; /* 鼠标悬浮颜色-橙 */
-    --hover-color-purple: #a38dd1da; /* 鼠标悬浮颜色-橙 */
+    --hover-color-purple: #a38dd1da; /* 鼠标悬浮颜色-紫 */
     --input-background-color: #f6f8fa80; /* 输入框背景颜色 */
 }
 </style>
