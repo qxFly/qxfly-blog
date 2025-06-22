@@ -24,8 +24,6 @@ import { onMounted, ref, watch } from "vue";
 import { listArticles } from "@/api/Article/index";
 import router from "@/router";
 import { useRoute } from "vue-router";
-import md5 from "js-md5";
-import mymd5 from "@/utils/md5.js";
 import ArticleClassify from "@/views/Index/ArticleClassify.vue";
 import pagination from "@/components/Pagination";
 import ArticleCard from "@/components/ArticleCard.vue";
@@ -41,8 +39,8 @@ let articles = ref([]);
 let searchData = ref("");
 let isClassify = ref(false);
 let totalArticleCount = ref(0);
-async function ListArticles() {
-    await listArticles(
+function ListArticles() {
+    listArticles(
         currPage.value,
         pageSize.value,
         searchData.value,
@@ -57,7 +55,6 @@ async function ListArticles() {
             let resData = res.data.data;
             if (resData.list != "") {
                 articles.value = res.data.data.list;
-                // Backtop();
             } else {
                 articles.value = [
                     {
@@ -66,7 +63,6 @@ async function ListArticles() {
                     },
                 ];
             }
-
             totalPages.value = resData.pages;
             totalArticleCount.value = resData.total;
             isload.value = false;
@@ -111,11 +107,6 @@ function Tags(value) {
         },
     });
 }
-/* 每次进入界面回到顶部 */
-function Backtop() {
-    let backTop = document.getElementById("backTop");
-    if (backTop != null) backTop.click();
-}
 /* 排序 */
 let sortValue = ref("new");
 let sortLabel = ref("最新发布");
@@ -144,29 +135,6 @@ function sort(value) {
             path: indexPath,
             query: params,
         });
-    }
-}
-/* 展开排序列表 */
-let isExtendSort = ref(false);
-function extendArticleSort() {
-    let ele = document.getElementById("article-sort");
-    ele.addEventListener("mouseleave", closeSort);
-    if (ele != null) {
-        if (isExtendSort.value) {
-            ele.style.height = "25px";
-        } else {
-            ele.style.height = "99px";
-        }
-        isExtendSort.value = !isExtendSort.value;
-    }
-}
-/* 关闭排序列表 */
-function closeSort() {
-    let ele = document.getElementById("article-sort");
-    if (ele != null) {
-        isExtendSort.value = false;
-        ele.style.height = "25px";
-        ele.removeEventListener("mouseleave", closeSort);
     }
 }
 /* 换页操作 */
@@ -200,7 +168,14 @@ function changePage(page = 0) {
 }
 /* 路由后恢复分页等数据 */
 let routePage = ref(useRouter);
-function setRoutePage() {
+function restoreRoutePage() {
+    searchData.value = useRouter.query.search;
+    if (useRouter.query.sort != null) {
+        if (useRouter.query.sort == "new") sortLabel.value = "最新发布";
+        if (useRouter.query.sort == "hot") sortLabel.value = "浏览最多";
+        if (useRouter.query.sort == "likes") sortLabel.value = "点赞最多";
+        sortValue.value = useRouter.query.sort;
+    }
     if (useRouter.query.page == null) {
         currPage.value = 1;
     } else {
@@ -225,7 +200,7 @@ watch(
     routePage.value,
     (newVal, oldVal) => {
         showClassify();
-        setRoutePage();
+        restoreRoutePage();
         ListArticles();
     },
     {
@@ -244,14 +219,7 @@ function showClassify() {
 }
 onMounted(() => {
     showClassify();
-    searchData.value = useRouter.query.search;
-    if (useRouter.query.sort != null) {
-        if (useRouter.query.sort == "new") sortLabel.value = "最新发布";
-        if (useRouter.query.sort == "hot") sortLabel.value = "浏览最多";
-        if (useRouter.query.sort == "likes") sortLabel.value = "点赞最多";
-        sortValue.value = useRouter.query.sort;
-    }
-    setRoutePage();
+    restoreRoutePage();
     ListArticles();
 });
 </script>

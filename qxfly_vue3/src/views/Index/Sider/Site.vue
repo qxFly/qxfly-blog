@@ -9,12 +9,9 @@
                 <div class="site-status" :class="GetSiteStatus(site)"></div>
             </div>
             <div v-if="sites.length == 0 && !loading" class="item-col">暂无站点</div>
-            <div v-if="loading" class="item-col">努力获取站点状态 {{ second }}</div>
+            <div v-if="loading" class="item-col">努力获取站点中 {{ second }}</div>
         </div>
     </CardView>
-    <!-- <div class="sider-hot-article">
-       
-    </div> -->
 </template>
 <script setup>
 import { onMounted, onUnmounted, ref } from "vue";
@@ -32,10 +29,12 @@ async function ListSite() {
         }
         second.value += ". ";
     }, 1000);
-    const res = await listSite({ currPage: currPage.value, pageSize: pageSize.value, name: "" });
-    loading.value = false;
-    clearInterval(timer);
-    sites.value = res.data.data.list;
+    listSite({ currPage: currPage.value, pageSize: pageSize.value, name: "" }).then((res) => {
+        loading.value = false;
+        clearInterval(timer);
+        sites.value = res.data.data.list;
+    });
+
     /* 获取站点状态 */
     getSiteStatus(sites.value).then((res) => {
         if (res.data.code == 1) sites.value = res.data.data;

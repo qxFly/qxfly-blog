@@ -318,7 +318,7 @@ function Backtop() {
 }
 /* 路由分页 */
 let routePage = ref(useRouter);
-function setRoutePage() {
+function restoreRoutePage() {
     if (useRouter.query.page == null) {
         currPage.value = 1;
     } else {
@@ -333,7 +333,7 @@ function setRoutePage() {
 watch(
     routePage.value,
     () => {
-        setRoutePage();
+        restoreRoutePage();
         GetArticles();
     },
     {
@@ -362,7 +362,7 @@ onMounted(() => {
         if (useRouter.query.verify == 1) verifyLabel.value = "审核中";
         verifyValue.value = useRouter.query.verify;
     }
-    setRoutePage();
+    restoreRoutePage();
     GetArticles();
 });
 </script>

@@ -28,12 +28,12 @@ public class UserSettingController {
 
     /**
      * 获取用户设置
-     *
-     * @param uid uid
      */
     @Operation(description = "获取用户设置", summary = "获取用户设置")
     @GetMapping("/getUserSettings")
-    public Result getUserSettings(Integer uid) {
+    public Result getUserSettings(@RequestHeader(value = "token", required = false) String token) {
+        if (token == null) return Result.noLoginError();
+        Integer uid = JwtUtils.getUid(token);
         UserSetting userSetting = userSettingService.getUserSettings(uid);
         return Result.success(userSetting);
     }
@@ -57,13 +57,14 @@ public class UserSettingController {
      */
     @Operation(description = "用户设置对象", summary = "用户设置对象")
     @PostMapping("/uploadBgImg")
-    public Result uploadBgImg(MultipartFile file , HttpServletRequest request) {
+    public Result uploadBgImg(MultipartFile file, HttpServletRequest request) {
         String token = request.getHeader("token");
         Claims claims = JwtUtils.parseJWT(token);
         Integer uid = Integer.valueOf(claims.get("uid").toString());
-        String fileName = userSettingService.uploadBgImg(file,uid);
+        String fileName = userSettingService.uploadBgImg(file, uid);
         return Result.success(fileName);
     }
+
     /**
      * 删除用户背景
      *

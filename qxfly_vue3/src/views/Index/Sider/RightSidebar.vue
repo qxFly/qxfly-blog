@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="right-Sidebar-main between-sider" id="right-Sidebar-main">
+        <div class="right-Sidebar-main index-siders" id="right-Sidebar-main">
             <EnglishVocabulary></EnglishVocabulary>
             <ArticleAuthorInfoCard :authorId="uid" :btnType="btnType"></ArticleAuthorInfoCard>
             <MessageTips></MessageTips>
@@ -10,10 +10,10 @@
 </template>
 
 <script setup>
-import MessageTips from "@/views/Sider/MessageTips.vue";
-import Site from "@/views/Sider/Site.vue";
+import MessageTips from "@/views/Index/Sider/MessageTips.vue";
+import Site from "@/views/Index/Sider/Site.vue";
 import ArticleAuthorInfoCard from "@/components/ArticleAuthorInfoCard.vue";
-import EnglishVocabulary from "@/views/Sider/EnglishVocabulary.vue";
+import EnglishVocabulary from "@/views/Index/Sider/EnglishVocabulary.vue";
 import { onMounted, onUnmounted, ref } from "vue";
 import md5 from "js-md5";
 let uid = ref(0);

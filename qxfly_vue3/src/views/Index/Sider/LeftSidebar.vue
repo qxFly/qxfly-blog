@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="left-Sidebar-main between-sider" id="left-Sidebar-main">
+        <div class="left-Sidebar-main index-siders" id="left-Sidebar-main">
             <Date></Date>
             <DailyHotArticle class="DailyHotArticle" />
             <HotArticle class="HotArticle" />
@@ -9,9 +9,9 @@
 </template>
 
 <script setup>
-import HotArticle from "@/views/Sider/HotArticle.vue";
-import DailyHotArticle from "@/views/Sider/DailyHotArticle.vue";
-import Date from "@/views/Sider/Date.vue";
+import HotArticle from "@/views/Index/Sider/HotArticle.vue";
+import DailyHotArticle from "@/views/Index/Sider/DailyHotArticle.vue";
+import Date from "@/views/Index/Sider/Date.vue";
 </script>
 
 <style scoped>
@@ -23,10 +23,6 @@ import Date from "@/views/Sider/Date.vue";
     transition: all 0.6s ease;
     width: 260px;
     max-width: 260px;
-}
-.HotArticle {
-}
-.DailyHotArticle {
 }
 @media (max-width: 1200px) {
     .left-Sidebar-main {
@@ -40,15 +36,11 @@ import Date from "@/views/Sider/Date.vue";
         max-width: unset;
     }
     .DailyHotArticle {
-        /* flex: auto; */
-        /* width: 100%; */
         margin-right: 5px;
         margin-left: 0px;
         flex: 1;
     }
     .HotArticle {
-        /* flex: auto; */
-        /* width: max-content; */
         margin-right: 0px;
         flex: 1;
     }

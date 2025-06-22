@@ -144,7 +144,7 @@ function handleSelect(e) {
 }
 /* 路由后恢复激活的导航栏 */
 let routePage = ref(useRouter);
-function setRoutePage() {
+function restoreRoutePage() {
     let path = routePage.value.path;
     if (path != null && path != "") {
         selectNav.value = routePage.value.path;
@@ -175,7 +175,7 @@ watch(isOpenBg, (newVal, oldVal) => {
 watch(
     routePage.value,
     (newVal, oldVal) => {
-        setRoutePage();
+        restoreRoutePage();
     },
     {
         deep: true,
@@ -189,7 +189,7 @@ onMounted(async () => {
         else if (role.value == 3) roleName.value = "用户审核员";
     });
     listNav();
-    setRoutePage();
+    restoreRoutePage();
     checkBg();
 });
 </script>

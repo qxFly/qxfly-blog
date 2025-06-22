@@ -25,10 +25,6 @@ import CardView from "@/components/CardView.vue";
     transition: all 0.3s ease;
     height: 100%;
 }
-/* .Content {
-    overflow: hidden;
-    padding: 30px 24px;
-} */
 @media (max-width: 800px) {
     .main {
         min-width: unset;

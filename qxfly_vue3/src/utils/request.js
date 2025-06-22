@@ -61,33 +61,6 @@ service.interceptors.request.use(async (config) => {
         } else {
             return config;
         }
-        // let urls = config.url.split("/");
-        // if (urls.includes("manage", 0)) {
-        //     if (urls.includes("check", 0)) {
-        //         return config;
-        //     } else {
-        //         let isAdmin = ref(false);
-        //         await check().then((res) => {
-        //             if (res.data.code === 1) {
-        //                 isAdmin.value = true;
-        //             }
-        //         });
-        //         if (isAdmin.value) {
-        //             return config;
-        //         } else {
-        //             // alert("您没有权限访问该页面！");
-        //             router.push("/");
-        //             return config;
-        //         }
-        //     }
-        // } else {
-        //     if (accessToken.value == null) {
-        //         router.replace("/login");
-        //         return config;
-        //     } else {
-        //         return config;
-        //     }
-        // }
     }
 });
 

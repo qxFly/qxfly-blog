@@ -111,7 +111,7 @@ function changePage(page = 0) {
 }
 /* 路由后恢复分页等数据 */
 let routePage = ref(useRouter);
-function setRoutePage() {
+function restoreRoutePage() {
     if (useRouter.query.page == null) {
         currPage.value = 1;
     } else {
@@ -121,7 +121,7 @@ function setRoutePage() {
 watch(
     routePage.value,
     (newVal, oldVal) => {
-        setRoutePage();
+        restoreRoutePage();
         getLeaveMessage();
     },
     {
@@ -140,7 +140,7 @@ function formatDate(date) {
     return new Date(date).toLocaleString();
 }
 onMounted(() => {
-    setRoutePage();
+    restoreRoutePage();
     getLeaveMessage();
 });
 onUnmounted(() => {});

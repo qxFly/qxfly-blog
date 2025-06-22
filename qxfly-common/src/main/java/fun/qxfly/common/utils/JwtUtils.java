@@ -89,11 +89,10 @@ public class JwtUtils {
      * @return 新的token
      */
     public static HashMap<String, String> refreshToken(String refreshToken) {
-        Claims claims = parseJWT(refreshToken, "refreshToken");
-        if (!claims.get("type", String.class).equals("refreshToken"))
+        if (!getTokenType(refreshToken).equals("refreshToken"))
             throw new UserException(ExceptionEnum.USER_LOGIN_EXPIRED);
-        String accessToken = createAccessToken(claims.get("uid", Integer.class), claims.get("username", String.class), claims.get("role", String.class), null);
-        String refreshToken1 = createRefreshToken(claims.get("uid", Integer.class), claims.get("username", String.class), claims.get("role", String.class), null);
+        String accessToken = createAccessToken(getUid(refreshToken), getUsername(refreshToken), getRole(refreshToken), null);
+        String refreshToken1 = createRefreshToken(getUid(refreshToken), getUsername(refreshToken), getRole(refreshToken), null);
         HashMap<String, String> tokenMap = new HashMap<>();
         tokenMap.put("accessToken", accessToken);
         tokenMap.put("refreshToken", refreshToken1);
@@ -115,7 +114,6 @@ public class JwtUtils {
         if (token == null || token.isEmpty() || token.isBlank()) {
             throw new RuntimeException();
         }
-
         try {
             return Jwts.parser()
                     .setSigningKey(SignKey)
@@ -130,5 +128,45 @@ public class JwtUtils {
         } catch (Exception e) {
             throw new JwtException(ExceptionEnum.TOKEN_ERROR);
         }
+    }
+
+    /**
+     * 获取token中的uid
+     *
+     * @param token token
+     * @return uid
+     */
+    public static Integer getUid(String token) {
+        return parseJWT(token).get("uid", Integer.class);
+    }
+
+    /**
+     * 获取token中的用户名
+     *
+     * @param token token
+     * @return 用户名
+     */
+    public static String getUsername(String token) {
+        return parseJWT(token).get("username", String.class);
+    }
+
+    /**
+     * 获取token中的用户角色
+     *
+     * @param token token
+     * @return 用户名
+     */
+    public static String getRole(String token) {
+        return parseJWT(token).get("role", String.class);
+    }
+
+    /**
+     * 获取token类型
+     *
+     * @param token token
+     * @return token类型
+     */
+    public static String getTokenType(String token) {
+        return parseJWT(token).get("type", String.class);
     }
 }

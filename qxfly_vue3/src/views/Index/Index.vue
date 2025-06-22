@@ -1,87 +1,54 @@
 <template>
     <div>
-        <!-- 背景主体 -->
-        <!-- <div id="index_bg" class="theme-bg"></div> -->
-        <!-- 顶栏 -->
-        <!-- <TopBar></TopBar> -->
-
         <div class="Main" id="Main">
             <!-- 左侧栏资源列表 -->
             <LeftSidebar class="LeftSidebar"></LeftSidebar>
-
             <!-- 内容主体 -->
-
             <CentreContent class="CentreContent"></CentreContent>
-
             <!-- 右侧栏资源列表 -->
             <RightSidebar></RightSidebar>
         </div>
-
         <BackTop></BackTop>
-        <!-- <ChangeBackgroundImage class="changebg"></ChangeBackgroundImage> -->
     </div>
-    <!-- <div class="Footer">
+    <div class="Footer">
         <div class="footer">
-            <a class="IPCbeian" href="https://beian.miit.gov.cn" target="_blank">闽ICP备2024032632号</a>
+            <!-- <a class="IPCbeian" href="https://beian.miit.gov.cn" target="_blank">闽ICP备2024032632号</a>
             <a
                 class="GngAnbeian"
                 href="https://beian.mps.gov.cn/#/query/webSearch?code="
                 rel="noreferrer"
                 target="_blank">
                 闽公网安备35080202351433
-            </a>
-            <a class="github" href="https://github.com/qxFly" target="_blank">qxFly</a>
+            </a> -->
+            <a class="github" href="https://github.com/qxFly/qxfly-blog" target="_blank">qxfly-blog</a>
         </div>
-    </div> -->
+    </div>
 </template>
 
 <script setup>
-import LeftSidebar from "@/views/Sider/LeftSidebar.vue";
+import LeftSidebar from "@/views/Index/Sider/LeftSidebar.vue";
 import CentreContent from "@/views/Index/CentreContent";
-import RightSidebar from "@/views/Sider/RightSidebar";
+import RightSidebar from "@/views/Index/Sider/RightSidebar";
 import BackTop from "@/components/BackTop.vue";
 import { onMounted, onUnmounted } from "vue";
-import router from "@/router";
-let uid = localStorage.getItem("uid");
-// 判断是否是手机端，如果是，返回true
-function isMobile() {
-    let flag = navigator.userAgent.match(
-        /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
-    );
-    return flag;
-}
-function Listener() {
-    const rightSidebarMain = document.getElementsByClassName("between-sider");
+
+function ListenerSiders() {
+    const indexSoders = document.getElementsByClassName("index-siders");
     var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
     if (scrollTop > 600) {
-        rightSidebarMain[0].style.top = "20px";
-        rightSidebarMain[1].style.top = "20px";
+        indexSoders[0].style.top = "20px";
+        indexSoders[1].style.top = "20px";
     } else {
-        rightSidebarMain[0].style.top = "90px";
-        rightSidebarMain[1].style.top = "90px";
+        indexSoders[0].style.top = "90px";
+        indexSoders[1].style.top = "90px";
     }
 }
+
 onMounted(() => {
-    window.addEventListener("scroll", Listener);
-    // 根据不同路由跳转不同页面
-    if (sessionStorage.getItem("userAgent") == null) {
-        if (isMobile()) {
-            console.log("手机端");
-            sessionStorage.setItem("userAgent", "phone");
-            router.replace({
-                path: process.env.VUE_APP_INDEX_PATH + "?page=1",
-            });
-        } else {
-            console.log("pc端");
-            sessionStorage.setItem("userAgent", "pc");
-            router.replace({
-                path: process.env.VUE_APP_INDEX_PATH + "?page=1",
-            });
-        }
-    }
+    window.addEventListener("scroll", ListenerSiders);
 });
 onUnmounted(() => {
-    window.removeEventListener("scroll", Listener, false);
+    window.removeEventListener("scroll", ListenerSiders, false);
 });
 </script>
 

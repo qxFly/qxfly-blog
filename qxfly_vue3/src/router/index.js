@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import md5 from "js-md5";
 import { check } from "@/api/Admin/index";
-import { onUnmounted, ref, watch } from "vue";
 import * as TopBarUtils from "@/utils/TopBarUtils";
 let routes = [
     {
@@ -60,7 +58,7 @@ let routes = [
     },
     {
         path: "/gallery",
-        component: () => import("@/views/Index/Gallery.vue"),
+        component: () => import("@/views/Index/Gallery@Deprecated.vue"),
     },
     {
         path: "/manage",

@@ -7,14 +7,12 @@
 
 <script setup>
 import { getSysSetting } from "@/api/System";
-import router from "@/router";
-import { onBeforeMount, onMounted, onBeforeUnmount, onUnmounted, onRenderTracked, ref } from "vue";
+import { onBeforeMount, onMounted, ref } from "vue";
 import md5 from "js-md5";
 import { getUserInfo } from "@/api/User";
 import * as socketUtil from "@/utils/Socket";
 import { getUserSettings } from "@/api/User";
 import TopBar from "@/components/TopBar/TopBar.vue";
-import { onBeforeRouteUpdate } from "vue-router";
 let token = localStorage.getItem(md5("token"));
 let user = ref({
     id: getUUID(),
@@ -31,10 +29,7 @@ function setInitStatue() {
 /* 清除登陆状态 */
 function clearLoginStatue() {
     setInitStatue();
-    router.replace({
-        path: process.env.VUE_APP_INDEX_PATH + "?page=1",
-    });
-    location.reload();
+    location.replace("/");
 }
 
 /*登录后，保存用户名和头像，防止重复发送获取请求 */
@@ -110,7 +105,7 @@ let userSettingObj = ref({});
 async function GetUserSettings() {
     let uid = ref(localStorage.getItem("uid"));
     if (uid.value == null) return;
-    await getUserSettings(uid.value).then((res) => {
+    await getUserSettings().then((res) => {
         if (res.data.code != 1) return;
         userSettingObj.value = res.data.data;
     });
@@ -123,43 +118,69 @@ async function GetSysSettings() {
         sysSettingObj.value = res.data.data;
     });
 }
+/* 合并设置项，用户优先 */
+let compactSettingObj = ref({});
 function compactSetting() {
     for (let key in sysSettingObj.value) {
         if (userSettingObj.value[key] != null) {
-            sysSettingObj.value[key] = userSettingObj.value[key];
+            compactSettingObj.value[key] = userSettingObj.value[key];
+        } else {
+            compactSettingObj.value[key] = sysSettingObj.value[key];
         }
     }
+    sysSettingObj = null;
+    userSettingObj = null;
 }
 /* 设置字体颜色 */
 function setFontColor() {
-    document.documentElement.style.setProperty("--main-theme-font-color", sysSettingObj.value.fontColor);
+    document.documentElement.style.setProperty("--main-theme-font-color", compactSettingObj.value.fontColor);
 }
 /* 设置背景 */
 async function setBackgroundImage() {
     let bg = document.getElementById("index_bg");
     let localbgimg = localStorage.getItem("bgimg");
     // 检查是否开启背景
-    if (sysSettingObj.value.bgSwitch == 0) return;
+    if (compactSettingObj.value.bgSwitch == 0) return;
     // 检查是否设置背景图片
-    let onlineBg = sysSettingObj.value.bgImgPath;
+    let onlineBg = compactSettingObj.value.bgImgPath;
     if (localbgimg == null && onlineBg != null) {
         localStorage.setItem("bgimg", onlineBg);
     }
-    // 检查本地背景是否和云端一致
+    // 检查本地背景是否和云端一致,并同步到本地
     if (localbgimg != onlineBg) {
         localbgimg = onlineBg;
-        localStorage.setItem("bgimg", onlineBg);
     }
     if (localbgimg == null) {
         return;
     }
+    localStorage.setItem("bgimg", localbgimg);
     localbgimg = localbgimg.replace(/\\/g, "/");
     bg.style.backgroundImage = "url(" + localbgimg + ")";
-    bg.style.filter = "blur(" + sysSettingObj.value.bgBlur + "px)";
-    bg.style.backdropFilter = "blur(" + sysSettingObj.value.bgBlur + "px)";
+    bg.style.filter = "blur(" + compactSettingObj.value.bgBlur + "px)";
+    bg.style.backdropFilter = "blur(" + compactSettingObj.value.bgBlur + "px)";
 }
-
-onBeforeMount(() => {
+// 根据不同设备类型跳转不同页面
+async function toIndexByDeviceType() {
+    if (sessionStorage.getItem("userAgent") == null) {
+        if (isMobile()) {
+            console.log("手机端");
+            sessionStorage.setItem("userAgent", "phone");
+        } else {
+            console.log("pc端");
+            sessionStorage.setItem("userAgent", "pc");
+        }
+        location.replace("/");
+    }
+}
+// 判断是否是手机端，如果是，返回true
+function isMobile() {
+    let flag = navigator.userAgent.match(
+        /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
+    );
+    return flag;
+}
+onBeforeMount(async () => {
+    // await toIndexByDeviceType();
     if (token != null) {
         let sa = sessionStorage.getItem("autologin");
         let la = localStorage.getItem("autologin");
@@ -175,17 +196,13 @@ onMounted(async () => {
     if (localStorage.getItem("username") == null) {
         console.log("用户未登录");
         setInitStatue();
-        window.location.reload();
+        location.reload();
     }
-    if (localStorage.getItem(md5("islogin")) == md5("true")) {
+    if (localStorage.getItem(md5("token")) != null) {
         console.log("用户登录。检查登录状态");
         /* 检查用户登录状态 */
         await checkStatus();
         await setUsernameAndAvatar();
-
-        setInterval(async () => {
-            // await checkStatus();
-        }, 100000);
         // 初始化socket
         socketUtil.initWebsocket();
     }
@@ -217,12 +234,6 @@ onMounted(async () => {
 }
 </style>
 <style>
-/* body {
-    color: var(--main-theme-font-color);
-}
-div {
-    color: var(--main-theme-font-color);
-} */
 :root {
     --bg-blur: blur(10px);
     --main-background-color: #ffffff3b; /* 主背景颜色 */

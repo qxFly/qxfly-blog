@@ -173,13 +173,10 @@ export function listUserSpaceNav() {
  * 获取用户设置
  * @returns
  */
-export function getUserSettings(uid) {
+export function getUserSettings() {
     return request({
         url: "/user/setting/getUserSettings",
         method: "get",
-        params: {
-            uid: uid,
-        },
     });
 }
 

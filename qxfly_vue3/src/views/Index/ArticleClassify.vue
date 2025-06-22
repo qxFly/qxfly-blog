@@ -78,6 +78,7 @@ function GetClassifies() {
         sleepC(allClassifys.value);
     });
 }
+/* 添加分类时，增加随机延时，达到逐个出现的效果 */
 let C = 0;
 function sleepC(data) {
     if (C < data.length)
@@ -93,25 +94,21 @@ watch(classifySearch, (oldVal, newVal) => {
         i.name.toLowerCase().includes(classifySearch.value.toLowerCase())
     );
 });
-/* 标签 */
+/* 获取标签 */
 let allTags = ref([]);
 let Tags = ref([]);
 function GetTags() {
     getTags().then((res) => {
         allTags.value = res.data.data;
         allTags.value = allTags.value.sort((a, b) => {
-            if (a.name < b.name) {
-                return -1;
-            }
-            if (a.name > b.name) {
-                return 1;
-            }
+            if (a.name < b.name) return -1;
+            if (a.name > b.name) return 1;
             return 0;
         });
-
         sleepT(allTags.value);
     });
 }
+/* 添加标签时，增加随机延时，达到逐个出现的效果 */
 let T = 0;
 function sleepT(data) {
     let t = Math.floor(Math.random() * 10) + 10;

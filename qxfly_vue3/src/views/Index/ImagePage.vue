@@ -1,11 +1,6 @@
 <template>
     <div class="image-main">
         <div style="display: flex; flex-direction: column">
-            <!-- <div class="article-sort-select">
-                <div class="article-sort">
-                    <div class="article-sort-label" v-text="sortLabel"></div>
-                </div>
-            </div> -->
             <!-- 视图菜单 -->
             <div class="viewMenu">
                 <div style="display: flex">
@@ -28,7 +23,6 @@
                         <div class="menu-font list">列表视图</div>
                     </div>
                 </div>
-
                 <MySelect :sortLabel="sortLabel" class="article-sort-select">
                     <div class="article-sort-item" value="new" @click="Sort('new')">最新发布</div>
                     <div class="article-sort-item" value="hot" @click="Sort('old')">最早发布</div>
@@ -55,29 +49,29 @@ import { getImage } from "@/api/index";
 import { ElMessage } from "element-plus";
 import MySelect from "@/components/MySelect.vue";
 /* 异步组件（暂无用处） */
-const AsyncAddImg = defineAsyncComponent(async () => {
-    const module = await import("@/components/AddImg.vue");
-    return module.default;
-});
+// const AsyncAddImg = defineAsyncComponent(async () => {
+//     const module = await import("@/components/AddImg.vue");
+//     return module.default;
+// });
 
 let column = ref(3); //列数
 let viewType = ref("grid"); //视图类型
 let getImgTips = ref("加载更多");
 let imgList = ref([]); //图片列表
 let allImgList = []; //以获取的所有图片
-/* 获取图片 */
 let timeout; // 计时器，如果超过一分钟图片还没加载完成，则可强制加载下一张
-
 let currPage = 0;
 let pageSize = 3;
 let sort = ref("new");
 let pushImgList = [];
+/* 获取图片 */
 function getImg(count) {
     pageSize = count;
     currPage++;
     getImgTips.value = "加载中";
     load.value = false;
     getImage(currPage, pageSize, sort.value).then((res) => {
+        /* 非随机 */
         if (sort.value != "random") {
             if (res.data.data.length > 0) {
                 imgList.value = res.data.data;
@@ -87,11 +81,14 @@ function getImg(count) {
                 return;
             }
         } else {
+            /* 随机 */
             let tempImgList = res.data.data;
-            let reGetCount = 0; /* 判断是否有重复 */
+            /* 判断是否有重复 */
+            let reGetCount = 0;
             if (allImgList.length > 0) {
                 for (let i = 0; i < tempImgList.length; i++) {
                     let f = false;
+                    /* 查看该图片是否已经存在 */
                     for (let j = 0; j < allImgList.length; j++) {
                         if (tempImgList[i].id == allImgList[j].id) {
                             reGetCount++;
@@ -99,6 +96,7 @@ function getImg(count) {
                             break;
                         }
                     }
+                    /* 不存在 */
                     if (!f) {
                         allImgList.push(tempImgList[i]);
                         pushImgList.push(tempImgList[i]);
@@ -163,6 +161,9 @@ function Sort(value) {
     } else if (value == "old") {
         sortLabel.value = "最早发布";
     }
+    // allImgList = [];
+    // console.log(imgList.value);
+
     getImg(6);
 }
 onMounted(() => {
