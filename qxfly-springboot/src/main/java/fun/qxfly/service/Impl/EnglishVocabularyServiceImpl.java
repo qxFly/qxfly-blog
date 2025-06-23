@@ -147,7 +147,6 @@ public class EnglishVocabularyServiceImpl implements EnglishVocabularyService {
      */
     @Override
     public List<EnglishVocabulary> getRandomEnglishVocabularies(Integer count) {
-        List<EnglishVocabulary> vocabularies = englishVocabularyMapper.getRandomEnglishVocabularies(count);
-        return vocabularies;
+        return englishVocabularyMapper.getRandomEnglishVocabularies(count);
     }
 }

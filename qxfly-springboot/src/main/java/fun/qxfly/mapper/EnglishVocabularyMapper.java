@@ -60,6 +60,11 @@ public interface EnglishVocabularyMapper {
     @Select("select * from english_vocabulary")
     List<EnglishVocabulary> getAllVocabularies();
 
-    @Select("select * from english_vocabulary as t1 where t1.id>=(RAND()*(select MAX(id) from english_vocabulary)) limit #{count}")
+    /**
+     * 获取指定数量的随机单词
+     *
+     * @param count 数量
+     * @return 随机单词
+     */
     List<EnglishVocabulary> getRandomEnglishVocabularies(Integer count);
 }

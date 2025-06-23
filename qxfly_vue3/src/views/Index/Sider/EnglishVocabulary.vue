@@ -1,7 +1,8 @@
 <template>
     <CardView>
         <div class="englishVocabulary-sider-main">
-            <i class="refresh-icon" @click="getVocabulary">&#xe6f5;</i>
+            <i v-if="vocabularies.length > 0" class="refresh-icon" @click="getVocabulary">&#xe6f5;</i>
+            <div class="item phoneticSymbol" v-else>暂无单词</div>
             <div v-for="v in vocabularies" class="vocabulary-item">
                 <div class="item word">
                     <div>{{ v.word }}</div>
@@ -60,6 +61,9 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.englishVocabulary-sider-main {
+    min-height: 15px;
+}
 .vocabulary-item {
     display: flex;
     align-items: center;

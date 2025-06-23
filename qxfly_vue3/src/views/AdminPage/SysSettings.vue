@@ -247,8 +247,6 @@ async function UpdateImg() {
                 tip.value = res.data.msg;
             }
         });
-    } else {
-        ElMessage.success("请选择图片或确认裁剪的图片");
     }
 }
 

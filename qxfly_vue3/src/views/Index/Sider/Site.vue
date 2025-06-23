@@ -33,11 +33,10 @@ async function ListSite() {
         loading.value = false;
         clearInterval(timer);
         sites.value = res.data.data.list;
-    });
-
-    /* 获取站点状态 */
-    getSiteStatus(sites.value).then((res) => {
-        if (res.data.code == 1) sites.value = res.data.data;
+        /* 获取站点状态 */
+        getSiteStatus(sites.value).then((res) => {
+            if (res.data.code == 1) sites.value = res.data.data;
+        });
     });
 }
 function GetSiteStatus(site) {

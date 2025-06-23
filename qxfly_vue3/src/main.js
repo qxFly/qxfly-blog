@@ -8,7 +8,8 @@ import "element-plus/dist/index.css";
 import router from "./router";
 
 import Cardview from "@/components/CardView.vue";
-import "@/assets/icon/iconfont.css";
+import "@/assets/css/iconfont.css";
+import "@/assets/css/common.css";
 const app = createApp(App);
 
 const CardView = {

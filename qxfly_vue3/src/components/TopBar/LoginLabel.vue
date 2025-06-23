@@ -81,7 +81,7 @@ function adjustWidth() {
     if (width <= 700) {
         return "100%";
     } else {
-        return "20%";
+        return "10%";
     }
 }
 </script>

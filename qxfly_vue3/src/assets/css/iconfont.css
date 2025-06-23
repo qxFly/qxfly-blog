@@ -1,8 +1,12 @@
+/* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
 @font-face {
     font-family: "iconfont"; /* Project id 4302169 */
-    src: url("iconfont.eot"); /* IE9 */
-    src: url("iconfont.eot") format("embedded-opentype"), /* IE6-IE8 */ url("iconfont.woff2") format("woff2"),
-        url("iconfont.woff") format("woff"), url("iconfont.svg") format("svg");
+    src: url("//at.alicdn.com/t/c/font_4302169_9gbok9xca3w.eot?t=1750671424960"); /* IE9 */
+    src: url("//at.alicdn.com/t/c/font_4302169_9gbok9xca3w.eot?t=1750671424960#iefix") format("embedded-opentype"),
+        /* IE6-IE8 */ url("//at.alicdn.com/t/c/font_4302169_9gbok9xca3w.woff2?t=1750671424960") format("woff2"),
+        url("//at.alicdn.com/t/c/font_4302169_9gbok9xca3w.woff?t=1750671424960") format("woff"),
+        url("//at.alicdn.com/t/c/font_4302169_9gbok9xca3w.ttf?t=1750671424960") format("truetype"),
+        url("//at.alicdn.com/t/c/font_4302169_9gbok9xca3w.svg?t=1750671424960#iconfont") format("svg");
 }
 
 .iconfont {
@@ -13,8 +17,8 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-jiaoliu:before {
-    content: "\e6cb";
+.icon-danciguanli1:before {
+    content: "\e618";
 }
 
 .icon-shuaxin:before {

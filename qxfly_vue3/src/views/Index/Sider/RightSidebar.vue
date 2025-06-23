@@ -2,7 +2,7 @@
     <div>
         <div class="right-Sidebar-main index-siders" id="right-Sidebar-main">
             <EnglishVocabulary></EnglishVocabulary>
-            <ArticleAuthorInfoCard :authorId="uid" :btnType="btnType"></ArticleAuthorInfoCard>
+            <ArticleAuthorInfoCard :authorId="uid" :btnType="btnType" v-if="uid != 0"></ArticleAuthorInfoCard>
             <MessageTips></MessageTips>
             <Site></Site>
         </div>
@@ -28,12 +28,13 @@ function setBtnType() {
 }
 
 onMounted(() => {
-    setTimeout(() => {
-        setBtnType();
-    }, 200);
-    setTimeout(() => {
-        setBtnType();
-    }, 1000);
+    setBtnType();
+    // setTimeout(() => {
+
+    // }, 200);
+    // setTimeout(() => {
+    //     setBtnType();
+    // }, 1000);
 });
 onUnmounted(() => {});
 </script>

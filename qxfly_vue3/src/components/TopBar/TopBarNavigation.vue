@@ -99,6 +99,8 @@ function search() {
 function toPath(path) {
     if (path == "-1") {
         router.back();
+    } else if (path.match(/http/)) {
+        window.open(path, "_blank");
     } else {
         router.push(path);
     }
