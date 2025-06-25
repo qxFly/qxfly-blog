@@ -1,7 +1,7 @@
 <template>
     <div class="user_info" @click="toUserSpace()">
         <div>
-            <img :src="user.avatar" :alt="user.username" />
+            <img :src="user.avatar" />
         </div>
         <div class="name">{{ user.username }}</div>
     </div>
@@ -98,6 +98,11 @@ img {
         display: none;
         margin-left: 5px;
         font-size: 14px;
+    }
+}
+@media (max-width: 500px) {
+    .user_info img {
+        display: none;
     }
 }
 </style>

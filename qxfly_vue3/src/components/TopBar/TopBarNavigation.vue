@@ -320,16 +320,18 @@ onMounted(() => {
 @media (max-width: 500px) {
     .nav-items {
         margin: 0;
-        width: 200px;
+        width: min-content;
     }
     .nav-item {
-        // margin: 8px;
+        width: min-content;
     }
+
     .search-input {
         margin: 0 0 0 2px;
+        width: 50px;
     }
     .search {
-        width: 100px;
+        width: 50px;
     }
 }
 </style>

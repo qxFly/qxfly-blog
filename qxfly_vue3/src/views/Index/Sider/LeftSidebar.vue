@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="left-Sidebar-main index-siders" id="left-Sidebar-main">
-            <Date></Date>
+            <Date class="Date"></Date>
             <DailyHotArticle class="DailyHotArticle" />
             <HotArticle class="HotArticle" />
         </div>
@@ -43,6 +43,9 @@ import Date from "@/views/Index/Sider/Date.vue";
     .HotArticle {
         margin-right: 0px;
         flex: 1;
+    }
+    .Date {
+        display: none;
     }
 }
 </style>

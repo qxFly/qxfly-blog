@@ -143,7 +143,7 @@ onUnmounted(() => {
         padding: 0 10px 0 0;
         min-width: unset;
         height: 50px;
-        /* justify-content: left; */
+        justify-content: left;
     }
     .top-bar-bg {
         height: 55px;
