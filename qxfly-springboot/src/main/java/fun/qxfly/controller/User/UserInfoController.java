@@ -193,11 +193,10 @@ public class UserInfoController {
      */
     @Operation(description = "获取用户空间导航栏", summary = "获取用户空间导航栏")
     @GetMapping("/listUserSpaceNav")
-    public Result listUserSpaceNav(HttpServletRequest request) {
-        String token = request.getHeader("token");
-        Claims claims = JwtUtils.parseJWT(token);
-        Integer uid = (Integer) claims.get("uid");
-        List<Navigation> navigations = userInfoService.listUserSpaceNav(uid);
+    public Result listUserSpaceNav(@RequestHeader("token") String token) {
+        String role = JwtUtils.getRole(token);
+        Integer rid = RoleUtils.getRoleIdByRoleName(role);
+        List<Navigation> navigations = userInfoService.listUserSpaceNav(rid);
         return Result.success(navigations);
     }
 }

@@ -106,7 +106,6 @@ export function getSiteStatus(data) {
     return request({
         url: "/index/getSiteStatus",
         method: "post",
-
         data: data,
     });
 }

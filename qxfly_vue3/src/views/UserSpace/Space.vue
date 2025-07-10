@@ -4,11 +4,7 @@
         <div class="user-space-left-sider">
             <CardView class="user-space-navs user-space-sider">
                 <div class="nav-item" v-for="item in showNavigations" :key="item">
-                    <router-link
-                        :to="item.path"
-                        active-class="router-link-active"
-                        class="router-link"
-                        @click="clearTip(item.name)">
+                    <div @click="toPath(item)" active-class="router-link-active" class="router-link">
                         <div class="nav-item-left">
                             <i class="iconfont" v-html="item.icon"></i>
                             <div class="nav-item-span">{{ item.name }}</div>
@@ -16,7 +12,7 @@
                         <div class="nav-item-right">
                             <div class="navItemTip" v-if="noReadMsgCount > 0 && item.name == '消息'"></div>
                         </div>
-                    </router-link>
+                    </div>
                 </div>
             </CardView>
         </div>
@@ -83,7 +79,14 @@ async function setNav() {
 function setNavPathParam(nav) {
     if (nav.path.match(/uid/)) nav.path = nav.path + uid.value;
 }
-
+function toPath(item) {
+    if (item.path.match(/http/)) {
+        window.open(item.path, "blank");
+    } else {
+        router.push(item.path);
+        clearTip(item.name);
+    }
+}
 function Listener() {
     const SidebarMain = document.getElementsByClassName("user-space-sider");
     var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;

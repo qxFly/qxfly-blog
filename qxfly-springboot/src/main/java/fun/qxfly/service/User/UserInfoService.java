@@ -92,5 +92,5 @@ public interface UserInfoService {
      * @param uid uid
      * @return 导航栏列表
      */
-    List<Navigation> listUserSpaceNav(Integer uid);
+    List<Navigation> listUserSpaceNav(Integer roleId);
 }

@@ -194,16 +194,6 @@ export function updateSite(data) {
         data: data,
     });
 }
-/* 获取站点状态 */
-export function getSiteStatus(id) {
-    return request({
-        url: "/getSiteStatus",
-        method: "get",
-        params: {
-            id: id,
-        },
-    });
-}
 
 /* 更新图库 */
 export function updateImage() {

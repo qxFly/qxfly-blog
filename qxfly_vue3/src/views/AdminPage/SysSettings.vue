@@ -175,8 +175,8 @@ function getFile(event) {
     let file = event.target.files[0];
     if (file != null) {
         if (file.type.match(/image/) != null) {
-            if (file.size > 1024 * 1024 * 3) {
-                alert("图片过大，请选择小于3MB的图片！");
+            if (file.size > 1024 * 1024 * 5) {
+                alert("图片过大，请选择小于5MB的图片！");
             } else {
                 /* 裁剪图片 */
                 option.img = URL.createObjectURL(file);

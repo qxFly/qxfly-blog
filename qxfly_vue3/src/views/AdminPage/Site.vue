@@ -20,7 +20,7 @@
             <div>
                 <el-table
                     v-loading="loading"
-                    :data="Tags"
+                    :data="sites"
                     :border="true"
                     show-overflow-tooltip
                     stripe
@@ -33,7 +33,7 @@
                     <el-table-column prop="url" label="链接" align="center" />
                     <el-table-column prop="status" label="状态" align="center">
                         <template #default="scope">
-                            {{ scope.row.status == null ? "404" : scope.row.status }}
+                            {{ scope.row.status == null ? ". . ." : scope.row.status }}
                         </template>
                     </el-table-column>
                     <el-table-column prop="" label="操作" width="160" align="center">
@@ -149,13 +149,12 @@
     </el-dialog>
 </template>
 <script setup>
-import { updateSite, deleteSite, addSite, getSiteStatus } from "@/api/Admin";
-import { listSite } from "@/api";
+import { updateSite, deleteSite, addSite } from "@/api/Admin";
+import { listSite, getSiteStatus } from "@/api";
 import { ref, onMounted, watch } from "vue";
 import router from "@/router";
 import { useRoute } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
-import axios from "axios";
 let useRouter = useRoute();
 let loading = ref(true);
 /* 分页查询 */
@@ -163,7 +162,7 @@ let totalPages = ref(1); //总页数
 let currPage = ref(1); //当前页
 let pageSize = ref(20); //分页大小
 /* 搜索 */
-let Tags = ref([]);
+let sites = ref([]);
 let name = ref("");
 function toSearch() {
     currPage.value = 1;
@@ -175,18 +174,15 @@ function search() {
     listSite({ currPage: currPage.value, pageSize: pageSize.value, name: name.value }).then((res) => {
         if (res.data.code == 1) {
             loading.value = false;
-            Tags.value = res.data.data.list;
+            sites.value = res.data.data.list;
             totalPages.value = res.data.data.total;
+            getSiteStatus(sites.value).then((res) => {
+                sites.value = res.data.data;
+            });
         }
     });
 }
-/* 获取站点状态 */
-let siteStatus = ref([]);
-function GetSiteStatus(site) {
-    let status = ref(404);
 
-    return status.value;
-}
 /* 删除站点 */
 async function Delete(id) {
     await ElMessageBox.confirm("您确定删除该站点？", {

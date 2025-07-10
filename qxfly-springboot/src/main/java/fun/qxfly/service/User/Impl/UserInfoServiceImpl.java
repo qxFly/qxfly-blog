@@ -167,11 +167,11 @@ public class UserInfoServiceImpl implements UserInfoService {
      * @return 导航栏列表
      */
     @Override
-    public List<Navigation> listUserSpaceNav(Integer uid) {
+    public List<Navigation> listUserSpaceNav(Integer roleId) {
         List<Navigation> navigations;
-        Integer role = adminService.check(uid);
-        if (role != 0) role = 5;
-        navigations = userInfoMapper.listUserSpaceNav(role);
+        navigations = userInfoMapper.listUserSpaceNav(roleId);
+        if (roleId != 0) roleId = 5;
+
         navigations.sort(Comparator.comparingInt(Navigation::getIndex));
         return navigations;
     }

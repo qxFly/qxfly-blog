@@ -78,7 +78,7 @@ public interface UserInfoMapper {
      * @param role 用户角色
      * @return 导航栏列表
      */
-    @Select("select * from navigation where role = 0 and type = 'userSpace' or role = #{role} and type = 'userSpace'")
+    @Select("select * from navigation where (role = 0 or role = (SELECT 1  WHERE #{role} > 0)) and type = 'userSpace'")
     List<Navigation> listUserSpaceNav(Integer role);
 }
 
