@@ -178,6 +178,10 @@ let routes = [
         path: "/JumpIndex",
         component: () => import("@/views/JumpIndex"),
     },
+    {
+        path: "/warehouse",
+        component: () => import("@/views/Warehouse"),
+    },
 ];
 
 const router = createRouter({

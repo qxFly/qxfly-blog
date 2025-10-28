@@ -33,4 +33,13 @@ module.exports = defineConfig({
         },
     },
     lintOnSave: true, //关闭eslint检查
+    configureWebpack: {
+        resolve: {
+            fallback: {
+                path: false, // 提供浏览器版 path
+                fs: false, // kuromoji 可能依赖 fs，禁用即可
+                util: false, // 按需添加其他模块
+            },
+        },
+    },
 });

@@ -1,5 +1,6 @@
 package fun.qxfly.controller;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.github.pagehelper.PageInfo;
 import fun.qxfly.common.domain.entity.Navigation;
 import fun.qxfly.common.domain.entity.Site;
@@ -11,10 +12,20 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -72,8 +83,45 @@ public class IndexController {
         return Result.success(navigationList);
     }
 
-    @GetMapping("/hello")
-    public Result hello() {
-           return Result.success("hello");
+    @PostMapping("/jpConvert")
+    public Result jpConvert(@RequestBody Map map) {
+        String o = (String) map.get("jp");
+        HttpPost post = new HttpPost("https://api.okmiku.com/kuroshiro");
+        try {
+            //创建参数集合
+            List<BasicNameValuePair> list = new ArrayList<BasicNameValuePair>();
+            //添加参数
+            list.add(new BasicNameValuePair("content", o));
+            list.add(new BasicNameValuePair("mode", "normal"));
+            list.add(new BasicNameValuePair("to", "hiragana"));
+            list.add(new BasicNameValuePair("romajiSystem", "nippon"));
+            post.addHeader("Authsign", "82a9c284748cdea6bc716f0db692c47be85cece564ee74d088f30fe6992e2ee0.U2FsdGVkX18MURVjdrr5UaBbeyiEaSVnMZcPq6Gg+0g=.MzIwOTIzNjE3Ng==");
+            post.addHeader("Origin", "https://tools.miku.ac");
+            post.addHeader("Referer", "https://tools.miku.ac");
+            //把参数放入请求对象，，post发送的参数list，指定格式
+            post.setEntity(new UrlEncodedFormEntity(list, "UTF-8"));
+            //添加请求头参数
+//            post.addHeader("timestamp","1594695607545");
+            CloseableHttpClient client = HttpClients.createDefault();
+            //启动执行请求，并获得返回值
+            CloseableHttpResponse response = client.execute(post);
+            //得到返回的entity对象
+            HttpEntity entity = response.getEntity();
+            //把实体对象转换为string
+            String result = EntityUtils.toString(entity, "UTF-8");
+            log.info("result:{}", result);
+            JSONObject from = JSONObject.parseObject(result);
+            result = from.get("data").toString();
+            log.info("返回内容:{}", from.get("data"));
+            return Result.success("result");
+        } catch (Exception e1) {
+            e1.printStackTrace();
+            return Result.error("error");
+        }
+    }
+
+    @PostMapping("/jpConvert1")
+    public Result jpConvert1(@RequestBody Map map) {
+        return Result.success();
     }
 }

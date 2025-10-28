@@ -18,10 +18,12 @@
                 </div>
             </div>
         </div>
+        <button @click="JPConvert">JPConvert</button>
     </CardView>
 </template>
 
 <script setup>
+import { jpconvert } from "@/api";
 import { onMounted, ref } from "vue";
 import CardView from "@/components/CardView.vue";
 let year = ref("0000");
@@ -30,7 +32,11 @@ let day = ref("00");
 let hour = ref("00");
 let minute = ref("00");
 let second = ref("00");
-
+function JPConvert() {
+    jpconvert("感じ取れたら手を繋ごう、重なるのは人生のライン+and+レミリア最高！").then((res) => {
+        console.log(res.data.data);
+    });
+}
 function getDate() {
     setInterval(() => {
         let date = new Date();

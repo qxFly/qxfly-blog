@@ -204,3 +204,12 @@ export function deleteLeaveMessage(id) {
         params: { id: id },
     });
 }
+export function jpconvert(jp) {
+    return request({
+        url: "/index/jpConvert",
+        method: "post",
+        data: {
+            jp: jp,
+        },
+    });
+}
