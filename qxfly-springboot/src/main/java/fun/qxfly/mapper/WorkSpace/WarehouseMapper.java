@@ -1,7 +1,5 @@
-package fun.qxfly.mapper;
+package fun.qxfly.mapper.WorkSpace;
 
-import fun.qxfly.common.domain.entity.Navigation;
-import fun.qxfly.common.domain.entity.Site;
 import fun.qxfly.common.domain.entity.Warehouse;
 import org.apache.ibatis.annotations.*;
 
@@ -51,4 +49,12 @@ public interface WarehouseMapper {
      */
     @Update("UPDATE warehouse SET shelf = #{shelf},layer = #{layer},name = #{name},quantity = #{quantity},picture = #{picture} WHERE id = #{id}")
     Integer editWarehouse(Warehouse warehouse);
+
+    /**
+     * 根据id查询库存
+     * @param id
+     * @return
+     */
+    @Select("SELECT * FROM warehouse WHERE id = #{id}")
+    Warehouse getItemById(Integer id);
 }

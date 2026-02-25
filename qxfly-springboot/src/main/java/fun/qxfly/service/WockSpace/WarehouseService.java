@@ -1,9 +1,9 @@
-package fun.qxfly.service;
+package fun.qxfly.service.WockSpace;
 
 import com.github.pagehelper.PageInfo;
-import fun.qxfly.common.domain.entity.Navigation;
 import fun.qxfly.common.domain.entity.Site;
 import fun.qxfly.common.domain.entity.Warehouse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -48,4 +48,11 @@ public interface WarehouseService {
      * @return
      */
     Integer editWarehouse(Warehouse warehouse);
+
+    /**
+     * 图片上传
+     * @param file
+     * @return
+     */
+    String uploadPicture(MultipartFile file);
 }

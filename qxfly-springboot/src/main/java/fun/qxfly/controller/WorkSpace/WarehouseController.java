@@ -1,12 +1,11 @@
-package fun.qxfly.controller;
+package fun.qxfly.controller.WorkSpace;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.github.pagehelper.PageInfo;
-import fun.qxfly.common.domain.entity.Site;
 import fun.qxfly.common.domain.entity.Warehouse;
 import fun.qxfly.common.domain.po.Result;
-import fun.qxfly.service.WarehouseService;
+import fun.qxfly.service.WockSpace.WarehouseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -75,10 +74,11 @@ public class WarehouseController {
      * @return
      */
     @Operation(description = "图片上传", summary = "图片上传")
-    @PostMapping("/updatePicture")
-    public Result updateImg(MultipartFile file) {
-
-        return null;
+    @PostMapping("/uploadPicture")
+    public Result uploadPicture(MultipartFile file) {
+        log.info(file.getOriginalFilename());
+        String path = warehouseService.uploadPicture(file);
+        return Result.success(path);
     }
 
     /**

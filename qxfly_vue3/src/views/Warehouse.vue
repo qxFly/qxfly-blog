@@ -1,8 +1,11 @@
 <template>
   <div class="main">
-    <el-button type="primary" @click="warehouseDialog = true">入库</el-button>
-    <el-button type="primary" @click="ListInventory">查询</el-button>
-    <el-button type="primary" @click="GetExcel">导出Excel</el-button>
+    <div class="header">
+      <el-button type="primary" @click="warehouseDialog = true">入库</el-button>
+      <el-button type="primary" @click="ListInventory">查询</el-button>
+      <el-button type="primary" @click="GetExcel">导出Excel</el-button>
+    </div>
+
     <el-table
       v-loading="loading"
       :data="warehouses"
@@ -78,6 +81,21 @@
               </template>
             </el-input>
           </el-form-item>
+
+          <el-form-item prop="picture">
+            <el-upload
+              ref="uploadRef"
+              class="upload-demo"
+              :action="UploadURL"
+              :limit="1"
+              :on-progress="handleProgress"
+              :on-success="handleSuccess"
+              :on-error="handleError">
+              <template #trigger>
+                <el-button type="primary">选择图片</el-button>
+              </template>
+            </el-upload>
+          </el-form-item>
         </div>
         <div style="height: 30px; margin-top: 10px">
           <div v-if="isTip" style="text-align: center; font-size: 18px; font-weight: 700; color: #846cb6">
@@ -94,7 +112,7 @@
     <!-- 图片预览窗 -->
     <el-dialog
       v-model="viewPictureDialogVisible"
-      width="40%"
+      width="100%"
       center
       :append-to-body="true"
       :show-close="false"
@@ -114,7 +132,7 @@
 <script setup>
 import router from "@/router";
 import { onMounted, reactive, ref, watch } from "vue";
-import { warehousing, listInventory, deleteStock, getExcel, editWarehouse } from "@/api/Warehouse";
+import { warehousing, listInventory, deleteStock, getExcel, editWarehouse } from "@/api/WorkSpace";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useRoute } from "vue-router";
 let useRouter = useRoute();
@@ -152,23 +170,21 @@ function ListInventory() {
  * 入库
  */
 async function Warehousing() {
-  formRef.value.validate((valid) => {
+  if (isUpload.value) {
+    ElMessage.error("图片上传中");
+    return;
+  }
+  formRef.value.validate(async (valid) => {
     if (valid) {
+      await UploadPicture();
+      console.log(warehouse.value);
+
       warehousing(warehouse.value).then((res) => {
         if (res.data.code == 0) {
           console.log("error");
         } else {
-          listInventory({
-            currPage: currPage.value,
-            pageSize: pageSize.value,
-            shelf: searchData.value.shelf,
-            layer: searchData.value.layer,
-            name: searchData.value.name,
-          }).then((res) => {
-            if (res.data.code != 1) return;
-            warehouses.value = res.data.data.list;
-            warehouseDialog.value = false;
-          });
+          ListInventory();
+          warehouseDialog.value = false;
         }
       });
     }
@@ -182,6 +198,28 @@ const rules = ref({
   quantity: [{ required: true, message: "请输入数量", trigger: "blur" }],
 });
 
+/**
+ * 上传图片
+ */
+let uploadRef = ref(null);
+let UploadURL = ref(process.env.VUE_APP_BASE_URL + "/warehouse/uploadPicture");
+let isUpload = ref(false);
+async function UploadPicture() {
+  uploadRef.value.submit();
+}
+function handleProgress() {
+  isUpload.value = true;
+}
+
+function handleSuccess(e) {
+  console.log(e.data.data);
+  warehouse.value.picture = e.data;
+
+  isUpload.value = false;
+}
+function handleError() {
+  isUpload.value = false;
+}
 /**
  * 编辑库存
  * @param data
@@ -201,17 +239,9 @@ function EditStock() {
           console.log("error");
         } else {
           editMode.value = false;
-          listInventory({
-            currPage: currPage.value,
-            pageSize: pageSize.value,
-            shelf: searchData.value.shelf,
-            layer: searchData.value.layer,
-            name: searchData.value.name,
-          }).then((res) => {
-            if (res.data.code != 1) return;
-            warehouses.value = res.data.data.list;
-            warehouseDialog.value = false;
-          });
+
+          ListInventory();
+          warehouseDialog.value = false;
         }
       });
     }
@@ -249,8 +279,6 @@ let currentChange = (page) => {
 };
 /* 路由后还原数据 */
 function setSearchData() {
-  console.log(useRouter.query.page);
-
   if (useRouter.query.page != null) {
     currPage.value = parseInt(useRouter.query.page);
   }
@@ -289,7 +317,6 @@ function cencel() {
  */
 function GetExcel() {
   getExcel().then((res) => {
-    console.log(res.data);
     let a = document.createElement("a");
     a.download = "库存列表.xlsx";
     a.style.display = "none";
@@ -309,9 +336,20 @@ onMounted(() => {
 
 <style>
 .main {
-  margin-top: 100px;
+  margin-top: 70px;
 }
 .warehousingDialog {
   width: 100%;
+}
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

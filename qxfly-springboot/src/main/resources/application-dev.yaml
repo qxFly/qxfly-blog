@@ -25,4 +25,6 @@ qxfly:
       articleImage: http://localhost:8081/articleImage/
       articleAttachment: http://localhost:8081/articleAttachment/
       systemBgImg: http://localhost:8081/systemBgImg/
+      warehousePicture: http://localhost:8081/warehousePicture/
+      purchasePicture: http://localhost:8081/purchasePicture/
 

@@ -1,38 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace等于mapper接口类的全限定名,这样实现对应 -->
-<mapper namespace="fun.qxfly.mapper.WarehouseMapper">
-    <!--更新用户信息-->
-    <update id="updateUserInfo" parameterType="fun.qxfly.common.domain.entity.Warehouse">
-        update user
-        <set>
-            <if test="username != null">
-                username = #{username},
-            </if>
-            <if test="password != null &amp;&amp; password != ''">
-                password = #{password},
-            </if>
-            <if test="email != null">
-                email = #{email},
-            </if>
-            <if test="phone != null &amp;&amp; phone != ''">
-                phone = #{phone},
-            </if>
-            <if test="introduction != null">
-                introduction = #{introduction},
-            </if>
-            <if test="location != null">
-                location = #{location},
-            </if>
-            <if test="avatar != null">
-                avatar = #{avatar},
-            </if>
-            <if test="birthday != null">
-                birthday = #{birthday}
-            </if>
-        </set>
-        where id = #{id}
-    </update>
+<mapper namespace="fun.qxfly.mapper.WorkSpace.WarehouseMapper">
     <!--列出仓库-->
     <select id="listInventory" resultType="fun.qxfly.common.domain.entity.Warehouse">
         select * from warehouse

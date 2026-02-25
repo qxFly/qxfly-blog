@@ -105,5 +105,11 @@ public class WebConfig implements WebMvcConfigurer {
         /*系统背景*/
         registry.addResourceHandler("/systemBgImg/**")
                 .addResourceLocations("file:///" + FilePaths.SYSTEM_SETTINGS_PATH.getPath());
+        /*库存图片*/
+        registry.addResourceHandler("/warehousePicture/**")
+                .addResourceLocations("file:///" + FilePaths.WAREHOUSE_PICTURE_PATH.getPath());
+        /*采购流程图片*/
+        registry.addResourceHandler("/purchasePicture/**")
+                .addResourceLocations("file:///" + FilePaths.PURCHASE_PICTURE_PATH.getPath());
     }
 }

@@ -1,20 +1,27 @@
-package fun.qxfly.service.Impl;
+package fun.qxfly.service.WockSpace.Impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import fun.qxfly.common.domain.entity.Navigation;
+import fun.qxfly.common.domain.entity.Purchase;
 import fun.qxfly.common.domain.entity.Site;
 import fun.qxfly.common.domain.entity.Warehouse;
-import fun.qxfly.common.utils.RoleUtils;
-import fun.qxfly.mapper.WarehouseMapper;
-import fun.qxfly.service.WarehouseService;
+import fun.qxfly.common.enums.ExceptionEnum;
+import fun.qxfly.common.enums.FilePaths;
+import fun.qxfly.common.exception.excep.FileException;
+import fun.qxfly.common.utils.FileUtils;
+import fun.qxfly.mapper.WorkSpace.WarehouseMapper;
+import fun.qxfly.service.WockSpace.WarehouseService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -23,6 +30,9 @@ import java.util.concurrent.Future;
 @Slf4j
 public class WarehouseServiceImpl implements WarehouseService {
 
+    @Value("${qxfly.file.path.warehousePicture}")
+    private String warehousePicturePath;
+
     private final WarehouseMapper warehouseMapper;
 
     public WarehouseServiceImpl(WarehouseMapper warehouseMapper) {
@@ -30,15 +40,18 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     /**
-     * 列出网站
+     * 列出库存
      *
      * @return
      */
     @Override
     public PageInfo<Warehouse> listInventory(Integer currPage, Integer pageSize, String name, Integer shelf, Integer layer) {
         PageHelper.startPage(currPage, pageSize);
-        List<Warehouse> sites = warehouseMapper.listInventory(name,shelf,layer);
-        return new PageInfo<>(sites);
+        List<Warehouse> stock = warehouseMapper.listInventory(name, shelf, layer);
+        stock.forEach(warehouse -> {
+            warehouse.setPicture(warehousePicturePath + warehouse.getPicture());
+        });
+        return new PageInfo<>(stock);
     }
 
     @Override
@@ -63,7 +76,7 @@ public class WarehouseServiceImpl implements WarehouseService {
             try {
                 status.add(submit.get());
             } catch (Exception e) {
-               e.printStackTrace();
+                e.printStackTrace();
             }
         }
         executorService.shutdown();
@@ -72,6 +85,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     /**
      * 入库
+     *
      * @param warehouse
      * @return
      */
@@ -82,16 +96,24 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     /**
      * 删除库存
+     *
      * @param warehouse
      * @return
      */
     @Override
     public Integer deleteStock(Warehouse warehouse) {
+        Warehouse p = warehouseMapper.getItemById(warehouse.getId());
+        /* 删除封面 */
+        String path = FilePaths.WAREHOUSE_PICTURE_PATH.getPath() + p.getPicture();
+        path = FileUtils.toSystemSeparator(path);
+        File cover = new File(path);
+        if (cover.exists()) cover.delete();
         return warehouseMapper.deleteStock(warehouse);
     }
 
     /**
      * 列出所有库存
+     *
      * @return
      */
     @Override
@@ -101,11 +123,47 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     /**
      * 修改库存
+     *
      * @param warehouse
      * @return
      */
     @Override
     public Integer editWarehouse(Warehouse warehouse) {
+        Warehouse itemById = warehouseMapper.getItemById(warehouse.getId());
+        String oldPic = itemById.getPicture();
+        String[] split = warehouse.getPicture().split("warehousePicture/");
+        String newPic = "";
+        if (split.length > 1) {
+            newPic = split[1];
+            warehouse.setPicture(newPic);
+        }
+        log.info("newPic:{}", newPic);
+        log.info("oldPic:{}", oldPic);
+        if (!Objects.equals(oldPic, newPic)) {
+            /* 删除封面 */
+            String path = FilePaths.WAREHOUSE_PICTURE_PATH.getPath() + oldPic;
+            path = FileUtils.toSystemSeparator(path);
+            if (path != null) {
+                File cover = new File(path);
+                if (cover.exists()) cover.delete();
+            }
+
+        }
         return warehouseMapper.editWarehouse(warehouse);
+    }
+
+    /**
+     * 图片上传
+     *
+     * @param file
+     * @return
+     */
+    @Override
+    public String uploadPicture(MultipartFile file) {
+        try {
+            return FileUtils.upload(FilePaths.WAREHOUSE_PICTURE_PATH.getPath(), file);
+        } catch (Exception e) {
+            throw new FileException(ExceptionEnum.FILE_UPLOAD_ERROR);
+        }
     }
 }

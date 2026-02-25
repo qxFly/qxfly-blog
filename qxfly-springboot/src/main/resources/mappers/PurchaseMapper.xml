@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace等于mapper接口类的全限定名,这样实现对应 -->
+<mapper namespace="fun.qxfly.mapper.WorkSpace.PurchaseMapper">
+    <select id="listItems" resultType="fun.qxfly.common.domain.entity.Purchase">
+        select * from purchase
+        <where>
+            <if test="applicant != null and applicant != ''">
+               and applicant like concat('%',#{applicant},'%')
+            </if>
+            <if test="reporting != null and reporting!=''">
+                and reporting like concat('%',#{reporting},'%')
+            </if>
+            <if test="reported != null and reported !=''">
+                and reported like concat('%',#{reported},'%')
+            </if>
+            <if test="month != null and month !=''">
+                and month like concat('%',#{month},'%')
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+        order by id desc
+    </select>
+</mapper>

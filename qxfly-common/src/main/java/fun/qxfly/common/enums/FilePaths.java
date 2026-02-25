@@ -10,7 +10,9 @@ public enum FilePaths {
     ARTICLE_COVER_PATH(APP_BASE_PATH.getPath() + "\\data\\qxfly-articleCover\\"),
     ARTICLE_IMAGE_PATH(APP_BASE_PATH.getPath() + "\\data\\qxfly-articleImage\\"),
     ARTICLE_ATTACHMENT_PATH(APP_BASE_PATH.getPath() + "\\data\\qxfly-articleAttachment\\"),
-    SYSTEM_SETTINGS_PATH(APP_BASE_PATH.getPath() +"\\data\\qxfly-systemSetting\\")
+    SYSTEM_SETTINGS_PATH(APP_BASE_PATH.getPath() +"\\data\\qxfly-systemSetting\\"),
+    WAREHOUSE_PICTURE_PATH(APP_BASE_PATH.getPath() +"\\data\\qxfly-warehousePicture\\"),
+    PURCHASE_PICTURE_PATH(APP_BASE_PATH.getPath() +"\\data\\qxfly-purchasePicture\\")
     ;
 
     private final String path;

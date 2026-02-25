@@ -14,7 +14,7 @@ logging:
       max-file-size: 1MB
       file-name-pattern: ${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz
 qxfly:
-  domain: https://qxfly.xyz/fly
+  domain: https://qxfly.top/fly
   file:
     uploadPath: /qxfly/web/data/upload/
     path:
@@ -25,3 +25,5 @@ qxfly:
       articleImage: ${qxfly.domain}/articleImage/
       articleAttachment: ${qxfly.domain}/articleAttachment/
       systemBgImg: ${qxfly.domain}/systemBgImg/
+      warehousePicture: ${qxfly.domain}/warehousePicture/
+      purchasePicture: ${qxfly.domain}/purchasePicture/

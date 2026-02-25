@@ -22,6 +22,7 @@ public class FileUtils {
      * @return 调整后的文件路径
      */
     public static String toSystemSeparator(String path) {
+        if(path == null) return null;
         String separator = File.separator;
         path = path.replace("\\", separator).replace("/", separator);
         return path;
