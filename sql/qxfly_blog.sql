@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 28/10/2025 21:40:35
+ Date: 30/03/2026 22:22:26
 */
 
 SET NAMES utf8mb4;
@@ -10386,7 +10386,7 @@ CREATE TABLE `navigation`  (
   INDEX `admin_page_nav_parent`(`parent` ASC) USING BTREE,
   CONSTRAINT `admin_page_nav_parent` FOREIGN KEY (`parent`) REFERENCES `navigation` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `admin_page_nav_role` FOREIGN KEY (`role`) REFERENCES `role` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 39 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 41 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of navigation
@@ -10403,7 +10403,7 @@ INSERT INTO `navigation` VALUES (18, '用户信息', '&#xe6e3;', 0, '/user/space
 INSERT INTO `navigation` VALUES (19, '文章', '&#xe6db;', 0, '/user/space/userArticle?page=1&uid=', NULL, NULL, 'userSpace', 2);
 INSERT INTO `navigation` VALUES (20, '收藏', '&#xe6c1;', 0, '/user/space/userCollection?page=1&uid=', NULL, NULL, 'userSpace', 3);
 INSERT INTO `navigation` VALUES (21, '消息', '&#xe6dc;', 0, '/user/space/userMessage?uid=', NULL, NULL, 'userSpace', 4);
-INSERT INTO `navigation` VALUES (22, '后台', '&#xe6fd;', 5, '/manage', NULL, NULL, 'userSpace', 9999);
+INSERT INTO `navigation` VALUES (22, '后台', '&#xe6fd;', 1, '/manage', NULL, NULL, 'userSpace', 9999);
 INSERT INTO `navigation` VALUES (24, '图片', '&#xe6c5;', 0, '/index/imageView', 'nav-item-image', NULL, 'index', 3);
 INSERT INTO `navigation` VALUES (25, '文章', '&#xe6db;', 0, '/index/articleView?page=1', 'nav-item-article', NULL, 'index', 1);
 INSERT INTO `navigation` VALUES (26, '分类', '&#xe6da;', 0, '/index/articleClassify?classify=', 'nav-item-classify', NULL, 'index', 2);
@@ -10416,6 +10416,8 @@ INSERT INTO `navigation` VALUES (34, '用户设置', '&#xe6de;', 3, '/manage/use
 INSERT INTO `navigation` VALUES (35, '评论', '&#xe6e5;', 1, '/manage/articleComment', NULL, 3, 'admin', 7);
 INSERT INTO `navigation` VALUES (36, '系统设置', '&#xe6de;', 1, '/manage/sysSettings', '', NULL, 'admin', 10);
 INSERT INTO `navigation` VALUES (38, '英语单词管理', '', 1, '/manage/englishVocabulary', '', NULL, 'admin', 11);
+INSERT INTO `navigation` VALUES (39, '采购', '', 1, '/workspace/purchase', '', NULL, 'workspace', 12);
+INSERT INTO `navigation` VALUES (40, '仓库', '', 1, '/workspace/warehouse', '', NULL, 'workspace', 13);
 
 -- ----------------------------
 -- Table structure for not_passed_article
@@ -10433,6 +10435,34 @@ CREATE TABLE `not_passed_article`  (
 -- ----------------------------
 INSERT INTO `not_passed_article` VALUES (8, 'awdawd');
 INSERT INTO `not_passed_article` VALUES (134, '');
+
+-- ----------------------------
+-- Table structure for purchase
+-- ----------------------------
+DROP TABLE IF EXISTS `purchase`;
+CREATE TABLE `purchase`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `applicant` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '申请人',
+  `Reporting` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '待提报部分',
+  `Reported` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '已提报部分',
+  `picture` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '申请流程图片',
+  `status` int NULL DEFAULT NULL COMMENT '状态（0：待提报；1：申请资产号；2、部分提报；3：已提报审批中；4：已提报；5：已发放）',
+  `month` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '申请月份',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 34 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of purchase
+-- ----------------------------
+INSERT INTO `purchase` VALUES (24, '1', '1', '1', '2025\\11\\05\\51fd1ca2-f336-4447-85dc-22ed3f7d300c.png', 3, '12月');
+INSERT INTO `purchase` VALUES (25, '2', '2', '2', '2025\\11\\05\\0cc63042-02d5-4886-829a-7f52fbd03a2b.png', 2, NULL);
+INSERT INTO `purchase` VALUES (26, '1', '1', '1', '2025\\11\\05\\904bee12-5e74-49a6-aa69-f1624c08d972.png', 3, NULL);
+INSERT INTO `purchase` VALUES (27, '1', '1', '1', '2025\\11\\21\\44b857db-2f00-4d24-8705-6718f5e733a7.png', 2, '12');
+INSERT INTO `purchase` VALUES (28, '1', NULL, NULL, 'null', 4, '1');
+INSERT INTO `purchase` VALUES (30, '1', '1', '1', 'http://localhost:8081/purchasePicture/2025\\11\\05\\006f8864-5d25-4767-8bc7-f24629351c0c.jpg', 0, '12');
+INSERT INTO `purchase` VALUES (31, '已提报审批中', '已提报审批中', '已提报审批中', 'null', 3, '2025.11');
+INSERT INTO `purchase` VALUES (32, '已提报审批中', '已提报审批中', '已提报审批中', 'http://localhost:8081/', 3, '2025.115');
+INSERT INTO `purchase` VALUES (33, '已提报审批中', '已提报审批中', '已提报审批中', 'http://localhost:8081/purchasePicture/null', 3, '2025.11');
 
 -- ----------------------------
 -- Table structure for role
@@ -10986,16 +11016,17 @@ CREATE TABLE `warehouse`  (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '货物名称',
   `picture` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '图片',
   `quantity` int(10) UNSIGNED ZEROFILL NULL DEFAULT NULL COMMENT '数量',
+  `unit` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '单位',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 37 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of warehouse
 -- ----------------------------
-INSERT INTO `warehouse` VALUES (4, 10, 123423, '1', NULL, 0000000001);
-INSERT INTO `warehouse` VALUES (5, 22, 2, '2', NULL, 0000000002);
-INSERT INTO `warehouse` VALUES (6, 22, 2, '2', NULL, 0000000002);
-INSERT INTO `warehouse` VALUES (7, 22, 2, '2', NULL, 0000000002);
-INSERT INTO `warehouse` VALUES (9, 22, 2, '2', NULL, 0000000002);
+INSERT INTO `warehouse` VALUES (32, 2, 11, '11', '2026\\03\\22\\810178ca-717f-43ce-97c9-83df5042483e.png', 0000000001, '额地方撒额度');
+INSERT INTO `warehouse` VALUES (33, 3, 3, '3', 'null', 0000000003, NULL);
+INSERT INTO `warehouse` VALUES (34, 1, 1, 'asd', 'null', 0000000001, 'awd');
+INSERT INTO `warehouse` VALUES (35, 1, 1, '1', NULL, 0000000001, NULL);
+INSERT INTO `warehouse` VALUES (36, 2, 2, '2', NULL, 0000000002, '2');
 
 SET FOREIGN_KEY_CHECKS = 1;
