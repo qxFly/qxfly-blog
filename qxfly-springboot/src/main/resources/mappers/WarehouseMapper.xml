@@ -7,13 +7,13 @@
         select * from warehouse
         <where>
             <if test="name != null &amp;&amp; name != ''">
-                name like concat('%',#{name},'%'),
+                and name like concat('%',#{name},'%')
             </if>
             <if test="shelf != null">
-                shelf = #{shelf},
+               and shelf = #{shelf}
             </if>
             <if test="layer != null">
-                layer = #{layer},
+               and layer = #{layer}
             </if>
         </where>
     </select>

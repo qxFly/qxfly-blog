@@ -105,3 +105,13 @@ export function deleteItem(id) {
     data: id,
   });
 }
+/**
+ * 列出工作空间导航栏
+ * @returns
+ */
+export function listWorkSpaceNavigations() {
+  return request({
+    url: "/workspace/listWorkSpaceNavigations",
+    method: "get",
+  });
+}

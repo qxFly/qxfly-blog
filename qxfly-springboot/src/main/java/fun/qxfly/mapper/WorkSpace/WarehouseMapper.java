@@ -22,7 +22,7 @@ public interface WarehouseMapper {
      * @param warehouse
      * @return
      */
-    @Insert("INSERT INTO warehouse(shelf,layer,name,quantity,picture)values(#{shelf},#{layer},#{name},#{quantity},#{picture})")
+    @Insert("INSERT INTO warehouse(shelf,layer,name,quantity,unit,picture)values(#{shelf},#{layer},#{name},#{quantity},#{unit},#{picture})")
     Integer warehousing(Warehouse warehouse);
 
     /**
@@ -47,7 +47,7 @@ public interface WarehouseMapper {
      * @param warehouse
      * @return
      */
-    @Update("UPDATE warehouse SET shelf = #{shelf},layer = #{layer},name = #{name},quantity = #{quantity},picture = #{picture} WHERE id = #{id}")
+    @Update("UPDATE warehouse SET shelf = #{shelf},layer = #{layer},name = #{name},quantity = #{quantity},unit = #{unit},picture = #{picture} WHERE id = #{id}")
     Integer editWarehouse(Warehouse warehouse);
 
     /**

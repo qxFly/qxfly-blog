@@ -1,6 +1,6 @@
 <template>
   <el-container class="main-container">
-    <el-header class="header">
+    <el-header class="header1">
       <div class="search-bar">
         <div class="search-items">
           <el-input
@@ -52,7 +52,8 @@
         show-overflow-tooltip
         stripe
         :highlight-current-row="true"
-        style="width: 100%">
+        style="width: 100%"
+        :max-height="setTableHeight()">
         <el-table-column fixed prop="applicant" label="申请人" align="center" width="120" />
         <el-table-column fixed prop="month" label="申请年月" align="center" width="100" />
         <el-table-column prop="status" label="状态" align="center" width="110">
@@ -100,111 +101,115 @@
           @current-change="currentChange"
           @size-change="handleSizeChange" />
       </div>
-      <!-- 添加库存 -->
-      <el-dialog
-        title=""
-        v-model="Dialog"
-        :append-to-body="true"
-        :close-on-click-modal="true"
-        :show-close="false"
-        :lock-scroll="false"
-        draggable
-        center
-        class="warehousingDialog">
-        <el-form :rules="rules" ref="formRef" :model="purchase">
-          <div class="warehousingDialog-content">
-            <el-form-item prop="applicant">
-              <el-input clearable type="text" v-model="purchase.applicant">
-                <template #prepend>
-                  <div class="label">申请人</div>
-                </template>
-              </el-input>
-            </el-form-item>
-            <el-form-item prop="month">
-              <el-input clearable type="text" v-model="purchase.month">
-                <template #prepend>
-                  <div class="label">申请年月</div>
-                </template>
-              </el-input>
-            </el-form-item>
-            <el-form-item>
-              <div style="width: 100%; display: flex">
-                <el-input clearable style="width: min-content">
+      <div>
+        <!-- 添加库存 -->
+        <el-dialog
+          title=""
+          v-model="Dialog"
+          :append-to-body="true"
+          :close-on-click-modal="true"
+          :show-close="false"
+          :lock-scroll="false"
+          draggable
+          center
+          class="warehousingDialog">
+          <el-form :rules="rules" ref="formRef" :model="purchase">
+            <div class="warehousingDialog-content">
+              <el-form-item prop="applicant">
+                <el-input clearable type="text" v-model="purchase.applicant">
                   <template #prepend>
-                    <div class="label">待提报部分</div>
+                    <div class="label">申请人</div>
                   </template>
                 </el-input>
-                <el-input
-                  clearable
-                  type="textarea"
-                  rows="5"
-                  v-model="purchase.reporting"
-                  style="width: 100%; left: -22px">
-                </el-input>
-              </div>
-            </el-form-item>
-            <el-form-item>
-              <div style="width: 100%; display: flex">
-                <el-input clearable style="width: min-content">
+              </el-form-item>
+              <el-form-item prop="month">
+                <el-input clearable type="text" v-model="purchase.month">
                   <template #prepend>
-                    <div class="label">已提报部分</div>
+                    <div class="label">申请年月</div>
                   </template>
                 </el-input>
-                <el-input
-                  clearable
-                  type="textarea"
-                  rows="5"
-                  v-model="purchase.reported"
-                  style="width: 100%; left: -22px">
-                </el-input>
-              </div>
-            </el-form-item>
-            <el-form-item prop="status">
-              <div class="update-dialog-item">
-                <el-input style="width: 100px">
-                  <template #prepend>
-                    <div class="label">状态</div>
-                  </template>
-                </el-input>
-                <el-select class="search-item" v-model="purchase.status" style="width: 160px" placeholder="状态">
-                  <el-option :value="0" label="待提报">待提报</el-option>
-                  <el-option :value="1" label="申请资产号">申请资产号</el-option>
-                  <el-option :value="2" label="部分提报">部分提报</el-option>
-                  <el-option :value="3" label="提报审批中">提报审批中</el-option>
-                  <el-option :value="4" label="已提报">已提报</el-option>
-                  <el-option :value="5" label="已发放">已发放</el-option>
-                </el-select>
-              </div>
-            </el-form-item>
+              </el-form-item>
+              <el-form-item>
+                <div style="width: 100%; display: flex">
+                  <el-input clearable style="width: min-content">
+                    <template #prepend>
+                      <div class="label">待提报部分</div>
+                    </template>
+                  </el-input>
+                  <el-input
+                    clearable
+                    type="textarea"
+                    rows="5"
+                    v-model="purchase.reporting"
+                    style="width: 100%; left: -22px">
+                  </el-input>
+                </div>
+              </el-form-item>
+              <el-form-item>
+                <div style="width: 100%; display: flex">
+                  <el-input clearable style="width: min-content">
+                    <template #prepend>
+                      <div class="label">已提报部分</div>
+                    </template>
+                  </el-input>
+                  <el-input
+                    clearable
+                    type="textarea"
+                    rows="5"
+                    v-model="purchase.reported"
+                    style="width: 100%; left: -22px">
+                  </el-input>
+                </div>
+              </el-form-item>
+              <el-form-item prop="status">
+                <div class="update-dialog-item">
+                  <el-input style="width: 100px">
+                    <template #prepend>
+                      <div class="label">状态</div>
+                    </template>
+                  </el-input>
+                  <el-select class="search-item" v-model="purchase.status" style="width: 160px" placeholder="状态">
+                    <el-option :value="0" label="待提报">待提报</el-option>
+                    <el-option :value="1" label="申请资产号">申请资产号</el-option>
+                    <el-option :value="2" label="部分提报">部分提报</el-option>
+                    <el-option :value="3" label="提报审批中">提报审批中</el-option>
+                    <el-option :value="4" label="已提报">已提报</el-option>
+                    <el-option :value="5" label="已发放">已发放</el-option>
+                  </el-select>
+                </div>
+              </el-form-item>
 
-            <el-form-item prop="picture">
-              <el-upload
-                ref="uploadRef"
-                class="upload-demo"
-                :action="UploadURL"
-                :limit="1"
-                :on-preview="handlePreview"
-                :on-progress="handleProgress"
-                :on-success="handleSuccess"
-                :on-error="handleError">
-                <template #trigger>
-                  <el-button type="primary">选择图片</el-button>
-                </template>
-              </el-upload>
-            </el-form-item>
-          </div>
-          <div style="height: 30px; margin-top: 10px">
-            <div v-if="isTip" style="text-align: center; font-size: 18px; font-weight: 700; color: #846cb6">
-              {{ tip }}
+              <el-form-item prop="picture">
+                <el-upload
+                  ref="uploadRef"
+                  class="upload-demo"
+                  :action="UploadURL"
+                  :limit="1"
+                  :on-preview="handlePreview"
+                  :on-progress="handleProgress"
+                  :on-success="handleSuccess"
+                  :on-error="handleError">
+                  <template #trigger>
+                    <el-button type="primary">选择图片</el-button>
+                  </template>
+                </el-upload>
+              </el-form-item>
             </div>
-          </div>
-          <div class="dialog-footer">
-            <el-button @click="cencel">取 消</el-button>
-            <el-button type="primary" @click="EditPurchase" v-if="editMode">编 辑</el-button>
-            <el-button type="primary" @click="addPurchase" v-else>确 定</el-button>
-          </div>
-        </el-form>
-      </el-dialog>
+            <div style="height: 30px; margin-top: 10px">
+              <div v-if="isTip" style="text-align: center; font-size: 18px; font-weight: 700; color: #846cb6">
+                {{ tip }}
+              </div>
+            </div>
+            <div class="dialog-footer">
+              <el-button @click="cencel">取 消</el-button>
+              <el-button type="primary" @click="EditPurchase" v-if="editMode">编 辑</el-button>
+              <el-button type="primary" @click="addPurchase" v-else>确 定</el-button>
+            </div>
+          </el-form>
+        </el-dialog>
+      </div>
+    </el-main>
+    <div v-if="viewPictureDialogVisible">
       <!-- 图片预览窗 -->
       <el-dialog
         v-model="viewPictureDialogVisible"
@@ -215,14 +220,17 @@
         :lock-scroll="false"
         :destroy-on-close="true"
         :align-center="true">
-        <el-image :preview-src-list="srcList" :src="picture" fit="contain" />
+        <div>
+          <el-image :preview-src-list="srcList" :src="picture" fit="contain" />
+        </div>
+
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="viewPictureDialogVisible = false" type="primary">关 闭</el-button>
           </span>
         </template>
       </el-dialog>
-    </el-main>
+    </div>
   </el-container>
 </template>
 
@@ -415,14 +423,15 @@ function Delete(id) {
 let currentChange = (page) => {
   currPage.value = page;
   router.push({
-    path: "/manage/purchase",
+    path: "/workspace/purchase",
     query: { page: page },
   });
 };
+/*更换页数大小*/
 let handleSizeChange = (size) => {
   pageSize.value = size;
   router.push({
-    path: "/manage/purchase",
+    path: "/workspace/purchase",
     query: { page: currPage.value, pageSize: size },
   });
 };
@@ -441,7 +450,7 @@ watch(
   },
   {
     deep: true,
-  }
+  },
 );
 /**
  * 查看图片
@@ -460,6 +469,10 @@ function cencel() {
   Dialog.value = false;
   purchase.value = {};
   editMode.value = false;
+} /* 设置表格高度 */
+function setTableHeight() {
+  let height = document.body.scrollHeight - 250;
+  return height;
 }
 /**
  * 导出Excel
@@ -484,7 +497,7 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .warehousingDialog {
   width: 50%;
 }
@@ -513,7 +526,7 @@ onMounted(() => {
 .main-container {
   margin-top: 20px;
 }
-.header {
+.header1 {
   height: max-content;
 }
 .dialog-footer {

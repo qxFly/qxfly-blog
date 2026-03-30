@@ -104,10 +104,12 @@ export async function interceptors(response) {
 let promise = null;
 async function refresh_Token() {
   /* 刷新token时，有大量请求返回第一个 */
-  if (promise) {
+  if (promise != null) {
     return promise;
   }
   promise = new Promise(async (resolve) => {
+    console.log("shuaixn");
+
     const res = await updateLoginStatue(refreshToken.value);
     let data = res.data;
     if (data.code == 1) {

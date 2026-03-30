@@ -1,4 +1,4 @@
-let hideTopBarList1 = /(manage|login|register|findpassword|ArticleDetail|JumpIndex|warehouse|purchase)/;
+let hideTopBarList1 = /(manage|login|register|findpassword|ArticleDetail|JumpIndex|workspace)/;
 /**
  * 根据路由隐藏顶栏
  * @param {string} path 路由路径

@@ -43,6 +43,11 @@ public class Warehouse {
     @ContentStyle(horizontalAlignment = HorizontalAlignmentEnum.CENTER)
     private Integer quantity;
 
+    @ExcelProperty(index = 5, value = "单位")
+    @Schema(description = "单位")
+    @ContentStyle(horizontalAlignment = HorizontalAlignmentEnum.CENTER)
+    private String unit;
+
     @ExcelProperty(index = 5, value = "图片")
     @Schema(description = "图片")
     @ContentStyle(horizontalAlignment = HorizontalAlignmentEnum.CENTER)

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { check } from "@/api/Admin/index";
 import * as TopBarUtils from "@/utils/TopBarUtils";
+import path from "path-browserify";
 let routes = [
   {
     path: "/",
@@ -112,10 +113,6 @@ let routes = [
         path: "/manage/englishVocabulary",
         component: () => import("@/views/AdminPage/EnglishVocabulary"),
       },
-      {
-        path: "/manage/purchase",
-        component: () => import("@/views/Purchase"),
-      },
     ],
   },
   {
@@ -183,8 +180,18 @@ let routes = [
     component: () => import("@/views/JumpIndex"),
   },
   {
-    path: "/warehouse",
-    component: () => import("@/views/Warehouse"),
+    path: "/workspace",
+    component: () => import("@/views/WorkSpace/Index.vue"),
+    children: [
+      {
+        path: "/workspace/warehouse",
+        component: () => import("@/views/WorkSpace/Warehouse"),
+      },
+      {
+        path: "/workspace/purchase",
+        component: () => import("@/views/WorkSpace/Purchase"),
+      },
+    ],
   },
 ];
 
