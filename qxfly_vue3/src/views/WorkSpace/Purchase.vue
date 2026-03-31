@@ -33,12 +33,20 @@
         </div>
       </div>
       <div class="menu">
-        <el-menu :default-active="activeIndex" class="el-menu" mode="horizontal" @select="handleSelect">
+        <el-menu
+          :default-active="activeIndex"
+          class="el-menu"
+          mode="horizontal"
+          @select="handleSelect">
           <el-menu-item index="1" @click="changeMenu(null)">全部</el-menu-item>
           <el-menu-item index="2" @click="changeMenu(0)">待提报</el-menu-item>
-          <el-menu-item index="3" @click="changeMenu(1)">申请资产号</el-menu-item>
+          <el-menu-item index="3" @click="changeMenu(1)"
+            >申请资产号</el-menu-item
+          >
           <el-menu-item index="4" @click="changeMenu(2)">部分提报</el-menu-item>
-          <el-menu-item index="5" @click="changeMenu(3)">提报审批中</el-menu-item>
+          <el-menu-item index="5" @click="changeMenu(3)"
+            >提报审批中</el-menu-item
+          >
           <el-menu-item index="6" @click="changeMenu(4)">已提报</el-menu-item>
           <el-menu-item index="7" @click="changeMenu(5)">已发放</el-menu-item>
         </el-menu>
@@ -54,14 +62,28 @@
         :highlight-current-row="true"
         style="width: 100%"
         :max-height="setTableHeight()">
-        <el-table-column fixed prop="applicant" label="申请人" align="center" width="120" />
-        <el-table-column fixed prop="month" label="申请年月" align="center" width="100" />
+        <el-table-column
+          fixed
+          prop="applicant"
+          label="申请人"
+          align="center"
+          width="120" />
+        <el-table-column
+          fixed
+          prop="month"
+          label="申请年月"
+          align="center"
+          width="100" />
         <el-table-column prop="status" label="状态" align="center" width="110">
           <template #default="scope">
             <el-tag type="danger" v-if="scope.row.status == 0">待提报</el-tag>
             <el-tag type="info" v-if="scope.row.status == 1">申请资产号</el-tag>
-            <el-tag type="warning" v-if="scope.row.status == 2">部分提报</el-tag>
-            <el-tag type="primary" v-if="scope.row.status == 3">提报审批中</el-tag>
+            <el-tag type="warning" v-if="scope.row.status == 2"
+              >部分提报</el-tag
+            >
+            <el-tag type="primary" v-if="scope.row.status == 3"
+              >提报审批中</el-tag
+            >
             <el-tag type="primary" v-if="scope.row.status == 4">已提报</el-tag>
             <el-tag type="success" v-if="scope.row.status == 5">已发放</el-tag>
           </template>
@@ -84,8 +106,20 @@
 
         <el-table-column prop="" label="操作" width="150" align="center">
           <template #default="scope">
-            <el-button type="primary" size="small" plain @click="toEdit(scope.row)"> 编辑 </el-button>
-            <el-button type="danger" size="small" plain @click="Delete(scope.row.id)"> 删除 </el-button>
+            <el-button
+              type="primary"
+              size="small"
+              plain
+              @click="toEdit(scope.row)">
+              编辑
+            </el-button>
+            <el-button
+              type="danger"
+              size="small"
+              plain
+              @click="Delete(scope.row.id)">
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -168,11 +202,19 @@
                       <div class="label">状态</div>
                     </template>
                   </el-input>
-                  <el-select class="search-item" v-model="purchase.status" style="width: 160px" placeholder="状态">
+                  <el-select
+                    class="search-item"
+                    v-model="purchase.status"
+                    style="width: 160px"
+                    placeholder="状态">
                     <el-option :value="0" label="待提报">待提报</el-option>
-                    <el-option :value="1" label="申请资产号">申请资产号</el-option>
+                    <el-option :value="1" label="申请资产号"
+                      >申请资产号</el-option
+                    >
                     <el-option :value="2" label="部分提报">部分提报</el-option>
-                    <el-option :value="3" label="提报审批中">提报审批中</el-option>
+                    <el-option :value="3" label="提报审批中"
+                      >提报审批中</el-option
+                    >
                     <el-option :value="4" label="已提报">已提报</el-option>
                     <el-option :value="5" label="已发放">已发放</el-option>
                   </el-select>
@@ -182,6 +224,7 @@
               <el-form-item prop="picture">
                 <el-upload
                   ref="uploadRef"
+                  list-type="picture-card"
                   class="upload-demo"
                   :action="UploadURL"
                   :limit="1"
@@ -189,6 +232,19 @@
                   :on-progress="handleProgress"
                   :on-success="handleSuccess"
                   :on-error="handleError">
+                  <template #file="{ file }">
+                    <img
+                      class="el-upload-list__item-thumbnail"
+                      :src="file.url"
+                      alt="" />
+                    <span class="el-upload-list__item-actions">
+                      <span
+                        class="el-upload-list__item-preview"
+                        @click="handlePictureCardPreview(file)">
+                        <el-icon><zoom-in /></el-icon>
+                      </span>
+                    </span>
+                  </template>
                   <template #trigger>
                     <el-button type="primary">选择图片</el-button>
                   </template>
@@ -196,14 +252,25 @@
               </el-form-item>
             </div>
             <div style="height: 30px; margin-top: 10px">
-              <div v-if="isTip" style="text-align: center; font-size: 18px; font-weight: 700; color: #846cb6">
+              <div
+                v-if="isTip"
+                style="
+                  text-align: center;
+                  font-size: 18px;
+                  font-weight: 700;
+                  color: #846cb6;
+                ">
                 {{ tip }}
               </div>
             </div>
             <div class="dialog-footer">
               <el-button @click="cencel">取 消</el-button>
-              <el-button type="primary" @click="EditPurchase" v-if="editMode">编 辑</el-button>
-              <el-button type="primary" @click="addPurchase" v-else>确 定</el-button>
+              <el-button type="primary" @click="EditPurchase" v-if="editMode"
+                >编 辑</el-button
+              >
+              <el-button type="primary" @click="addPurchase" v-else
+                >确 定</el-button
+              >
             </div>
           </el-form>
         </el-dialog>
@@ -226,7 +293,9 @@
 
         <template #footer>
           <span class="dialog-footer">
-            <el-button @click="viewPictureDialogVisible = false" type="primary">关 闭</el-button>
+            <el-button @click="viewPictureDialogVisible = false" type="primary"
+              >关 闭</el-button
+            >
           </span>
         </template>
       </el-dialog>
@@ -239,6 +308,7 @@ import router from "@/router";
 import { onMounted, reactive, ref, watch } from "vue";
 import { addItem, listItems, deleteItem, editItem } from "@/api/WorkSpace";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { Plus, ZoomIn } from "@element-plus/icons-vue";
 import { useRoute } from "vue-router";
 let useRouter = useRoute();
 let loading = ref(false);
@@ -320,7 +390,8 @@ function getPicIndex(pic) {
 function toAddPurchase() {
   Dialog.value = true;
   let t = new Date();
-  purchase.value.month = t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0");
+  purchase.value.month =
+    t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0");
 }
 async function addPurchase() {
   if (isUpload.value) {
@@ -452,6 +523,18 @@ watch(
     deep: true,
   },
 );
+/**
+ * 附件上传预览
+ * @param file
+ */
+const handlePictureCardPreview = (file) => {
+  if (file.url != null) {
+    srcList.value = [];
+    srcList.value.push(file.url);
+    picture.value = file.url;
+    viewPictureDialogVisible.value = true;
+  }
+};
 /**
  * 查看图片
  * @param row 数据
