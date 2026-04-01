@@ -1,34 +1,49 @@
 <template>
-    <div class="space-bg theme-bg" id="space-bg"></div>
-    <div class="user-space-main">
-        <div class="user-space-left-sider">
-            <CardView class="user-space-navs user-space-sider">
-                <div class="nav-item" v-for="item in showNavigations" :key="item">
-                    <div @click="toPath(item)" active-class="router-link-active" class="router-link">
-                        <div class="nav-item-left">
-                            <i class="iconfont" v-html="item.icon"></i>
-                            <div class="nav-item-span">{{ item.name }}</div>
-                        </div>
-                        <div class="nav-item-right">
-                            <div class="navItemTip" v-if="noReadMsgCount > 0 && item.name == '消息'"></div>
-                        </div>
-                    </div>
-                </div>
-            </CardView>
+  <div class="space-bg theme-bg" id="space-bg"></div>
+  <div class="user-space-main">
+    <div class="user-space-left-sider">
+      <CardView class="user-space-navs user-space-sider">
+        <div class="nav-item" v-for="item in showNavigations" :key="item">
+          <div
+            @click="toPath(item)"
+            :class="{ 'router-link-active': isActiveNav(item) }"
+            active-class="router-link-active"
+            class="router-link">
+            <div class="nav-item-left">
+              <i class="iconfont" v-html="item.icon"></i>
+              <div class="nav-item-span">{{ item.name }}</div>
+            </div>
+            <div class="nav-item-right">
+              <div
+                class="navItemTip"
+                v-if="noReadMsgCount > 0 && item.name == '消息'"></div>
+            </div>
+          </div>
         </div>
-        <CardView class="router-view">
-            <router-view v-slot="{ Component }">
-                <keep-alive>
-                    <component :is="Component" :key="$route.path" v-if="$route.meta.keepAlive" />
-                </keep-alive>
-                <component :is="Component" :key="$route.path" v-if="!$route.meta.keepAlive" />
-            </router-view>
-        </CardView>
-        <div class="user-space-right-sider">
-            <ArticleAuthorInfoCard class="UserInfoCard user-space-sider" :authorId="uid" btnType="index-message" />
-        </div>
+      </CardView>
     </div>
-    <BackTop></BackTop>
+    <CardView class="router-view">
+      <router-view v-slot="{ Component }">
+        <keep-alive>
+          <component
+            :is="Component"
+            :key="$route.path"
+            v-if="$route.meta.keepAlive" />
+        </keep-alive>
+        <component
+          :is="Component"
+          :key="$route.path"
+          v-if="!$route.meta.keepAlive" />
+      </router-view>
+    </CardView>
+    <div class="user-space-right-sider">
+      <ArticleAuthorInfoCard
+        class="UserInfoCard user-space-sider"
+        :authorId="uid"
+        btnType="index-message" />
+    </div>
+  </div>
+  <BackTop></BackTop>
 </template>
 
 <script setup>
@@ -49,239 +64,274 @@ let uid = ref(parseInt(useRouter.query.uid));
 let navigations;
 let showNavigations = ref([]);
 function getUserSpaceNav() {
-    listUserSpaceNav().then((res) => {
-        if (res.data.code == 1) {
-            navigations = res.data.data;
-            setNav();
-        }
-    });
+  listUserSpaceNav().then((res) => {
+    if (res.data.code == 1) {
+      navigations = res.data.data;
+      setNav();
+    }
+  });
 }
 
 async function setNav() {
-    for (let i = 0; i < navigations.length; i++) {
-        //检查是否为自己空间
-        if (navigations[i].path.match(/userInfo|userMessage/) != null) {
-            if (localStorage.getItem(md5("token")) != null && isSelfSpace.value != null) {
-                if (isSelfSpace.value == uid.value) {
-                    setNavPathParam(navigations[i]);
-                    showNavigations.value.push(navigations[i]);
-                }
-            } else {
-                continue;
-            }
-        } else {
-            setNavPathParam(navigations[i]);
-            showNavigations.value.push(navigations[i]);
+  for (let i = 0; i < navigations.length; i++) {
+    //检查是否为自己空间
+    if (navigations[i].path.match(/userInfo|userMessage/) != null) {
+      if (
+        localStorage.getItem(md5("token")) != null &&
+        isSelfSpace.value != null
+      ) {
+        if (isSelfSpace.value == uid.value) {
+          setNavPathParam(navigations[i]);
+          showNavigations.value.push(navigations[i]);
         }
+      } else {
+        continue;
+      }
+    } else {
+      setNavPathParam(navigations[i]);
+      showNavigations.value.push(navigations[i]);
     }
+  }
 }
 // 设置路径参数
 function setNavPathParam(nav) {
-    if (nav.path.match(/uid/)) nav.path = nav.path + uid.value;
+  if (nav.path.match(/uid/)) nav.path = nav.path + uid.value;
 }
 function toPath(item) {
-    if (item.path.match(/http/)) {
-        window.open(item.path, "blank");
-    } else {
-        router.push(item.path);
-        clearTip(item.name);
-    }
+  if (item.path.match(/http/)) {
+    window.open(item.path, "blank");
+  } else {
+    router.push(item.path);
+    activeNav.value = item.path;
+    clearTip(item.name);
+  }
 }
 function Listener() {
-    const SidebarMain = document.getElementsByClassName("user-space-sider");
-    var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-    if (scrollTop > 600) {
-        SidebarMain[0].style.top = "20px";
-        SidebarMain[1].style.top = "20px";
-    } else {
-        SidebarMain[0].style.top = "90px";
-        SidebarMain[1].style.top = "90px";
-    }
+  const SidebarMain = document.getElementsByClassName("user-space-sider");
+  var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  if (scrollTop > 600) {
+    SidebarMain[0].style.top = "20px";
+    SidebarMain[1].style.top = "20px";
+  } else {
+    SidebarMain[0].style.top = "90px";
+    SidebarMain[1].style.top = "90px";
+  }
 }
 /* 是否有未读消息 */
 let noReadMsgCount = ref(0);
 function hasNoReadMsg() {
-    if (localStorage.getItem(md5("token")) == null || localStorage.getItem(md5("islogin") == md5("false"))) return;
-    getNoReadMessageCount().then((res) => {
-        if (res.data.code == 1) {
-            noReadMsgCount.value = res.data.data;
-        } else {
-            ElMessage.error({ message: "登录过期", offset: 120 });
-        }
-    });
+  if (
+    localStorage.getItem(md5("token")) == null ||
+    localStorage.getItem(md5("islogin") == md5("false"))
+  )
+    return;
+  getNoReadMessageCount().then((res) => {
+    if (res.data.code == 1) {
+      noReadMsgCount.value = res.data.data;
+    } else {
+      ElMessage.error({ message: "登录过期", offset: 120 });
+    }
+  });
 }
+
 function clearTip(name) {
-    if (name == "消息") noReadMsgCount.value = 0;
+  if (name == "消息") noReadMsgCount.value = 0;
+}
+let activeNav = ref(null);
+function isActiveNav(item) {
+  //   console.log("item.path:", item.path);
+  //   console.log("activeNav.value:", activeNav.value);
+  //   console.log("------------");
+  //   console.log(
+  //     "activeNav.value.includes(item.path):",
+  //     item.path.includes(activeNav.value),
+  //   );
+
+  if (item.path.includes(activeNav.value)) return true;
+  return false;
 }
 onMounted(async () => {
-    if (useRouter.path == "/user/space")
-        router.push({ path: "/user/space/userArticle", query: { page: 1, uid: uid.value } });
-    window.addEventListener("scroll", Listener);
-    getUserSpaceNav();
-    hasNoReadMsg();
+  if (useRouter.path == "/user/space") {
+    router.push({
+      path: "/user/space/userArticle",
+      query: { page: 1, uid: uid.value },
+    });
+    activeNav.value = "/user/space/userArticle";
+  } else {
+    activeNav.value = useRouter.path;
+    console.log(activeNav.value);
+  }
+
+  window.addEventListener("scroll", Listener);
+  getUserSpaceNav();
+  hasNoReadMsg();
 });
 onUnmounted(() => {
-    window.removeEventListener("scroll", Listener, false);
+  window.removeEventListener("scroll", Listener, false);
 });
 </script>
 
 <style scoped lang="less">
 .space-bg {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    background-size: cover;
-    background-repeat: no-repeat;
-    z-index: -99999;
-    // background-image: url("../../assets/img/bg/bg1.webp");
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: -99999;
+  // background-image: url("../../assets/img/bg/bg1.webp");
 }
 .space-bg::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    // filter: blur(10px);
-    // -webkit-backdrop-filter: blur(10px);
-    // backdrop-filter: blur(10px);
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  // filter: blur(10px);
+  // -webkit-backdrop-filter: blur(10px);
+  // backdrop-filter: blur(10px);
 }
 .user-space-right-sider {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 .UserInfoCard {
-    position: sticky;
-    top: 90px;
-    width: 260px;
-    transition: all 0.6s ease;
+  position: sticky;
+  top: 90px;
+  width: 260px;
+  transition: all 0.6s ease;
 }
 .user-space-main {
-    display: flex;
-    justify-content: center;
-    position: relative;
-    top: 100px;
-    width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  top: 100px;
+  width: 100%;
 }
 .router-view {
-    min-width: 550px;
-    width: 60%;
-    margin: 20px;
-    margin-top: 0;
-    border-radius: 4px;
-    box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.08);
-    transition: all 0.3s ease;
-    padding: 30px 24px;
+  min-width: 550px;
+  width: 60%;
+  margin: 20px;
+  margin-top: 0;
+  border-radius: 4px;
+  box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.08);
+  transition: all 0.3s ease;
+  padding: 30px 24px;
 }
 .router-view:hover {
-    box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.14);
+  box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.14);
 }
 .user-space-left-sider {
-    width: 260px;
-    padding-left: 60px;
-    transition: all 0.3s ease;
+  width: 260px;
+  padding-left: 60px;
+  transition: all 0.3s ease;
 }
 .user-space-navs {
-    width: 200px;
-    height: 500px;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 6px 0px 6px rgba(7, 17, 27, 0.08);
-    transition: all 0.6s ease;
-    overflow: hidden;
-    position: sticky;
-    top: 70px;
-    background-image: linear-gradient(to right, #f5f7fa00 30%, var(--main-background-color) 100%);
-    background-color: #f5f7fa00;
+  width: 200px;
+  height: 500px;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 6px 0px 6px rgba(7, 17, 27, 0.08);
+  transition: all 0.6s ease;
+  overflow: hidden;
+  position: sticky;
+  top: 70px;
+  background-image: linear-gradient(
+    to right,
+    #f5f7fa00 30%,
+    var(--main-background-color) 100%
+  );
+  background-color: #f5f7fa00;
 }
 .user-space-navs:hover {
-    box-shadow: 6px 0px 6px rgba(7, 17, 27, 0.14);
+  box-shadow: 6px 0px 6px rgba(7, 17, 27, 0.14);
 }
 .nav-item {
-    margin: 20px 0;
-    border-radius: 4px;
-    transition: all 0.3s ease;
+  margin: 20px 0;
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
 .nav-item:hover {
-    box-shadow: 0 1px 3px 3px rgba(7, 17, 27, 0.3);
+  box-shadow: 0 1px 3px 3px rgba(7, 17, 27, 0.3);
 }
 .router-link {
-    display: block;
-    display: flex;
-    height: 30px;
-    padding: 0 10px;
-    align-items: center;
-    justify-content: space-between;
+  display: block;
+  display: flex;
+  height: 30px;
+  padding: 0 10px;
+  align-items: center;
+  justify-content: space-between;
 }
 .nav-item-left {
-    display: block;
-    display: flex;
-    height: 30px;
-    // padding: 0 10px;
-    align-items: center;
-    // min-width: 110px;
+  display: block;
+  display: flex;
+  height: 30px;
+  // padding: 0 10px;
+  align-items: center;
+  // min-width: 110px;
 }
 .router-link-active {
-    border-radius: 4px;
-    box-shadow: 0 1px 3px 3px rgba(7, 17, 27, 0.3);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px 3px rgba(7, 17, 27, 0.3);
 }
 .iconfont {
-    font-family: iconfont !important;
-    font-style: normal;
-    margin-right: 4px;
+  font-family: iconfont !important;
+  font-style: normal;
+  margin-right: 4px;
 }
 .nav-item-span {
-    font-size: 16px;
-    // color: #000;
-    user-select: none;
+  font-size: 16px;
+  // color: #000;
+  user-select: none;
 }
 .navItemTip {
-    border-radius: 50%;
-    background-color: var(--main-theme-color-orange);
-    width: 8px;
-    height: 8px;
-    // font-size: 12px;
-    text-align: center;
-    // color: #fff;
+  border-radius: 50%;
+  background-color: var(--main-theme-color-orange);
+  width: 8px;
+  height: 8px;
+  // font-size: 12px;
+  text-align: center;
+  // color: #fff;
 }
 @media (max-width: 1200px) {
-    .user-space-left-sider {
-        width: 200px;
-        padding-left: 20px;
-    }
-    .user-space-navs {
-        width: 180px;
-        padding: 10px;
-    }
-    .UserInfoCard {
-        width: 200px;
-        margin: 0;
-    }
-    .nav-item-span {
-        font-size: 14px;
-    }
+  .user-space-left-sider {
+    width: 200px;
+    padding-left: 20px;
+  }
+  .user-space-navs {
+    width: 180px;
+    padding: 10px;
+  }
+  .UserInfoCard {
+    width: 200px;
+    margin: 0;
+  }
+  .nav-item-span {
+    font-size: 14px;
+  }
 }
 @media (max-width: 600px) {
-    .user-space-main {
-        flex-direction: column;
-        width: 100%;
-        padding-top: 0;
-    }
-    .user-space-left-sider {
-        width: 100%;
-        padding-left: 0;
-    }
-    .user-space-navs {
-        height: auto;
-        width: 100%;
-    }
-    .router-view {
-        min-width: unset;
-        width: 100%;
-        margin: 10px 0;
-    }
-    .UserInfoCard {
-        width: 100%;
-        margin: 0;
-    }
+  .user-space-main {
+    flex-direction: column;
+    width: 100%;
+    padding-top: 0;
+  }
+  .user-space-left-sider {
+    width: 100%;
+    padding-left: 0;
+  }
+  .user-space-navs {
+    height: auto;
+    width: 100%;
+  }
+  .router-view {
+    min-width: unset;
+    width: 100%;
+    margin: 10px 0;
+  }
+  .UserInfoCard {
+    width: 100%;
+    margin: 0;
+  }
 }
 </style>
