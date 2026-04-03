@@ -3,7 +3,7 @@ spring:
     username: root
     password: 123456
   application:
-    name: qxfly-dev
+    name: dev
 logging:
   level:
     root: info

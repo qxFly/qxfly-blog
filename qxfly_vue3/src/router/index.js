@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { check } from "@/api/Admin/index";
 import * as TopBarUtils from "@/utils/TopBarUtils";
-import path from "path-browserify";
 let routes = [
   {
     path: "/",
@@ -218,8 +217,13 @@ router.beforeEach(async (to, from, next) => {
     await check().then((res) => {
       if (res.data.code != 1) {
         next("/");
+      } else {
+        TopBarUtils.removeEventListenerHigt();
       }
     });
+  }
+  if (from.path.includes("/manage")) {
+    TopBarUtils.addEventListenerHigt();
   }
   next();
 });

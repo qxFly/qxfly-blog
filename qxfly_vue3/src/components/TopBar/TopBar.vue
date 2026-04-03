@@ -1,14 +1,14 @@
 <template>
-    <div id="top-bar-1">
-        <div class="top-bar-bg" id="top-bar-bg"></div>
-        <div id="top-bar-2">
-            <UserImg></UserImg>
-            <div class="top-bar-right">
-                <TopBarNavigation class="TopBarNavigation"></TopBarNavigation>
-                <LoginLabel></LoginLabel>
-            </div>
-        </div>
+  <div id="top-bar-1">
+    <div class="top-bar-bg" id="top-bar-bg"></div>
+    <div id="top-bar-2">
+      <UserImg></UserImg>
+      <div class="top-bar-right">
+        <TopBarNavigation class="TopBarNavigation"></TopBarNavigation>
+        <LoginLabel></LoginLabel>
+      </div>
     </div>
+  </div>
 </template>
 
 <script setup>
@@ -17,136 +17,94 @@ import LoginLabel from "./LoginLabel.vue";
 import UserImg from "./UserImg.vue";
 import { nextTick, onMounted, onUnmounted, onUpdated } from "vue";
 import router from "@/router";
+import * as TopBarUtils from "@/utils/TopBarUtils";
 const props = defineProps({
-    hide: {
-        type: Boolean,
-        default: false,
-    },
+  hide: {
+    type: Boolean,
+    default: false,
+  },
 });
-function Listener() {
+function setTopbar() {
+  setTimeout(() => {
     const topbar = document.getElementById("top-bar-1");
-    var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-    if (scrollTop > 600) {
-        topbar.style.top = "-70px";
-    } else {
-        if (router.currentRoute.value.path.match(/manage/)) return;
-        topbar.style.top = "0";
-    }
+    if (topbar != null) topbar.style.top = "0px";
+  }, 300);
 }
-/* 当状态栏收起时，监听鼠标 */
-function ListenerMouser(event) {
-    let mouseX = event.clientX;
-    let mouseY = event.clientY;
-    // console.log(mouseX, mouseY);
-    const topbar = document.getElementById("top-bar-1");
-    var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-    if (scrollTop > 600) {
-        if (mouseY < 70) {
-            topbar.style.top = "0px";
-        } else {
-            topbar.style.top = "-70px";
-        }
-    }
-}
-/* 当状态栏长时间不操作时，透明化 */
-function ListenerTime() {
-    const topbarbg = document.getElementById("top-bar-bg");
-    const topbar = document.getElementById("top-bar-1");
-    if (topbar == null || topbarbg == null) return;
-    topbar.addEventListener("mousemove", mousemove);
-    topbar.addEventListener("mouseleave", mouseleave);
-    mouseleave();
-}
-// 鼠标离开状态栏
-function mouseleave() {
-    const topbarbg = document.getElementById("top-bar-bg");
-    if (topbarbg == null) return;
-    setTimeout(() => {
-        topbarbg.style.opacity = "0.2";
-    }, 2000);
-}
-// 鼠标移动到状态栏
-function mousemove() {
-    const topbarbg = document.getElementById("top-bar-bg");
-    if (topbarbg == null) return;
-    topbarbg.style.opacity = "1";
-    topbarbg.style.backgroundImage = "linear-gradient(to right, var(--main-theme-color-blue), #b1dbff)";
-}
-
 onMounted(() => {
-    setTimeout(() => {
-        const topbar = document.getElementById("top-bar-1");
-        if (topbar != null) topbar.style.top = "0px";
-    }, 300);
-    ListenerTime();
-    window.addEventListener("scroll", Listener);
-    document.addEventListener("mousemove", ListenerMouser);
+  setTopbar();
+  TopBarUtils.ListenerTime();
+  TopBarUtils.addEventListenerHigt();
+  TopBarUtils.addEventListenerMouser();
 });
 onUnmounted(() => {
-    window.removeEventListener("scroll", Listener, false);
-    window.removeEventListener("mousemove", ListenerMouser, false);
+  TopBarUtils.removeEventListenerHigt();
+  TopBarUtils.removeEventListenerMouser();
 });
 </script>
 
 <style>
 #top-bar-1 {
-    display: block; /* 设定块元素独占一行 */
-    position: fixed;
-    width: 100%;
-    height: 70px;
-    margin: 0;
-    top: -70px;
-    /* background-image: linear-gradient(to right, #b0c1ff, #b8b0ff); */
-    z-index: 9999;
-    /* box-shadow: 0 1px 6px 4px rgba(7, 17, 27, 0.5);*/
-    transition: all 0.4s ease;
+  display: block; /* 设定块元素独占一行 */
+  position: fixed;
+  width: 100%;
+  height: 70px;
+  margin: 0;
+  top: -70px;
+  /* background-image: linear-gradient(to right, #b0c1ff, #b8b0ff); */
+  z-index: 9999;
+  /* box-shadow: 0 1px 6px 4px rgba(7, 17, 27, 0.5);*/
+  transition: all 0.4s ease;
 }
 #top-bar-1:hover {
-    /* background-image: linear-gradient(to right, var(--main-theme-color-blue), #b1dbff); */
-    box-shadow: 0 1px 6px 4px rgba(7, 17, 27, 0.5);
+  /* background-image: linear-gradient(to right, var(--main-theme-color-blue), #b1dbff); */
+  box-shadow: 0 1px 6px 4px rgba(7, 17, 27, 0.5);
 }
 .top-bar-bg {
-    width: 100%;
-    height: 70px;
-    position: fixed;
-    background-image: linear-gradient(to right, var(--main-theme-color-blue), #b1dbff);
-    box-shadow: 0 1px 6px 4px rgba(7, 17, 27, 0.5);
-    transition: all 1s ease;
+  width: 100%;
+  height: 70px;
+  position: fixed;
+  background-image: linear-gradient(
+    to right,
+    var(--main-theme-color-blue),
+    #b1dbff
+  );
+  box-shadow: 0 1px 6px 4px rgba(7, 17, 27, 0.5);
+  transition: all 1s ease;
 }
 #top-bar-2 {
-    position: relative;
-    /* min-width: 1080px; */
-    height: 70px;
-    margin: 0;
-    display: flex;
-    width: 100%;
-    padding: 0 80px;
-    justify-content: space-between;
+  position: relative;
+  /* min-width: 1080px; */
+  height: 70px;
+  margin: 0;
+  display: flex;
+  width: 100%;
+  padding: 0 80px;
+  justify-content: space-between;
 }
 .top-bar-right {
-    display: flex;
+  display: flex;
 }
 .TopBarNavigation {
-    margin-right: 16px;
+  margin-right: 16px;
 }
 @media (max-width: 1100px) {
 }
 @media (max-width: 800px) {
-    .top-bar-right {
-        /* width: 100%; */
-    }
-    #top-bar-1 {
-        padding: 0;
-        height: 50px;
-    }
-    #top-bar-2 {
-        padding: 0 10px 0 0;
-        min-width: unset;
-        height: 50px;
-        justify-content: left;
-    }
-    .top-bar-bg {
-        height: 55px;
-    }
+  .top-bar-right {
+    /* width: 100%; */
+  }
+  #top-bar-1 {
+    padding: 0;
+    height: 50px;
+  }
+  #top-bar-2 {
+    padding: 0 10px 0 0;
+    min-width: unset;
+    height: 50px;
+    justify-content: left;
+  }
+  .top-bar-bg {
+    height: 55px;
+  }
 }
 </style>

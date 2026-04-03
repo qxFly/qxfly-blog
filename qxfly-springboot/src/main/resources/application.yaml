@@ -4,7 +4,7 @@ spring:
     url: jdbc:mysql://localhost:3306/qxfly_blog?serverTimezone=Asia/Shanghai
     type: com.alibaba.druid.pool.DruidDataSource
   profiles:
-    active: prod
+    active: zjky
   jackson:
     time-zone: GMT+8
   servlet:

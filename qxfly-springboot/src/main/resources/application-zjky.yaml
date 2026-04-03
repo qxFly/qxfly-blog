@@ -1,9 +1,9 @@
 spring:
   datasource:
     username: root
-    password: FLY334955ffh.
+    password: Zjky@601899
   application:
-    name: prod
+    name: zjky
 logging:
   level:
     root: info
@@ -14,7 +14,7 @@ logging:
       max-file-size: 1MB
       file-name-pattern: ${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz
 qxfly:
-  domain: https://qxfly.top/fly
+  domain: http://10.61.4.160/fly
   file:
     uploadPath: /qxfly/web/data/upload/
     path:
