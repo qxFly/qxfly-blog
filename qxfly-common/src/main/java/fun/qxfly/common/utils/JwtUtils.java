@@ -88,15 +88,25 @@ public class JwtUtils {
      * @param refreshToken 老token
      * @return 新的token
      */
-    public static HashMap<String, String> refreshToken(String refreshToken) {
-        if (!getTokenType(refreshToken).equals("refreshToken"))
-            throw new UserException(ExceptionEnum.USER_LOGIN_EXPIRED);
+    public static HashMap<String, String> refreshToken(String refreshToken) throws Exception {
+//        if (!getTokenType(refreshToken).equals("refreshToken"))
+//            throw new UserException(ExceptionEnum.USER_LOGIN_EXPIRED);
+        isRefreshToken(refreshToken);
         String accessToken = createAccessToken(getUid(refreshToken), getUsername(refreshToken), getRole(refreshToken), null);
         String refreshToken1 = createRefreshToken(getUid(refreshToken), getUsername(refreshToken), getRole(refreshToken), null);
         HashMap<String, String> tokenMap = new HashMap<>();
         tokenMap.put("accessToken", accessToken);
         tokenMap.put("refreshToken", refreshToken1);
         return tokenMap;
+    }
+
+    public static void isRefreshToken(String refreshToken) throws Exception{
+        try {
+            parseJWT(refreshToken);
+        } catch (Exception e) {
+            throw new Exception();
+        }
+
     }
 
 
@@ -111,7 +121,7 @@ public class JwtUtils {
     }
 
     private static Claims parseJWT(String token, String type) {
-        if (token == null || token.isEmpty() || token.isBlank()) {
+        if (token == null || token.isBlank()) {
             throw new RuntimeException();
         }
         try {
@@ -124,7 +134,7 @@ public class JwtUtils {
             if (type != null && type.equals("refreshToken")) {
                 throw new UserException(ExceptionEnum.USER_LOGIN_EXPIRED);
             }
-            throw new JwtException(ExceptionEnum.TOKEN_EXPIRED);
+            throw new JwtException(ExceptionEnum.TOKEN_EXPIRED);//todo 生异常：token已过期; 异常代码：1101
         } catch (Exception e) {
             throw new JwtException(ExceptionEnum.TOKEN_ERROR);
         }

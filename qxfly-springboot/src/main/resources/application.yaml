@@ -24,6 +24,7 @@ qxfly:
   jwt:
     ignore:
       urls:
+        - /webhook
         - /index/hello
         - /favicon.ico  #网站图标
         - /gs  #获取公匙

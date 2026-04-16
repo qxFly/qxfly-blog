@@ -71,6 +71,7 @@ service.interceptors.response.use(async (response) => {
   return interceptors(response);
 });
 export async function interceptors(response) {
+  console.log("123456789");
   let code = response.data.code;
   /* 登录过期：双token都已经过期 */
   if (code === 1102 || code === 1201) {
@@ -84,6 +85,8 @@ export async function interceptors(response) {
   }
   /* token过期 */
   if (code === 1101) {
+    console.log("a1d2aw1d32a13wda13w");
+
     /* 获取新token */
     const isSuccess = await refresh_Token();
     if (isSuccess) {
@@ -105,6 +108,8 @@ let promise = null;
 async function refresh_Token() {
   /* 刷新token时，有大量请求返回第一个 */
   if (promise != null) {
+    console.log("aSD132");
+
     return promise;
   }
   promise = new Promise(async (resolve) => {

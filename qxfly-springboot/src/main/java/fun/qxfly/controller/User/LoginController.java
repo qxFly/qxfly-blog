@@ -2,6 +2,8 @@ package fun.qxfly.controller.User;
 
 import fun.qxfly.common.domain.entity.User;
 import fun.qxfly.common.domain.po.Result;
+import fun.qxfly.common.enums.ExceptionEnum;
+import fun.qxfly.common.exception.excep.UserException;
 import fun.qxfly.common.service.RSAService;
 import fun.qxfly.common.utils.JwtUtils;
 import fun.qxfly.common.utils.RoleUtils;
@@ -91,7 +93,12 @@ public class LoginController {
     @PostMapping("/updateLoginStatue")
     public Result updateLoginStatue(@RequestBody HashMap<String, String> map) {
         String refreshToken = map.get("refreshToken");
-        HashMap<String, String> tokenMap = JwtUtils.refreshToken(refreshToken);
+        HashMap<String, String> tokenMap;
+        try {
+            tokenMap  = JwtUtils.refreshToken(refreshToken);//tOdo 生异常：token已过期; 异常代码：1101
+        }catch (Exception e){
+            throw new UserException(ExceptionEnum.USER_LOGIN_EXPIRED);
+        }
         return Result.success(tokenMap);
 //        String token = request.getHeader("token");
 ////        /* 检查token有效性 */

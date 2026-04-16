@@ -42,7 +42,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         //获取证书token
         String token = req.getHeader("token");
         //解析token，解析失败，返回错误结果（未登录）
-        Claims claims = JwtUtils.parseJWT(token);
+        Claims claims = JwtUtils.parseJWT(token);//todo 生异常：token已过期; 异常代码：1101
         User user = new User();
         user.setId(claims.get("uid", Integer.class));
         user.setUsername(claims.get("username", String.class));
