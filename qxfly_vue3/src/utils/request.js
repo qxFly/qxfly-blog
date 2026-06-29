@@ -1,4 +1,3 @@
-import { check } from "@/api/Admin";
 import router from "@/router";
 import axios from "axios";
 import md5 from "js-md5";
@@ -9,8 +8,6 @@ let refreshToken = ref(localStorage.getItem(md5("refreshToken")));
 let domain = window.location.hostname;
 const service = axios.create({
   baseURL: domain == "38.55.199.233" ? process.env.VUE_APP_IP_BASE_URL : process.env.VUE_APP_BASE_URL,
-  // baseURL: "https://qxfly.fun/fly",
-  // baseURL: "http://120.24.195.4:8081",
 });
 const passurl = [
   "/gs", //获取公匙
@@ -70,8 +67,8 @@ service.interceptors.request.use(async (config) => {
 service.interceptors.response.use(async (response) => {
   return interceptors(response);
 });
+let isRefresh = false;
 export async function interceptors(response) {
-  console.log("123456789");
   let code = response.data.code;
   /* 登录过期：双token都已经过期 */
   if (code === 1102 || code === 1201) {
@@ -85,8 +82,6 @@ export async function interceptors(response) {
   }
   /* token过期 */
   if (code === 1101) {
-    console.log("a1d2aw1d32a13wda13w");
-
     /* 获取新token */
     const isSuccess = await refresh_Token();
     if (isSuccess) {
@@ -95,9 +90,13 @@ export async function interceptors(response) {
       const r = await service.request(response.config);
       return r;
     } else {
-      localStorage.clear();
-      sessionStorage.clear();
-      location.reload();
+      if (!isRefresh) {
+        isRefresh = true;
+        localStorage.clear();
+        sessionStorage.clear();
+        location.reload();
+      }
+
       return response;
     }
   } else {

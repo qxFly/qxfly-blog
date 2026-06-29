@@ -63,11 +63,7 @@ onUnmounted(() => {
   width: 100%;
   height: 70px;
   position: fixed;
-  background-image: linear-gradient(
-    to right,
-    var(--main-theme-color-blue),
-    #b1dbff
-  );
+  background-image: linear-gradient(to right, var(--main-theme-color-blue), #b1dbff);
   box-shadow: 0 1px 6px 4px rgba(7, 17, 27, 0.5);
   transition: all 1s ease;
 }

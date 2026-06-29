@@ -14,9 +14,7 @@
               <div class="nav-item-span">{{ item.name }}</div>
             </div>
             <div class="nav-item-right">
-              <div
-                class="navItemTip"
-                v-if="noReadMsgCount > 0 && item.name == '消息'"></div>
+              <div class="navItemTip" v-if="noReadMsgCount > 0 && item.name == '消息'"></div>
             </div>
           </div>
         </div>
@@ -25,22 +23,13 @@
     <CardView class="router-view">
       <router-view v-slot="{ Component }">
         <keep-alive>
-          <component
-            :is="Component"
-            :key="$route.path"
-            v-if="$route.meta.keepAlive" />
+          <component :is="Component" :key="$route.path" v-if="$route.meta.keepAlive" />
         </keep-alive>
-        <component
-          :is="Component"
-          :key="$route.path"
-          v-if="!$route.meta.keepAlive" />
+        <component :is="Component" :key="$route.path" v-if="!$route.meta.keepAlive" />
       </router-view>
     </CardView>
     <div class="user-space-right-sider">
-      <ArticleAuthorInfoCard
-        class="UserInfoCard user-space-sider"
-        :authorId="uid"
-        btnType="index-message" />
+      <ArticleAuthorInfoCard class="UserInfoCard user-space-sider" :authorId="uid" btnType="index-message" />
     </div>
   </div>
   <BackTop></BackTop>
@@ -76,10 +65,7 @@ async function setNav() {
   for (let i = 0; i < navigations.length; i++) {
     //检查是否为自己空间
     if (navigations[i].path.match(/userInfo|userMessage/) != null) {
-      if (
-        localStorage.getItem(md5("token")) != null &&
-        isSelfSpace.value != null
-      ) {
+      if (localStorage.getItem(md5("token")) != null && isSelfSpace.value != null) {
         if (isSelfSpace.value == uid.value) {
           setNavPathParam(navigations[i]);
           showNavigations.value.push(navigations[i]);
@@ -120,11 +106,7 @@ function Listener() {
 /* 是否有未读消息 */
 let noReadMsgCount = ref(0);
 function hasNoReadMsg() {
-  if (
-    localStorage.getItem(md5("token")) == null ||
-    localStorage.getItem(md5("islogin") == md5("false"))
-  )
-    return;
+  if (localStorage.getItem(md5("token")) == null || localStorage.getItem(md5("islogin") == md5("false"))) return;
   getNoReadMessageCount().then((res) => {
     if (res.data.code == 1) {
       noReadMsgCount.value = res.data.data;
@@ -159,7 +141,6 @@ onMounted(async () => {
     activeNav.value = "/user/space/userArticle";
   } else {
     activeNav.value = useRouter.path;
-    console.log(activeNav.value);
   }
 
   window.addEventListener("scroll", Listener);
@@ -236,11 +217,7 @@ onUnmounted(() => {
   overflow: hidden;
   position: sticky;
   top: 70px;
-  background-image: linear-gradient(
-    to right,
-    #f5f7fa00 30%,
-    var(--main-background-color) 100%
-  );
+  background-image: linear-gradient(to right, #f5f7fa00 30%, var(--main-background-color) 100%);
   background-color: #f5f7fa00;
 }
 .user-space-navs:hover {

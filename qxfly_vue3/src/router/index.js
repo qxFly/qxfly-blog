@@ -43,7 +43,10 @@ let routes = [
       },
     ],
   },
-
+  {
+    path: "/logintest",
+    component: () => import("@/views/Login/LoginTest.vue"),
+  },
   {
     path: "/login",
     component: () => import("@/views/Login/Login.vue"),
@@ -205,7 +208,13 @@ const router = createRouter({
 });
 router.beforeEach(async (to, from, next) => {
   /* 根据路由隐藏状态栏 */
+
   TopBarUtils.hideTopBarByRouter(to.path);
+  TopBarUtils.removeEventListenerHigt();
+  setTimeout(() => {
+    TopBarUtils.addEventListenerHigt();
+  }, 100);
+
   /* 返回上一页时跳过空页面 */
   if (from.path.match(/space/)) {
     if (to.path == "/user/space") {
