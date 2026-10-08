@@ -26,15 +26,21 @@
             order by c.createTime desc
         </if>
         <if test="sort == 'hot'">
-            order by c.likes desc
+            order by c.likeCount desc, c.createTime desc
         </if>
     </select>
-    <select id="getChildCommentByCommentId" resultMap="comment">
+    <select id="getChildCommentsByParentIds" resultMap="comment">
         select c.*, u.avatar
         from comment c
                  join `user` u on u.id = c.userId
-        where parentCommentId = #{id}
-          and c.verify = 3
-        order by c.createTime
+        where c.verify = 3
+          and c.parentCommentId in
+        <foreach collection="ids" item="pid" open="(" separator="," close=")">#{pid}</foreach>
+        order by c.parentCommentId, c.createTime
+    </select>
+    <select id="getCommentById" resultMap="comment">
+        select c.id, c.articleId, c.parentCommentId, c.userId, c.username, c.toUserId, c.toUsername, c.verify
+        from comment c
+        where c.id = #{cid}
     </select>
 </mapper>

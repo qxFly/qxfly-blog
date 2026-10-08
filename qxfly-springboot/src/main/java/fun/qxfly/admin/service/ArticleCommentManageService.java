@@ -22,6 +22,15 @@ public interface ArticleCommentManageService {
     boolean articleCommentVerify(Integer commentId, Integer verify);
 
     /**
+     * 批量审核文章评论
+     *
+     * @param ids    评论id列表
+     * @param verify 审核状态
+     * @return
+     */
+    boolean batchArticleCommentVerify(java.util.List<Integer> ids, Integer verify);
+
+    /**
      * 搜索评论
      * @param comment
      * @param createTimeStart

@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -45,7 +47,7 @@ public class ArticleCommentManageController {
     }
 
     /**
-     * 删除文章评论
+     * 删除文章评论（含子评论）
      *
      * @param comment
      * @return
@@ -57,6 +59,38 @@ public class ArticleCommentManageController {
             return Result.success();
         } else {
             return Result.error("");
+        }
+    }
+
+    /**
+     * 批量审核文章评论
+     *
+     * @param map ids: 评论id列表, verify: 审核状态(1待审核 2不通过 3通过)
+     * @return
+     */
+    @Operation(description = "批量审核文章评论", summary = "批量审核文章评论")
+    @PostMapping("/batchArticleCommentVerify")
+    public Result batchArticleCommentVerify(@RequestBody Map<String, Object> map) {
+        Object idsObj = map.get("ids");
+        Object verifyObj = map.get("verify");
+        if (!(idsObj instanceof List) || ((List<?>) idsObj).isEmpty() || !(verifyObj instanceof Number)) {
+            return Result.error("参数错误");
+        }
+        Integer verify = ((Number) verifyObj).intValue();
+        if (verify < 1 || verify > 3) {
+            return Result.error("参数错误");
+        }
+        List<Integer> ids = ((List<?>) idsObj).stream()
+                .filter(o -> o instanceof Number)
+                .map(o -> ((Number) o).intValue())
+                .collect(Collectors.toList());
+        if (ids.isEmpty()) {
+            return Result.error("参数错误");
+        }
+        if (articleCommentManageService.batchArticleCommentVerify(ids, verify)) {
+            return Result.success();
+        } else {
+            return Result.error("操作失败");
         }
     }
 

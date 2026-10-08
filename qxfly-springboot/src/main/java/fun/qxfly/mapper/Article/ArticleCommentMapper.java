@@ -18,12 +18,20 @@ public interface ArticleCommentMapper {
     List<Comment> getArticleCommentsByPage(@Param("sort") String sort, @Param("id") int id);
 
     /**
-     * 获取子评论
+     * 批量获取子评论
      *
-     * @param id
+     * @param ids 父评论id列表
      * @return
      */
-    List<Comment> getChildCommentByCommentId(Integer id);
+    List<Comment> getChildCommentsByParentIds(@Param("ids") List<Integer> ids);
+
+    /**
+     * 根据评论id获取评论（用于校验归属）
+     *
+     * @param cid
+     * @return
+     */
+    Comment getCommentById(@Param("cid") Integer cid);
 
     /**
      * 发布评论
@@ -43,16 +51,6 @@ public interface ArticleCommentMapper {
     Integer addCommentLike(Comment comment);
 
     /**
-     * 获取用户评论点赞
-     *
-     * @param u
-     * @param comment
-     * @return
-     */
-    @Select("select count(*) from user_like_comment where uid = #{u.id} and cid = #{comment.id}")
-    Integer getUserCommentLike(@Param("u") User u, @Param("comment") Comment comment);
-
-    /**
      * 添加用户评论点赞
      *
      * @param comment
@@ -62,32 +60,13 @@ public interface ArticleCommentMapper {
     Integer addUserCommentLike(@Param("u") User u, @Param("comment") Comment comment);
 
     /**
-     * 获取用户今日是否点赞
-     *
-     * @param u
-     * @param comment
-     * @return
-     */
-    @Select("select count(*) from user_comment_daily_like where uid = #{u.id} and cid = #{comment.id}")
-    Integer getUserCommentDailyLike(@Param("u") User u, @Param("comment") Comment comment);
-
-    /**
-     * 添加用户今日点赞
-     *
-     * @param u
-     * @param comment
-     */
-    @Insert("insert into user_comment_daily_like(uid, cid)values(#{u.id},#{comment.id})")
-    Integer addUserCommentDailyLike(@Param("u") User u, @Param("comment") Comment comment);
-
-    /**
-     * 取消用户评论点赞
+     * 删除用户评论点赞
      *
      * @param u
      * @param comment
      */
     @Delete("delete from user_like_comment where uid = #{u.id} and cid = #{comment.id}")
-    Integer cancelUserCommentLike(@Param("u") User u, @Param("comment") Comment comment);
+    Integer deleteUserCommentLike(@Param("u") User u, @Param("comment") Comment comment);
 
     /**
      * 获取用户点赞的评论
@@ -100,19 +79,28 @@ public interface ArticleCommentMapper {
     List<Integer> getUserLikeComment(@Param("aid") Integer aid, @Param("uid") int uid);
 
     /**
-     * 减少评论点赞数
+     * 减少评论点赞数（不小于0）
      *
      * @param comment
      */
-    @Update("update comment set likeCount = likeCount - 1 where id = #{id}")
+    @Update("update comment set likeCount = GREATEST(likeCount - 1, 0) where id = #{id}")
     void reduceCommentLike(Comment comment);
 
     /**
-     * 删除评论
+     * 删除评论及其子评论
      *
      * @param cid
      * @return
      */
-    @Delete("delete from comment where id = #{cid}")
-    Integer deleteComment(Integer cid);
+    @Delete("delete from comment where id = #{cid} or parentCommentId = #{cid}")
+    Integer deleteCommentWithChildren(@Param("cid") Integer cid);
+
+    /**
+     * 校验文章是否存在
+     *
+     * @param id
+     * @return
+     */
+    @Select("select count(*) from article where id = #{id}")
+    Integer existsArticle(@Param("id") int id);
 }

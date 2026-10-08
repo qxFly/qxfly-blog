@@ -3,10 +3,13 @@ package fun.qxfly.common.service.impl;
 import fun.qxfly.common.mapper.RSAMapper;
 import fun.qxfly.common.service.RSAService;
 import fun.qxfly.common.utils.RSAEncrypt;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
+@Slf4j
 @Service
 public class RSAServiceImpl implements RSAService {
 
@@ -17,12 +20,13 @@ public class RSAServiceImpl implements RSAService {
     }
 
     /**
-     * 根据公匙获取私匙
+     * 根据公匙获取私匙（查后即删，需保证原子性）
      *
      * @param publicKey
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String getPrivateKey(String publicKey) {
         String privateKey = rsaMapper.getPrivateKey(publicKey);
         rsaMapper.deleteKey(publicKey);
@@ -40,7 +44,7 @@ public class RSAServiceImpl implements RSAService {
         try {
             keyMap = RSAEncrypt.genKeyPair();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("生成RSA密钥对失败", e);
             return "系统错误";
         }
         rsaMapper.saveKey(keyMap.get(0), keyMap.get(1));

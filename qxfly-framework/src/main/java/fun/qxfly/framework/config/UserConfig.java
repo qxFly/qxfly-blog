@@ -54,9 +54,8 @@ public class UserConfig {
                 dir.mkdirs();
                 userConfigFile.createNewFile();
             } catch (Exception e) {
-                e.printStackTrace();
-                log.error("配置文件创建失败！请删除相关目录文件后重试：{}", userConfigFile.getAbsolutePath());
-                configurableApplicationContext.close();
+                log.error("配置文件创建失败！请删除相关目录文件后重试：{}", userConfigFile.getAbsolutePath(), e);
+                closeQuietly();
                 return false;
             }
             try (OutputStream outputStream = new FileOutputStream(userConfigFile)) {
@@ -65,16 +64,24 @@ public class UserConfig {
                 byte[] bytes = JSONObject.toJSONBytes(userConfig, SerializerFeature.PrettyFormat);
                 outputStream.write(bytes);
                 log.warn("配置文件写出完成，请先填写配置文件后再重新启动程序！");
-                configurableApplicationContext.close();
+                closeQuietly();
                 return false;
             } catch (Exception e) {
-                e.printStackTrace();
-                log.error("配置文件写出失败！请删除相关目录文件后重试：{}", userConfigFile.getAbsolutePath());
-                configurableApplicationContext.close();
+                log.error("配置文件写出失败！请删除相关目录文件后重试：{}", userConfigFile.getAbsolutePath(), e);
+                closeQuietly();
                 return false;
             }
         } else {
             return readUserConfig(userConfigFile);
+        }
+    }
+
+    /**
+     * 若 Spring 上下文已就绪则关闭它（配置加载发生在启动前时上下文为 null，直接返回）
+     */
+    private static void closeQuietly() {
+        if (configurableApplicationContext != null) {
+            configurableApplicationContext.close();
         }
     }
 
@@ -110,10 +117,9 @@ public class UserConfig {
             }
             log.warn("读取配置文件成功！");
         } catch (Exception e) {
-            e.printStackTrace();
-            log.warn("读取配置文件失败!");
+            log.warn("读取配置文件失败!", e);
             log.warn("请检查文件格式 或 删除文件后重新启动生成配置文件！");
-            configurableApplicationContext.close();
+            closeQuietly();
             return false;
         }
         return true;

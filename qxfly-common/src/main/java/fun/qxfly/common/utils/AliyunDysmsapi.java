@@ -66,7 +66,7 @@ public class AliyunDysmsapi {
                 return -1;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("阿里云短信发送异常", e);
             return -1;
         }
     }

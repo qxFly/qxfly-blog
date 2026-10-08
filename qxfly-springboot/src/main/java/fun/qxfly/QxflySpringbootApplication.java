@@ -17,12 +17,15 @@ public class QxflySpringbootApplication {
     private static final Logger log = LoggerFactory.getLogger(QxflySpringbootApplication.class);
 
     public static void main(String[] args) {
+        // 启动前先加载外部配置：JwtUtils 等类在类加载时读取系统属性，
+        // 必须保证属性在 Spring 启动（类加载）之前已就绪，否则 SignKey 为 null
+        boolean configOk = UserConfig.writeConfig();
+        if (!configOk) {
+            log.error("配置文件缺失或读取失败，启动已终止，请检查 data/qxfly-conf/config.json 后重启");
+            return;
+        }
         ConfigurableApplicationContext applicationContext = SpringApplication.run(QxflySpringbootApplication.class, args);
         // 启动时，设置socket的上下文
         WebSocketServer.setApplicationContext(applicationContext);
-        // 启动时，初始化配置文件
-        UserConfig.setApplicationContext(applicationContext);
-        boolean b = UserConfig.writeConfig();
-        if (!b) log.warn("应用已关闭，请重启，在这之后的报错请忽视");
     }
 }

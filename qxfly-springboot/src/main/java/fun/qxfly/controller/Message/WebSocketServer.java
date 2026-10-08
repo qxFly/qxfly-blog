@@ -79,5 +79,20 @@ public class WebSocketServer {
         SESSION_HASH_MAP.remove(uid);
     }
 
+    /**
+     * 静态推送消息给指定在线用户（如评论回复通知）
+     *
+     * @param message 消息
+     */
+    public static void pushMessage(Message message) {
+        try {
+            Session session = SESSION_HASH_MAP.get(message.getToUid());
+            if (session != null && session.isOpen()) {
+                session.getBasicRemote().sendText(JSON.toJSONString(message));
+            }
+        } catch (Exception e) {
+            log.warn("推送消息失败 toUid={}", message.getToUid(), e);
+        }
+    }
 
 }

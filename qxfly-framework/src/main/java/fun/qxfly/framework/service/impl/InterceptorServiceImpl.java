@@ -31,4 +31,17 @@ public class InterceptorServiceImpl implements InterceptorService {
         }
         return false;
     }
+
+    /**
+     * 检查用户是否为管理员或审核员
+     *
+     * @param username 用户名
+     * @return true=有后台权限
+     */
+    @Override
+    public boolean isAdmin(String username) {
+        Integer role = interceptorMapper.isAdmin(username);
+        // role 为 null（用户不存在）或 0（普通用户）均无后台权限
+        return role != null && role != 0;
+    }
 }

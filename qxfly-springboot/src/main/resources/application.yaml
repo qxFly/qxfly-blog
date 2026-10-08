@@ -44,7 +44,6 @@ qxfly:
         - /userAvatar/**   #用户头像
         - /userBgImg/**   #用户背景图片
         - /user/getUserInfo   #获取用户信息
-        - /user/getSuggestAuthor  # 获取推荐作者
         - /user/findPassword  # 找回密码
         - /user/sendCode  # 找回密码
         - /article/listArticles   #文章列表
@@ -60,15 +59,12 @@ qxfly:
         - /article/getCollectionArticles   #获取用户收藏
         - /index/listLeaveMessage   #列出留言
         - /index/sendLeaveMessage   #发送留言
-        - /index/deleteLeaveMessage  #删除留言
         - /index/getSiteStatus  #获取站点状态
         - /systemBgImg/**   #系统背景图片
         - /sysSetting/getSysSettings #获取系统设置
         - /englishVocabulary/getRandomEnglishVocabularies #获取随机英语词汇
-        - /warehouse/uploadPicture #上传库存图片
         - /warehousePicture/** #库存图片
         - /purchasePicture/** #库存图片
-        - /purchase/uploadPicture #上传库存图片
 
 
 

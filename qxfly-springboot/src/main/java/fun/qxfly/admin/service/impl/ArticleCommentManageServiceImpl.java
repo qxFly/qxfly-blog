@@ -44,6 +44,21 @@ public class ArticleCommentManageServiceImpl implements ArticleCommentManageServ
     }
 
     /**
+     * 批量审核文章评论
+     *
+     * @param ids    评论id列表
+     * @param verify 审核状态
+     * @return
+     */
+    @Override
+    public boolean batchArticleCommentVerify(List<Integer> ids, Integer verify) {
+        if (ids == null || ids.isEmpty() || verify == null || verify < 1 || verify > 3) {
+            return false;
+        }
+        return articleCommentManageMapper.batchArticleCommentVerify(ids, verify) > 0;
+    }
+
+    /**
      * 搜索评论
      * @param comment
      * @param createTimeStart

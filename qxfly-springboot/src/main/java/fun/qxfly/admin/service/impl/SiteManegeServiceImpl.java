@@ -67,7 +67,7 @@ public class SiteManegeServiceImpl implements SiteManegeService {
             HttpURLConnection httpURLConnection = (HttpURLConnection) u.openConnection();
             return httpURLConnection.getResponseCode();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("获取站点状态失败", e);
             return 404;
         }
     }

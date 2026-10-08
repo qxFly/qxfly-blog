@@ -44,7 +44,7 @@
             <if test="comment.toUsername != null">
                 and toUsername like concat('%',#{comment.toUsername},'%')
             </if>
-            <if test="comment.verify != 0">
+            <if test="comment.verify != null and comment.verify != 0">
                 and verify = #{comment.verify}
             </if>
             <if test="createTimeStart != null">

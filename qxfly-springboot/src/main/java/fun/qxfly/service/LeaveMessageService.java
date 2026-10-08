@@ -27,4 +27,12 @@ public interface LeaveMessageService {
      * @return
      */
     boolean deleteLeaveMessage(Integer id);
+
+    /**
+     * 根据id查询留言
+     *
+     * @param id 留言id
+     * @return 留言
+     */
+    LeaveMessage getLeaveMessageById(Integer id);
 }

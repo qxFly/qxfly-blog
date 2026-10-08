@@ -14,6 +14,7 @@ import fun.qxfly.service.User.MessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class ArticleManageServiceImpl implements ArticleManageService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean articleVerify(Article article, String reason) {
         articleManageMapper.removeNoPassedArticle(article);
         Article articleById = articleMapper.getArticleById(article.getId());
@@ -99,6 +101,7 @@ public class ArticleManageServiceImpl implements ArticleManageService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean deleteArticle(Article article) {
         String s = article.getCover().split("/")[article.getCover().split("/").length - 1];
         File cover = new File(System.getProperty("user.dir") + "/data/qxfly-articleCover/" + s);if (cover.exists()) cover.delete();

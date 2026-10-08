@@ -7,6 +7,8 @@ import fun.qxfly.common.domain.po.Result;
 import fun.qxfly.common.domain.vo.ArticleVO;
 import fun.qxfly.common.utils.JwtUtils;
 import fun.qxfly.framework.custom.LoginHolder;
+import fun.qxfly.service.Article.ArticleAttachmentService;
+import fun.qxfly.service.Article.ArticleInteractionService;
 import fun.qxfly.service.Article.ArticleService;
 import fun.qxfly.service.User.UserInfoService;
 import io.jsonwebtoken.Claims;
@@ -28,10 +30,15 @@ import java.util.List;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final ArticleInteractionService interactionService;
+    private final ArticleAttachmentService attachmentService;
     private final UserInfoService userInfoService;
 
-    public ArticleController(ArticleService articleService, UserInfoService userInfoService) {
+    public ArticleController(ArticleService articleService, ArticleInteractionService interactionService,
+                             ArticleAttachmentService attachmentService, UserInfoService userInfoService) {
         this.articleService = articleService;
+        this.interactionService = interactionService;
+        this.attachmentService = attachmentService;
         this.userInfoService = userInfoService;
     }
 
@@ -221,21 +228,6 @@ public class ArticleController {
     }
 
     /**
-     * 检测用户章是否可编辑文章
-     *
-     * @return 包含uid、和用户名的用户对象
-     */
-    @PostMapping("/checkA")
-    @Operation(description = "检测用户章是否可编辑文章，返回包含uid、和用户名的用户对象", summary = "检测用户章是否可编辑文章")
-    public Result checkArticle(HttpServletRequest request) {
-        Claims claims = JwtUtils.parseJWT(request.getHeader("token"));
-        User user = new User();
-        user.setId((Integer) claims.get("uid"));
-        user.setUsername((String) claims.get("username"));
-        return Result.success(user);
-    }
-
-    /**
      * 文章浏览量
      *
      * @param aid     文章id
@@ -252,7 +244,7 @@ public class ArticleController {
             Claims claims = JwtUtils.parseJWT(token);
             uid = (Integer) claims.get("uid");
         }
-        articleService.addArticleView(aid, uid, UA);
+        interactionService.addArticleView(aid, uid, UA);
         return Result.success();
     }
 
@@ -273,9 +265,9 @@ public class ArticleController {
         Integer uid = (Integer) claims.get("uid");
         boolean f;
         if (flag == 0)
-            f = articleService.articleLike(aid, uid);
+            f = interactionService.articleLike(aid, uid);
         else
-            f = articleService.cancelArticleLike(aid, uid);
+            f = interactionService.cancelArticleLike(aid, uid);
         if (f) {
             return Result.success();
         }
@@ -299,9 +291,9 @@ public class ArticleController {
         Integer uid = (Integer) claims.get("uid");
         /* 0为没有收藏，否则取消收藏*/
         if (flag == 0)
-            articleService.articleCollection(aid, uid);
+            interactionService.articleCollection(aid, uid);
         else
-            articleService.cencelArticleCollection(aid, uid);
+            interactionService.cencelArticleCollection(aid, uid);
         return Result.success();
 
     }
@@ -374,7 +366,7 @@ public class ArticleController {
     @Operation(description = "上传文章附件", summary = "上传文章附件")
     @PostMapping("/uploadAttachment")
     public Result upload(MultipartFile file) {
-        String fileName = articleService.uploadAttachment(file);
+        String fileName = attachmentService.uploadAttachment(file);
         if (fileName != null) {
             return Result.success(fileName);
         } else {
@@ -392,7 +384,7 @@ public class ArticleController {
     @Operation(description = "删除文章附件", summary = "删除文章附件")
     @GetMapping("/deleteAttachment")
     public Result deleteAttachment(@RequestParam Integer aid, @RequestParam String fileName) {
-        boolean f = articleService.deleteAttachment(aid, fileName);
+        boolean f = attachmentService.deleteAttachment(aid, fileName);
         if (fileName != null) {
             return Result.success(fileName);
         } else {
@@ -409,7 +401,7 @@ public class ArticleController {
     @Operation(description = "根据id获取文章附件", summary = "获取文章附件")
     @GetMapping("/getArticleAttachment")
     public Result getArticleAttachment(@RequestParam Integer id) {
-        List<Attachment> attachmentList = articleService.getArticleAttachment(id);
+        List<Attachment> attachmentList = attachmentService.getArticleAttachment(id);
         return Result.success(attachmentList);
     }
 
@@ -427,7 +419,7 @@ public class ArticleController {
         String token = request.getHeader("token");
         Claims claims = JwtUtils.parseJWT(token);
         Integer uid = (Integer) claims.get("uid");
-        Integer f = articleService.saveAttachment(aid, uid, attachmentList);
+        attachmentService.saveAttachment(aid, uid, attachmentList);
         return Result.success();
     }
 }

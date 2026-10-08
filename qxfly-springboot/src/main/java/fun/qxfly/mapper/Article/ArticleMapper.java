@@ -270,25 +270,6 @@ public interface ArticleMapper {
     List<Tag> listTags();
 
     /**
-     * 获取用户今日是否点赞
-     *
-     * @param user
-     * @param comment
-     * @return
-     */
-    @Select("select count(*) from user_comment_daily_like where uid = #{user.id} and cid = #{comment.id}")
-    Integer getUserCommentDailyLike(@Param("user") User user, @Param("comment") Comment comment);
-
-    /**
-     * 添加用户今日点赞
-     *
-     * @param user
-     * @param comment
-     */
-    @Insert("insert into user_comment_daily_like(uid, cid)values(#{user.id},#{comment.id})")
-    Integer addUserCommentDailyLike(@Param("user") User user, @Param("comment") Comment comment);
-
-    /**
      * 保存文章图片
      *
      * @param aid

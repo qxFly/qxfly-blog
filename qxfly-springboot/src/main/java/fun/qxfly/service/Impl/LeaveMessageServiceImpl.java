@@ -55,4 +55,15 @@ public class LeaveMessageServiceImpl implements LeaveMessageService {
     public boolean deleteLeaveMessage(Integer id) {
         return leaveMessageMapper.deleteLeaveMessage(id);
     }
+
+    /**
+     * 根据id查询留言
+     *
+     * @param id 留言id
+     * @return 留言
+     */
+    @Override
+    public LeaveMessage getLeaveMessageById(Integer id) {
+        return leaveMessageMapper.getLeaveMessageById(id);
+    }
 }

@@ -1,7 +1,7 @@
 spring:
   datasource:
-    username: root
-    password: FLY334955ffh.
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
   application:
     name: prod
 logging:

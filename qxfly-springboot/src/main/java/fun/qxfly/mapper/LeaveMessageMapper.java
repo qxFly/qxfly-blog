@@ -5,6 +5,7 @@ import fun.qxfly.common.domain.entity.LeaveMessage;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -35,4 +36,13 @@ public interface LeaveMessageMapper {
      */
     @Delete("delete from leave_message where id = #{id}")
     boolean deleteLeaveMessage(Integer id);
+
+    /**
+     * 根据id查询留言
+     *
+     * @param id 留言id
+     * @return 留言
+     */
+    @Select("select * from leave_message where id = #{id}")
+    LeaveMessage getLeaveMessageById(Integer id);
 }

@@ -69,7 +69,7 @@ public class RegisterController {
                     return Result.error("请获取验证码！");
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("短信验证码校验异常", e);
                 return Result.error("请输入正确的验证码或邀请码");
             }
         }
@@ -82,7 +82,7 @@ public class RegisterController {
         try {
             decodePassword = RSAEncrypt.decrypt(encodePassword, privateKey);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("RSA解密密码失败", e);
             return Result.error("系统错误");
         }
         /* 创建用户 */

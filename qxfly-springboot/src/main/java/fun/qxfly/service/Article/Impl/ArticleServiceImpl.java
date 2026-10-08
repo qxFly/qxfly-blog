@@ -11,11 +11,13 @@ import fun.qxfly.common.enums.FilePaths;
 import fun.qxfly.common.exception.excep.FileException;
 import fun.qxfly.common.utils.FileUtils;
 import fun.qxfly.mapper.Article.ArticleMapper;
+import fun.qxfly.service.Article.ArticleInteractionService;
 import fun.qxfly.service.Article.ArticleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -34,9 +36,11 @@ public class ArticleServiceImpl implements ArticleService {
     @Value("${qxfly.file.path.articleAttachment}")
     private String articleAttachmentDownloadPath;
     private final ArticleMapper articleMapper;
+    private final ArticleInteractionService interactionService;
 
-    public ArticleServiceImpl(ArticleMapper articleMapper) {
+    public ArticleServiceImpl(ArticleMapper articleMapper, ArticleInteractionService interactionService) {
         this.articleMapper = articleMapper;
+        this.interactionService = interactionService;
     }
 
     /**
@@ -46,6 +50,7 @@ public class ArticleServiceImpl implements ArticleService {
      * @param image   文章内容图片
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Integer releaseArticle(Article article, String image) {
         /*封面以文件名方式保存至数据库*/
         String[] split1 = article.getCover().split("articleCover/");
@@ -76,6 +81,7 @@ public class ArticleServiceImpl implements ArticleService {
      * @param article 文章
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean editArticle(Article article) {
         /* 如果更换封面则删除之前的封面 */
         Article article1 = articleMapper.getArticleById(article.getId());
@@ -194,7 +200,7 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleVO articleVO = new ArticleVO();
         BeanUtils.copyProperties(article, articleVO);
         if (uid != null) {
-            boolean[] articleLikeAndCollection = isArticleLikeAndCollection(aid, uid);
+            boolean[] articleLikeAndCollection = interactionService.isArticleLikeAndCollection(aid, uid);
             articleVO.setIsLike(articleLikeAndCollection[0]);
             articleVO.setIsCollection(articleLikeAndCollection[1]);
         }
@@ -244,6 +250,7 @@ public class ArticleServiceImpl implements ArticleService {
      * @param aid 文章id
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean deleteArticleById(Integer aid) {
         Article articleById = articleMapper.getArticleById(aid);
         /* 删除封面 */
@@ -340,230 +347,13 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /**
-     * 文章点赞
-     *
-     * @param aid 文章id
-     * @return
-     */
-    @Override
-    public boolean articleLike(Integer aid, Integer uid) {
-        Integer al = articleMapper.getUserArticleLike(aid, uid);
-        /*获取用户的点赞json数据*/
-        UserLikesAndCollection userLikes = articleMapper.getUserLikes(uid);
-        ArrayList<Integer> articles = new ArrayList<>();
-        /*如果为空，则创建相关json数据*/
-        if (userLikes == null) {
-            articles.add(aid);
-            UserLikesAndCollection userLikes1 = new UserLikesAndCollection(uid, JSONObject.toJSONString(articles), JSONObject.toJSONString(""));
-            articleMapper.addUserLikes(userLikes1);
-        } else {
-            //否则查询用户是否点赞
-            String likeArticles = userLikes.getLikeArticles();
-            ArrayList<Integer> arrayList = new ArrayList<>();
-            if (likeArticles != null) {
-                arrayList = JSONObject.parseObject(likeArticles, ArrayList.class);
-                for (Integer item : arrayList) {
-                    if (item.equals(aid)) {
-                        //已点赞
-                        return false;
-                    }
-                }
-                //如果点赞记录超过500条，则删除最早的一条
-                if (arrayList.size() > 500) {
-                    arrayList.remove(0);
-                }
-            }
-            //未点赞
-            arrayList.add(aid);
-            userLikes.setLikeArticles(JSONObject.toJSONString(arrayList));
-            articleMapper.updateUserLikes(userLikes);
-            if (al == null || al == 0) {
-                articleMapper.addUserArticleLike(aid, uid);
-                articleMapper.articleLike(aid);
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 取消用户点赞
-     *
-     * @param aid 文章id
-     * @param uid 用户id
-     */
-    @Override
-    public boolean cancelArticleLike(Integer aid, Integer uid) {
-        UserLikesAndCollection userLikes = articleMapper.getUserLikes(uid);
-        if (userLikes != null && userLikes.getLikeArticles() != null) {
-            ArrayList<Integer> arrayList = JSONObject.parseObject(userLikes.getLikeArticles(), ArrayList.class);
-            for (Integer item : arrayList) {
-                if (item.equals(aid)) {
-                    arrayList.remove(aid);
-                    userLikes.setLikeArticles(JSONObject.toJSONString(arrayList));
-                    articleMapper.updateUserLikes(userLikes);
-                    return true;
-                }
-            }
-
-        }
-        return false;
-    }
-
-    /**
-     * 文章收藏
-     *
-     * @param aid 文章id
-     * @param uid 用户id
-     */
-    @Override
-    public boolean articleCollection(Integer aid, Integer uid) {
-        Integer b = articleMapper.userIsCollArt(aid, uid);
-        if (b == null) {
-            articleMapper.updateUserCollection(aid, uid, new Date());
-            articleMapper.addarticleCollectionCount(aid);
-        }
-        return true;
-    }
-
-    /**
-     * 取消用户收藏
-     *
-     * @param aid 文章id
-     * @param uid 用户id
-     */
-    @Override
-    public boolean cencelArticleCollection(Integer aid, Integer uid) {
-        return articleMapper.deleteUserCollection(aid, uid);
-    }
-
-    /**
-     * 增加文章访问量
-     *
-     * @param aid 文章id
-     * @param uid 用户id
-     * @param UA  用户UA
-     */
-    @Override
-    public void addArticleView(Integer aid, Integer uid, String UA) {
-        Integer view;
-        if (uid != null) {
-            view = articleMapper.getUserArticleView(aid, uid, UA);
-        } else {
-            view = articleMapper.getUAArticleView(aid, UA);
-        }
-        if (view == null || view == 0) {
-            articleMapper.addUserArticleView(aid, uid, UA);
-            articleMapper.addArticleTotalViews(aid);
-            DailyView dailyView = articleMapper.getDailyViewByArticleId(aid);
-            if (dailyView == null) {
-                articleMapper.addDailyView(aid);
-            } else {
-                articleMapper.updateDailyView(aid);
-            }
-        }
-    }
-
-    /**
-     * 判断文章是否点赞收藏
-     *
-     * @param aid 文章id
-     * @param uid 用户id
-     * @return boolean[点赞，收藏]
-     */
-    @Override
-    public boolean[] isArticleLikeAndCollection(Integer aid, Integer uid) {
-        boolean[] result = {false, false};
-        UserLikesAndCollection userLikes = articleMapper.getUserLikes(uid);
-        if (userLikes == null) {
-            return result;
-        } else {
-            if (userLikes.getLikeArticles() != null) {
-                String likeArticles = userLikes.getLikeArticles();
-                ArrayList<Integer> a = JSONObject.parseObject(likeArticles, ArrayList.class);
-                for (Integer item : a) {
-                    if (item.equals(aid)) {
-                        result[0] = true;
-                        break;
-                    }
-                }
-            }
-            if (articleMapper.userIsCollArt(aid, uid) != null) result[1] = true;
-        }
-        return result;
-    }
-
-    /**
-     * 上传文章附件
-     *
-     * @param file 文件
-     * @return 文件名
-     */
-    @Override
-    public String uploadAttachment(MultipartFile file) {
-        String path = FilePaths.ARTICLE_ATTACHMENT_PATH.getPath();
-        String fileName;
-        try {
-            fileName = FileUtils.upload(path, file);
-        } catch (IOException e) {
-            throw new FileException(ExceptionEnum.FILE_UPLOAD_ERROR);
-        }
-        return fileName;
-    }
-
-    /**
-     * 删除文章附件
-     *
-     * @param aid      文章id
-     * @param fileName 文件名
-     * @return boolean
-     */
-    @Override
-    public boolean deleteAttachment(Integer aid, String fileName) {
-        File file = new File(FilePaths.ARTICLE_ATTACHMENT_PATH.getPath() + fileName);
-        if (aid != null && aid != 0) {
-            articleMapper.deleteAttachment(aid, fileName);
-        }
-        return file.exists() && file.delete();
-    }
-
-    /**
-     * 保存文章附件
-     *
-     * @param aid            文章id
-     * @param uid            用户id
-     * @param attachmentList 附件列表
-     * @return null
-     */
-    @Override
-    public Integer saveAttachment(Integer aid, Integer uid, List<Attachment> attachmentList) {
-        for (Attachment attachment : attachmentList) {
-            articleMapper.saveAttachment(aid, uid, attachment);
-        }
-        return null;
-    }
-
-    /**
-     * 获取文章附件
-     *
-     * @param aid 文章id
-     * @return 附件列表
-     */
-    @Override
-    public List<Attachment> getArticleAttachment(Integer aid) {
-        List<Attachment> articleAttachment = articleMapper.getArticleAttachmentByAid(aid);
-        for (Attachment attachment : articleAttachment) {
-            attachment.setDownloadUrl(articleAttachmentDownloadPath + attachment.getFileName());
-        }
-        return articleAttachment;
-    }
-
-    /**
      * 批量删除文章
      *
      * @param aidList 文章id列表
      * @return boolean
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean batchDeleteArticle(String[] aidList) {
         for (String ar : aidList)
             if (!deleteArticleById(Integer.parseInt(ar)))

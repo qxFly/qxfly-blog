@@ -66,12 +66,15 @@ public class ArticleCommentController {
         user.setUsername(u.getUsername());
         comment.setUser(user);
         comment.setCreateTime(new Date());
-        boolean b = articleCommentService.releaseComment(comment);
-        if (b)
-            return Result.success();
-        else
-            return Result.error("评论审核中，请耐心等待");
-
+        try {
+            boolean published = articleCommentService.releaseComment(comment);
+            if (published)
+                return Result.success();
+            else
+                return Result.error("评论审核中，请耐心等待");
+        } catch (IllegalArgumentException e) {
+            return Result.error(e.getMessage());
+        }
     }
 
     /**
@@ -105,21 +108,32 @@ public class ArticleCommentController {
         User u = new User();
         Claims claims = JwtUtils.parseJWT(token);
         u.setId((Integer) claims.get("uid"));
-        Integer f = articleCommentService.likeComment(comment, u);
-        return Result.success(f);
+        try {
+            Integer f = articleCommentService.likeComment(comment, u);
+            return Result.success(f);
+        } catch (IllegalArgumentException e) {
+            return Result.error(e.getMessage());
+        }
     }
 
     /**
-     * 删除评论
+     * 删除评论（仅本人可删除，连同子评论一并删除）
      *
      * @param cid
      * @return
      */
     @DeleteMapping("/deleteComment/{cid}")
     @Operation(description = "删除评论", summary = "删除评论")
-    public Result deleteComment(@PathVariable("cid") Integer cid) {
-        Integer f = articleCommentService.deleteComment(cid);
-        if (f > 0) return Result.success("删除成功", null);
-        return Result.error("删除失败");
+    public Result deleteComment(@PathVariable("cid") Integer cid, HttpServletRequest request) {
+        String token = request.getHeader("token");
+        Claims claims = JwtUtils.parseJWT(token);
+        Integer uid = (Integer) claims.get("uid");
+        try {
+            Integer f = articleCommentService.deleteComment(cid, uid);
+            if (f > 0) return Result.success("删除成功", null);
+            return Result.error("删除失败");
+        } catch (IllegalArgumentException e) {
+            return Result.error(e.getMessage());
+        }
     }
 }

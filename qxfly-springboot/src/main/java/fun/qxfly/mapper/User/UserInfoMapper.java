@@ -2,7 +2,6 @@ package fun.qxfly.mapper.User;
 
 import fun.qxfly.common.domain.entity.Navigation;
 import fun.qxfly.common.domain.entity.User;
-import fun.qxfly.common.domain.vo.UserVO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -40,12 +39,6 @@ public interface UserInfoMapper {
      */
     @Update("update user set avatar = #{path} where id = #{uid}")
     void updateImg(@Param("path") String path, @Param("uid") int uid);
-
-    /**
-     * 获取推荐作者
-     */
-    @Select("SELECT u.* FROM user_card uc, user u WHERE uc.Views >= ( SELECT floor( RAND() * ( SELECT avg(Views) FROM user_card ) ) ) and uc.Views != 0 and u.id = uc.id ORDER BY uc.Views DESC")
-    List<UserVO> getSuggestAuthor();
 
     /**
      * 找回密码

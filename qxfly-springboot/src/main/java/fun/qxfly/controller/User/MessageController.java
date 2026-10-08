@@ -114,7 +114,7 @@ public class MessageController {
         try {
             uid = (Integer) JwtUtils.parseJWT(token).get("uid");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("获取用户信息失败", e);
             return Result.error("获取失败");
         }
         Integer f = messageService.getNoReadMessageCount(uid);

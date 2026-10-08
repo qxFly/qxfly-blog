@@ -51,7 +51,7 @@ public class EnglishVocabularyServiceImpl implements EnglishVocabularyService {
         try {
             newVocabularies = EasyExcel.read(file.getInputStream()).head(EnglishVocabulary.class).sheet().doReadSync();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("读取Excel文件失败", e);
             throw new FileException(ExceptionEnum.FILE_READ_ERROR);
         }
         List<EnglishVocabulary> oldVocabularies = englishVocabularyMapper.getAllVocabularies(); // 获取所有英语单词

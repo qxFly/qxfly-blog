@@ -1,6 +1,5 @@
 package fun.qxfly.controller.User;
 
-import com.github.pagehelper.PageInfo;
 import fun.qxfly.common.domain.entity.Navigation;
 import fun.qxfly.common.domain.entity.User;
 import fun.qxfly.common.domain.po.Result;
@@ -76,21 +75,15 @@ public class UserInfoController {
         String token = request.getHeader("token");
         Claims claims = JwtUtils.parseJWT(token);
         String username = (String) claims.get("username");
-        Integer uid = (Integer) claims.get("userId");
+        Integer uid = claims.get("uid", Integer.class);
         User u = userInfoService.checkUsername(user);
         String op = userInfoService.getOriginPhone(uid);
         if ((user.getPassword() != null && !user.getPassword().isEmpty()) || (!Objects.equals(user.getPhone(), op))) {
             if (user.getRole() != null) {
-//                User user1;
-//                user1 = user;
-//                user1.setPhone(op);
-//                log.info("user1:{}",user);
-                if(user.getRole() != 123){
-                    Result.error("验证码错误");
-                }
-//                int f = userInfoService.testCode(user1);
-//                if (f == 0) return Result.error("验证码错误");
-//                else if (f == -1) return Result.error("请获取验证码");
+                //role 字段复用为短信验证码，必须校验通过才能修改密码/手机号
+                int f = userInfoService.testCode(user);
+                if (f == 0) return Result.error("验证码错误");
+                else if (f == -1) return Result.error("请获取验证码");
             } else {
                 return Result.error("请输入验证码");
             }
@@ -131,20 +124,6 @@ public class UserInfoController {
     }
 
     /**
-     * 获取推荐作者
-     *
-     * @param currPage
-     * @param pageSize
-     * @return
-     */
-    @Operation(description = "获取推荐作者", summary = "获取推荐作者")
-    @GetMapping("/getSuggestAuthor")
-    public Result getSuggestAuthor(@RequestParam(defaultValue = "1") int currPage, @RequestParam(defaultValue = "10") int pageSize) {
-        PageInfo<UserVO> pageInfo = userInfoService.getSuggestAuthorByPage(currPage, pageSize);
-        return Result.success(pageInfo);
-    }
-
-    /**
      * 发送验证码
      *
      * @param user
@@ -154,7 +133,7 @@ public class UserInfoController {
     @PostMapping("/sendCode")
     public Result sendCode(@RequestBody User user) {
         int i = userInfoService.sendCode(user);
-        return i == -1 ? Result.error("请使用邀请码：qxfly。发送失败，验证码服务过期。") : Result.success();
+        return i == -1 ? Result.error("发送失败，验证码服务过期") : Result.success();
     }
 
     /**
@@ -173,7 +152,7 @@ public class UserInfoController {
         try {
             decodePassword = RSAEncrypt.decrypt(encodePassword, privateKey);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("RSA解密密码失败", e);
             return Result.error("系统错误");
         }
         Integer i = userInfoService.resetPassword(map.get("phone"), decodePassword, Integer.valueOf(map.get("code")));

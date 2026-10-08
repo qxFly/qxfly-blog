@@ -100,13 +100,14 @@ public class JwtUtils {
         return tokenMap;
     }
 
-    public static void isRefreshToken(String refreshToken) throws Exception{
+    public static void isRefreshToken(String refreshToken) throws Exception {
         try {
             parseJWT(refreshToken);
         } catch (Exception e) {
-            throw new Exception();
+            // 刷新失败统一按 token错误(1102) 返回：若返回 1101 会触发前端对刷新请求
+            // 自身再次发起刷新，造成递归等待
+            throw new JwtException(ExceptionEnum.TOKEN_ERROR);
         }
-
     }
 
 
@@ -122,7 +123,7 @@ public class JwtUtils {
 
     private static Claims parseJWT(String token, String type) {
         if (token == null || token.isBlank()) {
-            throw new RuntimeException();
+            throw new JwtException(ExceptionEnum.TOKEN_ERROR);
         }
         try {
             return Jwts.parser()

@@ -67,14 +67,14 @@ public class IndexServiceImpl implements IndexService {
                     site.setStatus(responseCode);
                 } catch (Exception e) {
                     site.setStatus(404);
-                    e.printStackTrace();
+                    log.error("站点状态检测失败", e);
                 }
                 return site;
             });
             try {
                 status.add(submit.get());
             } catch (Exception e) {
-               e.printStackTrace();
+               log.error("站点状态汇总失败", e);
             }
         }
         executorService.shutdown();

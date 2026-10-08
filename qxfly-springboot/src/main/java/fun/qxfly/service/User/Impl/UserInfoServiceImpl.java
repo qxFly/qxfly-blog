@@ -1,12 +1,9 @@
 package fun.qxfly.service.User.Impl;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import fun.qxfly.admin.service.AdminService;
 import fun.qxfly.common.domain.entity.Navigation;
 import fun.qxfly.common.domain.entity.User;
 import fun.qxfly.common.domain.po.Result;
-import fun.qxfly.common.domain.vo.UserVO;
 import fun.qxfly.common.enums.FilePaths;
 import fun.qxfly.common.utils.AliyunDysmsapi;
 import fun.qxfly.common.utils.FileUtils;
@@ -103,27 +100,9 @@ public class UserInfoServiceImpl implements UserInfoService {
             userInfoMapper.updateImg(fileName, user.getId());
             return Result.success(userAvatarPath + fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("头像上传失败", e);
             return Result.error("上传失败");
         }
-    }
-
-    /**
-     * 获取推荐作者
-     *
-     * @param currPage 当前页
-     * @param pageSize 分页大小
-     * @return 推荐作者列表
-     */
-    @Override
-    public PageInfo<UserVO> getSuggestAuthorByPage(Integer currPage, Integer pageSize) {
-        PageHelper.startPage(currPage, pageSize);
-        List<UserVO> userList = userInfoMapper.getSuggestAuthor();
-        for (UserVO userVO : userList) {
-            if (userVO.getAvatar() != null)
-                userVO.setAvatar(userAvatarPath + userVO.getAvatar());
-        }
-        return new PageInfo<>(userList);
     }
 
     /**

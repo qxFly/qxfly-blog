@@ -6,23 +6,20 @@ import fun.qxfly.common.exception.excep.FileException;
 import fun.qxfly.common.exception.excep.JwtException;
 import fun.qxfly.common.exception.excep.UserException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-
-    /*通用异常捕获*/
+    /*通用异常捕获：不向客户端回传内部异常详情，仅记录到日志*/
     @ExceptionHandler(Exception.class)
     public Result handleException(Exception e, HttpServletRequest request) {
-        e.printStackTrace();
-        log.error("模块：Jwt; 请求地址：{}; 发生异常：{}; 异常代码：{}", request.getRequestURL(), e.getMessage(), 0);
-        return Result.error(e.getMessage());
+        log.error("请求地址：{} 发生未预期异常", request.getRequestURL(), e);
+        return Result.error("服务器内部错误");
     }
 
     /**
@@ -34,7 +31,6 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(JwtException.class)
     public Result JwtExpiredException(JwtException e, HttpServletRequest request) {
-        e.printStackTrace();
         log.error("模块：Jwt; 请求地址：{}; 发生异常：{}; 异常代码：{}", request.getRequestURL(), e.getMsg(), e.getCode());
         return getResultError(e);
 
@@ -49,13 +45,12 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(UserException.class)
     public Result UserException(UserException e, HttpServletRequest request) {
-        e.printStackTrace();
-        log.error("模块：Jwt; 请求地址：{}; 发生异常：{}; 异常代码：{}", request.getRequestURL(), e.getMsg(), e.getCode());
+        log.error("模块：User; 请求地址：{}; 发生异常：{}; 异常代码：{}", request.getRequestURL(), e.getMsg(), e.getCode());
         return getResultError(e);
     }
 
     /**
-     * 用户异常捕获
+     * 文件异常捕获
      *
      * @param e
      * @param request
@@ -63,7 +58,6 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(FileException.class)
     public Result FileException(FileException e, HttpServletRequest request) {
-        e.printStackTrace();
         log.error("模块：File; 请求地址：{}; 发生异常：{}; 异常代码：{}", request.getRequestURL(), e.getMsg(), e.getCode());
         return getResultError(e);
     }

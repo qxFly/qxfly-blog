@@ -53,7 +53,7 @@ public class ImageManageServiceImpl implements ImageManageService {
                 return Result.error("接口请求失败，" + responseCode + "错误！");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("获取图片状态接口超时", e);
             return Result.error("接口请求超时！");
         }
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
@@ -82,7 +82,7 @@ public class ImageManageServiceImpl implements ImageManageService {
                 return Result.error("名称列表为空！");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("获取图片列表失败", e);
             return Result.error("名称列表读取错误！");
         }
     }

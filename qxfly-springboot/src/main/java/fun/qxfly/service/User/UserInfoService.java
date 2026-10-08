@@ -1,10 +1,8 @@
 package fun.qxfly.service.User;
 
-import com.github.pagehelper.PageInfo;
 import fun.qxfly.common.domain.entity.Navigation;
 import fun.qxfly.common.domain.entity.User;
 import fun.qxfly.common.domain.po.Result;
-import fun.qxfly.common.domain.vo.UserVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -41,15 +39,6 @@ public interface UserInfoService {
      * @return Result对象
      */
     Result updateAvatar(MultipartFile file, Integer uid);
-
-    /**
-     * 获取推荐作者
-     *
-     * @param currPage 当前页
-     * @param pageSize 分页大小
-     * @return 推荐作者列表
-     */
-    PageInfo<UserVO> getSuggestAuthorByPage(Integer currPage, Integer pageSize);
 
     /**
      * 找回密码
